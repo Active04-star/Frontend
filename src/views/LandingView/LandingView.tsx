@@ -1,26 +1,10 @@
 import React from 'react'
 import Image from "next/image";
 
-const LandingView = () => {
+const LandingView: React.FC = () => {
   return (
     <div className="bg-dark min-h-screen flex flex-col">
-    {/* Navbar
-    <header className="flex justify-between items-center px-6 py-4 text-primary">
-      <div className="flex items-center space-x-2">
-        <div className="bg-primary rounded-full w-2 h-2"></div>
-        <span>CONTACTANOS</span>
-      </div>
-      <nav>
-        <a href="#" className="text-white hover:text-primary mx-4">
-          RESERVAR
-        </a>
-        <a href="#" className="text-white hover:text-primary">
-          INICIAR SESIÓN
-        </a>
-      </nav>
-    </header> */}
-
-    
+  
     <div className="flex flex-1">
 
       <div className="w-1/2 flex flex-col justify-center px-10 text-white">
@@ -40,15 +24,15 @@ const LandingView = () => {
   <Image
     src="https://images.pexels.com/photos/2277980/pexels-photo-2277980.jpeg?cs=srgb&dl=pexels-king-siberia-1123639-2277980.jpg&fm=jpg"
     alt="Cancha de basketball"
-    width={1000}  // Ajusta el tamaño deseado
-    height={500} // Ajusta el tamaño deseado
-    className="rounded-lg object-cover"  // Usa 'object-cover' para cubrir el área
+    width={1000}  
+    height={500} 
+    className="rounded-lg object-cover"  
   />
 </div>
 
     </div>
     <div className="bg-white text-gray-800">
-      {/* Sección: Estadísticas clave */}
+      
       <section className="bg-black text-white py-10">
         <div className="container mx-auto flex justify-around items-center">
           <div className="text-center">
@@ -70,7 +54,7 @@ const LandingView = () => {
         </div>
       </section>
 
-      {/* Sección: Proceso para usar la app */}
+      
       <section className="py-16">
         <div className="container mx-auto grid grid-cols-2 gap-8">
           <div>
@@ -85,9 +69,7 @@ const LandingView = () => {
           <div>
             <h3 className="text-2xl font-bold mb-4">Mirá lo fácil que es usar nuestra app</h3>
             <ol className="list-decimal space-y-4 pl-6">
-              <li>
-                <strong>Descargá la app:</strong> Disponible en Play Store o App Store.
-              </li>
+             
               <li>
                 <strong>Registrate:</strong> Creá tu cuenta para comenzar a utilizar la aplicación.
               </li>
