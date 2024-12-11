@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 
 export function useLocalStorage(key: string, initialValue: any) {
+
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -14,9 +17,12 @@ export function useLocalStorage(key: string, initialValue: any) {
     try {
       setStoredValue(value);
       window.localStorage.setItem(key, JSON.stringify(value));
+
     } catch (error) {
       console.error(error);
+
     }
   };
+  
   return [storedValue, setValue];
 }
