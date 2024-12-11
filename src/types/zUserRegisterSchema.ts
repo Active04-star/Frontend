@@ -5,36 +5,34 @@ const mail_lenght_error = "El mail debe estar entre 3 - 50 caracteres";
 const name_lenght_error = "El nombre debe estar entre 3 - 50 caracteres";
 
 const passwordSchema = z.string()
-    .min(8, "La contraseña debe ser mayor a 8 caracteres")
+    .min(8, "Debe ser mayor a 8 caracteres")
     .superRefine(
         (password, ctx) => {
+            const errors = [];
             if (!/[a-z]/.test(password)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "una minuscula",
-                });
+                errors.push("una minuscula");
             }
 
             if (!/[A-Z]/.test(password)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "una mayuscula",
-                });
+                errors.push("una mayuscula");
             }
 
             if (!/\d/.test(password)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "un numero",
-                });
+                errors.push("un numero");
             }
 
             if (!/[!@#$%^&*]/.test(password)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "almenos un caracter !@#$%^&*",
-                });
+                errors.push("almenos un caracter Especial !@#$%^&*");
             }
+
+            if(errors.length === 0) {
+                return;
+            }
+
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: errors.length > 0 ? "Debe contener " + errors.join(", ") : ""
+            })
         }
     );
 
