@@ -7,3 +7,9 @@ export interface IRegisterProps {
   }
   export type IRegisterErrors = Partial<IRegisterProps>;
   
+  export interface IloginProps {
+    email: string;
+    password: string;
+  }
+
+  export type IErrorsProps = Partial<IloginProps>;
