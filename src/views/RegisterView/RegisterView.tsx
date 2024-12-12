@@ -133,14 +133,14 @@ const RegisterView: React.FC = () => {
   return (
     <>
       {/* {!isAllowed ? */}
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-8  ">
+        <div className=" min-h-screen flex flex-col items-center justify-center bg-custom-dark text-center">
+          <h1 className="text-5xl font-bold text-white mb-8  ">
             Regístrate
           </h1>
           <form onSubmit={handleSubmit} className="w-full max-w-sm">
             <div className="mb-6">
               <label
-                className="block text-gray-500 mb-2 text-center font-medium text-lg"
+                className="block text-white mb-2 text-center font-medium text-lg"
                 htmlFor="name"
               >
                 Nombre
@@ -172,7 +172,7 @@ const RegisterView: React.FC = () => {
 
             <div className="mb-6">
               <label
-                className="block text-gray-500 mb-2 text-center font-medium text-lg"
+                className="block text-white mb-2 text-center font-medium text-lg"
                 htmlFor="email"
               >
                 Email
@@ -204,7 +204,7 @@ const RegisterView: React.FC = () => {
 
             <div className="mb-6 relative">
               <label
-                className="block text-gray-500 mb-2 text-center font-medium text-lg"
+                className="block text-white mb-2 text-center font-medium text-lg"
                 htmlFor="password"
               >
                 Contraseña
@@ -263,7 +263,7 @@ const RegisterView: React.FC = () => {
             <div>
               <div>
                 <label
-                  className="block text-gray-500 mb-2 text-center font-medium text-lg"
+                  className="block text-white mb-2 text-center font-medium text-lg"
                   htmlFor="confirm_password"
                 >
                   Confirmar Contraseña
@@ -310,7 +310,7 @@ const RegisterView: React.FC = () => {
 
             <button
               type="submit"
-              className="bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600 bg-yellow-400"
+              className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
             >
               Registrarse
             </button>
