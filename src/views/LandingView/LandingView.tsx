@@ -45,7 +45,7 @@ const LandingView: React.FC = () => {
             />
           </div>
         </div>
-        <div className="bg-white text-gray-800">
+        <div className="bg-white text-gray-800 pb-[200px]">
           <section className="bg-black text-white py-10">
             <div className="container mx-auto flex justify-around items-center">
               <div className="text-center">
