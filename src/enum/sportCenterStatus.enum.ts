@@ -1,8 +1,8 @@
 export enum SportCenterStatus {
-  /** Centro deportivo en edicion, NO puede ser observado por usuarios comunes; SOLO EL MANAGER, 
+  /** Centro deportivo en edicion, NO puede ser observado por usuarios comunes; SOLO EL MANAGER,
    * hasta que este decida publicarlo
    */
-    DRAFT = 'draft', 
-    PUBLISHED = 'published',
-    BANNED = 'banned',
-  }
+  DRAFT = "DRAFT",
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+}
