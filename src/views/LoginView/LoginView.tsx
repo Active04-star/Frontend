@@ -97,21 +97,21 @@ const LoginView: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-center">
-      <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif ">
+    <div className=" bg-custom-dark min-h-screen flex flex-col items-center justify-center  text-center">
+      <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif text-white">
         Active
       </h1>
       {
         isSubmitting ? (
           <div className="w-32 h-32">
-            <LoadingCircle/>
+            <LoadingCircle />
           </div>
-      ) :
+        ) :
           (
             <form onSubmit={handleSubmit} className="w-full max-w-sm">
               <div className="mb-6">
                 <label
-                  className="block text-gray-500 mb-2 text-center font-medium text-lg"
+                  className="block text-white mb-2 text-center font-medium text-lg"
                   htmlFor="username"
                 >
                   Usuario
@@ -142,7 +142,7 @@ const LoginView: React.FC = () => {
               </div>
               <div className="mb-6 relative">
                 <label
-                  className="block text-gray-500 text-lg mb-2 text-center font-medium"
+                  className="block text-white text-lg mb-2 text-center font-medium"
                   htmlFor="password"
                 >
                   Contraseña
@@ -185,7 +185,7 @@ const LoginView: React.FC = () => {
               </div>
               <button
                 type="submit"
-                className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600 bg-yellow-400"
+                className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
               >
                 Ingresar
               </button>
@@ -197,3 +197,4 @@ const LoginView: React.FC = () => {
 };
 
 export default LoginView;
+//
