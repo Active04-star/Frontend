@@ -27,7 +27,7 @@ const Navbar: React.FC = () => {
           >
             <Link 
             href= "/login">
-           Iniciar Session
+           Iniciar Sesion
             
             </Link>
           </button>

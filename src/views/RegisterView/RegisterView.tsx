@@ -132,7 +132,7 @@ const RegisterView: React.FC = () => {
 
   return (
     <>
-      {!isAllowed ?
+      {/* {!isAllowed ? */}
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-center">
           <h1 className="text-5xl font-bold text-gray-900 mb-8  ">
             Regístrate
@@ -316,8 +316,8 @@ const RegisterView: React.FC = () => {
             </button>
           </form>
         </div>
-        :
-        null}
+        {/* : */}
+        {/* null} */}
     </>
   )
 }
