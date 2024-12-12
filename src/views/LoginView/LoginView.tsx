@@ -1,4 +1,5 @@
 "use client";
+import LoadingCircle from "@/components/general/loading-circle";
 import { StatusEnum } from "@/enum/HttpStatus.enum";
 import { UserRole } from "@/enum/userRole";
 import { zodValidate } from "@/helpers/validate-zod";
@@ -23,7 +24,7 @@ const LoginView: React.FC = () => {
   const [errors, setErrors] = useState<LoginErrors | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUserData({ ...userData, [name]: value });
@@ -67,7 +68,7 @@ const LoginView: React.FC = () => {
 
     try {
       const response = await login(userData);
-      const { token, user  } = response;
+      const { token, user } = response;
 
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
@@ -89,7 +90,7 @@ const LoginView: React.FC = () => {
 
       }
     } finally {
-      setIsSubmitting(false);
+      // setIsSubmitting(false);
 
     }
   };
@@ -100,88 +101,97 @@ const LoginView: React.FC = () => {
       <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif ">
         Active
       </h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-sm">
-        <div className="mb-6">
-          <label
-            className="block text-gray-500 mb-2 text-center font-medium text-lg"
-            htmlFor="username"
-          >
-            Usuario
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="email"
-            value={userData.email}
-            onChange={handleChange}
-            placeholder="Active123@mail.com"
-            className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-          />
-          {
-            userData.email && errors !== null && errors.email !== undefined && errors?.email._errors !== undefined
-              ?
-              (
-                <span
-                  className="text-sm text-red-600"
-                  style={{ fontSize: "12px" }}
+      {
+        isSubmitting ? (
+          <div className="w-32 h-32">
+            <LoadingCircle/>
+          </div>
+      ) :
+          (
+            <form onSubmit={handleSubmit} className="w-full max-w-sm">
+              <div className="mb-6">
+                <label
+                  className="block text-gray-500 mb-2 text-center font-medium text-lg"
+                  htmlFor="username"
                 >
-                  {errors.email._errors}
-                </span>
-              )
-              :
-              null
-          }
-        </div>
-        <div className="mb-6 relative">
-          <label
-            className="block text-gray-500 text-lg mb-2 text-center font-medium"
-            htmlFor="password"
-          >
-            Contraseña
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={userData.password}
-            onChange={handleChange}
-            placeholder="******"
-            className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-          />
-          {
-            userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
-              ?
-              (
-                <>
-                  <span
-                    className="text-sm text-red-600"
-                    style={{ fontSize: "12px" }}
-                  >
-                    {errors.password._errors[0]}
-                  </span>
+                  Usuario
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  name="email"
+                  value={userData.email}
+                  onChange={handleChange}
+                  placeholder="Active123@mail.com"
+                  className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                />
+                {
+                  userData.email && errors !== null && errors.email !== undefined && errors?.email._errors !== undefined
+                    ?
+                    (
+                      <span
+                        className="text-sm text-red-600"
+                        style={{ fontSize: "12px" }}
+                      >
+                        {errors.email._errors}
+                      </span>
+                    )
+                    :
+                    null
+                }
+              </div>
+              <div className="mb-6 relative">
+                <label
+                  className="block text-gray-500 text-lg mb-2 text-center font-medium"
+                  htmlFor="password"
+                >
+                  Contraseña
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={userData.password}
+                  onChange={handleChange}
+                  placeholder="******"
+                  className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                />
+                {
+                  userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
+                    ?
+                    (
+                      <>
+                        <span
+                          className="text-sm text-red-600"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {errors.password._errors[0]}
+                        </span>
 
-                  <div>
-                    <span
-                      className="text-sm text-red-600"
-                      style={{ fontSize: "12px" }}
-                    >
-                      {errors.password._errors[1] !== undefined && errors.password._errors[1].length > 0 ? errors.password._errors[1] : null}
-                    </span>
-                  </div>
-                </>
+                        <div>
+                          <span
+                            className="text-sm text-red-600"
+                            style={{ fontSize: "12px" }}
+                          >
+                            {errors.password._errors[1] !== undefined && errors.password._errors[1].length > 0 ? errors.password._errors[1] : null}
+                          </span>
+                        </div>
+                      </>
 
-              )
-              :
-              null
-          }
-        </div>
-        <button
-          type="submit"
-          className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600 bg-yellow-400"
-        >
-          Ingresar
-        </button>
-      </form>
+                    )
+                    :
+                    null
+                }
+              </div>
+              <button
+                type="submit"
+                className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600 bg-yellow-400"
+              >
+                Ingresar
+              </button>
+            </form>
+          )
+      }
     </div>
   );
 };
