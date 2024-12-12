@@ -13,6 +13,13 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { RegisterErrors } from '@/types/Errortypes';
 
 const RegisterView: React.FC = () => {
+  //     const initalState = {
+  //         name: "",
+  //         email: "",
+  //         password: "",
+  //         confirmPassword: "",
+  //         profileImage: "",
+  //       };
 
   const initalState: UserRegister = {
     name: "",
@@ -32,6 +39,9 @@ const RegisterView: React.FC = () => {
   const [isAllowed, setIsAllowed] = useState(true);
   const [iuser,] = useLocalStorage("userSession", "");
 
+  //   useEffect(() => {
+  //     if (iuser.token === null || iuser.token === undefined) {
+  //       setIsAllowed(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -65,6 +75,15 @@ const RegisterView: React.FC = () => {
 
   }, [userData])
 
+  //     if (Object.values(currentErrors).some((error) => error)) {
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Error en el registro",
+  //         text: "Por favor corrige los errores antes de continuar.",
+  //       });
+  //       setIsSubmitting(false);
+  //       return;
+  //     }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -303,4 +322,5 @@ const RegisterView: React.FC = () => {
   )
 }
 
-export default RegisterView
+
+export default RegisterView;
