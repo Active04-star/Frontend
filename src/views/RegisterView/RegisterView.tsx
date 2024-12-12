@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-"use client";
-// import { useLocalStorage } from '@/helpers/auth-helpers/useLocalStorage';
-// import { IRegisterErrors, IRegisterProps } from '@/interfaces/interfaces.types';
-import React, { useEffect, useState } from "react";
-// import Swal from 'sweetalert2';
-// import { FaEye, FaEyeSlash } from "react-icons/fa";
-// import { ErrorHelper } from '@/helpers/errors/error-helper';
-// import { swalNotifyError } from '@/helpers/swal/swal-notify-error';
-// import { swalNotifyUnknownError } from '@/helpers/swal/swal-notify-unknown-error';
-=======
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import { ErrorHelper } from '@/scripts/errors/error-helper';
@@ -22,7 +11,6 @@ import { swalCustomError } from '@/scripts/swal/swal-custom-error';
 import { useLocalStorage } from '@/helpers/auth-helpers/useLocalStorage';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { RegisterErrors } from '@/types/Errortypes';
->>>>>>> 59ae47ab60899040ee23e9bc9c6dcc9558601d73
 
 const RegisterView: React.FC = () => {
   //     const initalState = {
@@ -334,70 +322,5 @@ const RegisterView: React.FC = () => {
   )
 }
 
-        <div className="mb-6">
-          <label
-            className="block text-gray-500 mb-2 text-center font-medium text-lg"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="agu@gmail.com"
-            className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-          />
-        </div>
-
-        <div className="mb-6 relative">
-          <label
-            className="block text-gray-500 mb-2 text-center font-medium text-lg"
-            htmlFor="password"
-          >
-            Contraseña
-          </label>
-          <div className="relative">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="******"
-              className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-            />
-          </div>
-        </div>
-
-        <div>
-          <div>
-            <label
-              className="block text-gray-500 mb-2 text-center font-medium text-lg"
-              htmlFor="confirmPassword"
-            >
-              Confirmar Contraseña
-            </label>
-          </div>
-
-          <div className="relative">
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              placeholder="******"
-              className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-            />
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600 bg-yellow-400"
-        >
-          Registrarse
-        </button>
-      </form>
-    </div>
-  );
-};
 
 export default RegisterView;
