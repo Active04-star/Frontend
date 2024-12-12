@@ -5,7 +5,7 @@ import { swalNotifyError } from '@/scripts/swal/swal-notify-error';
 import { swalNotifyUnknownError } from '@/scripts/swal/swal-notify-unknown-error';
 import { zodValidate } from '@/helpers/validate-zod';
 import { UserRegister } from '@/types/zTypes';
-import { UserRegisterSchema } from '@/types/zUserRegisterSchema';
+import { UserRegisterSchema } from '@/types/userRegister-schema';
 import React, { useEffect, useState } from 'react'
 import { swalCustomError } from '@/scripts/swal/swal-custom-error';
 import { useLocalStorage } from '@/helpers/auth-helpers/useLocalStorage';
@@ -13,13 +13,6 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { RegisterErrors } from '@/types/Errortypes';
 
 const RegisterView: React.FC = () => {
-  //     const initalState = {
-  //         name: "",
-  //         email: "",
-  //         password: "",
-  //         confirmPassword: "",
-  //         profileImage: "",
-  //       };
 
   const initalState: UserRegister = {
     name: "",
@@ -39,18 +32,16 @@ const RegisterView: React.FC = () => {
   const [isAllowed, setIsAllowed] = useState(true);
   const [iuser,] = useLocalStorage("userSession", "");
 
-  //   useEffect(() => {
-  //     if (iuser.token === null || iuser.token === undefined) {
-  //       setIsAllowed(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-
+  
     setUserData({
       ...userData,
       [name]: value,
     });
   };
+
 
   useEffect(() => {
     if (iuser.token === null || iuser.token === undefined) {
@@ -62,6 +53,7 @@ const RegisterView: React.FC = () => {
     }
 
   }, [iuser]);
+
 
   useEffect(() => {
 
@@ -75,15 +67,6 @@ const RegisterView: React.FC = () => {
 
   }, [userData])
 
-  //     if (Object.values(currentErrors).some((error) => error)) {
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Error en el registro",
-  //         text: "Por favor corrige los errores antes de continuar.",
-  //       });
-  //       setIsSubmitting(false);
-  //       return;
-  //     }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -98,9 +81,8 @@ const RegisterView: React.FC = () => {
       return;
     }
     
-    const data = zodValidate(userData, UserRegisterSchema)
+    const data = zodValidate(userData, UserRegisterSchema);
     
-    console.log(data);
     if (!data.success) {
 
       swalCustomError("Error en el registro", "Por favor corrige los errores antes de continuar.");
@@ -109,7 +91,6 @@ const RegisterView: React.FC = () => {
       return;
     }
 
-    console.log("success");
 
     try {
       //FETCH A BACK AQUi

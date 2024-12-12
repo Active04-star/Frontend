@@ -1,10 +1,10 @@
-import { fileSchema } from "@/types/zFileSchema";
+import { fileSchema } from "@/types/file-schema";
 import { z } from "zod";
 
-const mail_lenght_error = "El mail debe estar entre 3 - 50 caracteres";
+export const mail_lenght_error = "El mail debe estar entre 3 - 50 caracteres";
 const name_lenght_error = "El nombre debe estar entre 3 - 50 caracteres";
 
-const passwordSchema = z.string()
+export const passwordSchema = z.string()
     .min(8, "Debe ser mayor a 8 caracteres")
     .superRefine(
         (password, ctx) => {
