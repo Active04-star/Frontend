@@ -6,7 +6,6 @@ export function swalNotifyUnknownError(error: any) {
     let text = "";
     
     if(error.message !== null){
-        // console.log(error.message);
         if(error.message === "response is undefined") {
             title = "Por favor, intenta más tarde.";
             text = "El servicio está temporalmente fuera de línea";

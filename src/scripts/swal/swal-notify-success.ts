@@ -1,5 +1,15 @@
 import Swal, { SweetAlertPosition } from "sweetalert2";
 
+<<<<<<< HEAD:src/helpers/swal/swal-notify-success.ts
+=======
+/**
+ * Muestra una notificacion, con opciones por parametros mas amplias:
+ * @param title Titulo de notificacion
+ * @param text Parrafo de notificacion
+ * @param options Un array con dos indices: `[(SweetAlertPosition), (timer en milisegundos)]` ejemplo: `["center-right", 5000]`
+ * @returns 
+ */
+>>>>>>> 59ae47ab60899040ee23e9bc9c6dcc9558601d73:src/scripts/swal/swal-notify-success.ts
 export function swalNotifySuccess(title: string, text: string, options?: [position?: SweetAlertPosition | undefined, timer?: number]) {
     let position_: SweetAlertPosition | undefined;
     let timer_: number | undefined;
