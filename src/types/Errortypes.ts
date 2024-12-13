@@ -9,3 +9,8 @@ export type RegisterErrors = {
     confirm_password?: InnerError;
     profile_image?: InnerError;
 }
+
+export type LoginErrors = {
+    email?: InnerError;
+    password?: InnerError;
+}
