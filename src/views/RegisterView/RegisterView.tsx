@@ -12,8 +12,11 @@ import { useLocalStorage } from "@/helpers/auth-helpers/useLocalStorage";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RegisterErrors } from "@/types/Errortypes";
 import { register } from "@/helpers/auth-helpers/auth-helpers";
+import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
+import { useRouter } from "next/navigation";
 
 const RegisterView: React.FC = () => {
+  const router = useRouter();
 
   const initalState: UserRegister = {
     name: "",
@@ -87,6 +90,11 @@ const RegisterView: React.FC = () => {
 
     try {
       await register(userData);
+      swalNotifySuccess(
+        "Registro exitoso",
+        "Serás redirigido al login en breve."
+      );
+      router.push("/login");
     } catch (error: any) {
       if (error instanceof ErrorHelper) {
         swalNotifyError(error);
