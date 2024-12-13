@@ -27,7 +27,7 @@ const Navbar: React.FC = () => {
           >
             <Link 
             href= "/login">
-           Iniciar Sesion
+           Iniciar Sesion <s></s>
             
             </Link>
           </button>
@@ -94,3 +94,4 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
