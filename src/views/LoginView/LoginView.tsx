@@ -11,10 +11,12 @@ import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
 import { LoginErrors } from "@/types/Errortypes";
 import { UserLoginSchema } from "@/types/userLogin-schema";
 import { User, UserLogin } from "@/types/zTypes";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginView: React.FC = () => {
-
+  const router = useRouter();
   const initialState = {
     email: "",
     password: "",
@@ -23,7 +25,7 @@ const LoginView: React.FC = () => {
   const [userData, setUserData] = useState<UserLogin>(initialState);
   const [errors, setErrors] = useState<LoginErrors | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -78,8 +80,10 @@ const LoginView: React.FC = () => {
       if ((user as User).role === UserRole.MANAGER) {
         //SET ID DE CENTRO DEPORTIVO
       }
+      else if ((user as User).role === UserRole.USER) {
+        router.push("/user");
+    }
 
-      window.location.href = "/";
     } catch (error) {
 
       if (error instanceof ErrorHelper && error.message === StatusEnum.USER_DELETED) {
@@ -141,48 +145,61 @@ const LoginView: React.FC = () => {
                 }
               </div>
               <div className="mb-6 relative">
-                <label
-                  className="block text-white text-lg mb-2 text-center font-medium"
-                  htmlFor="password"
-                >
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={userData.password}
-                  onChange={handleChange}
-                  placeholder="******"
-                  className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                />
-                {
-                  userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
-                    ?
-                    (
-                      <>
-                        <span
-                          className="text-sm text-red-600"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {errors.password._errors[0]}
-                        </span>
-
-                        <div>
-                          <span
-                            className="text-sm text-red-600"
-                            style={{ fontSize: "12px" }}
-                          >
-                            {errors.password._errors[1] !== undefined && errors.password._errors[1].length > 0 ? errors.password._errors[1] : null}
-                          </span>
-                        </div>
-                      </>
-
-                    )
-                    :
-                    null
-                }
-              </div>
+                         <label
+                           className="block text-white mb-2 text-center font-medium text-lg"
+                           htmlFor="password"
+                         >
+                           Contraseña
+                         </label>
+                         <div className="relative">
+                           <input
+                             type={showPassword ? "text" : "password"}
+                             id="password"
+                             name="password"
+                             value={userData.password}
+                             onChange={handleChange}
+                             placeholder="******"
+                             className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                           />
+                           <div
+                             className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                             onClick={() => setShowPassword(!showPassword)}
+                           >
+                             {showPassword ? (
+                               <FaEyeSlash style={{ color: "black" }} />
+                             ) : (
+                               <FaEye style={{ color: "black" }} />
+                             )}
+                           </div>
+                         </div>
+             
+                         {userData.password &&
+                         errors !== null &&
+                         errors.password !== undefined &&
+                         errors?.password._errors !== undefined ? (
+                           <>
+                             <span
+                               className="text-sm text-red-600"
+                               style={{ fontSize: "12px" }}
+                             >
+                               {errors.password._errors[0]}
+                             </span>
+             
+                             <div>
+                               <span
+                                 className="text-sm text-red-600"
+                                 style={{ fontSize: "12px" }}
+                               >
+                                 {errors.password._errors[1] !== undefined &&
+                                 errors.password._errors[1].length > 0
+                                   ? errors.password._errors[1]
+                                   : null}
+                               </span>
+                             </div>
+                           </>
+                         ) : null}
+                       </div>
+             
               <button
                 type="submit"
                 className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
