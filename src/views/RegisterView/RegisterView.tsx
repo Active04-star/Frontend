@@ -13,8 +13,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RegisterErrors } from "@/types/Errortypes";
 import { register } from "@/scripts/register";
 import LoadingCircle from "@/components/general/loading-circle";
+import { useRouter } from "next/navigation";
+import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
 
 const RegisterView: React.FC = () => {
+  const router = useRouter();
 
   const initalState: IUserRegister = {
     name: "",
@@ -89,6 +92,12 @@ const RegisterView: React.FC = () => {
     try {
       await register(userData);
 
+      swalNotifySuccess(
+        "Registro exitoso",
+        "Serás redirigido al login en breve."
+      );
+      
+      router.push("/login");
     } catch (error: any) {
 
       if (error instanceof ErrorHelper) {

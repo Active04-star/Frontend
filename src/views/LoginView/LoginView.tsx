@@ -11,10 +11,12 @@ import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
 import { LoginErrors } from "@/types/Errortypes";
 import { UserLoginSchema } from "@/types/userLogin-schema";
 import { IUser, IUserLogin } from "@/types/zTypes";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginView: React.FC = () => {
-
+  const router = useRouter();
   const initialState = {
     email: "",
     password: "",
@@ -23,7 +25,7 @@ const LoginView: React.FC = () => {
   const [userData, setUserData] = useState<IUserLogin>(initialState);
   const [errors, setErrors] = useState<LoginErrors | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -78,8 +80,10 @@ const LoginView: React.FC = () => {
       if ((user as IUser).user.role === UserRole.MANAGER) {
         //TODO SET ID DE CENTRO DEPORTIVO
       }
+      else if ((user as IUser).user.role === UserRole.USER) {
+        router.push("/user");
+      }
 
-      window.location.href = "/";
     } catch (error) {
 
       if (error instanceof ErrorHelper && error.message === StatusEnum.USER_DELETED) {
@@ -149,20 +153,33 @@ const LoginView: React.FC = () => {
                 </div>
                 <div className="mb-6 relative">
                   <label
-                    className="block text-white text-lg mb-2 text-center font-medium"
+                    className="block text-white mb-2 text-center font-medium text-lg"
                     htmlFor="password"
                   >
                     Contraseña
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={userData.password}
-                    onChange={handleChange}
-                    placeholder="******"
-                    className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                  />
+                  <div className="relative">
+
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={userData.password}
+                      onChange={handleChange}
+                      placeholder="******"
+                      className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                    />
+                    <div
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <FaEyeSlash style={{ color: "black" }} />
+                      ) : (
+                        <FaEye style={{ color: "black" }} />
+                      )}
+                    </div>
+                  </div>
                   {
                     userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
                       ?
@@ -198,11 +215,13 @@ const LoginView: React.FC = () => {
                 </button>
               </form>
             </>
+
+
+
           )
       }
-    </div>
+    </div >
   );
 };
 
 export default LoginView;
-//
