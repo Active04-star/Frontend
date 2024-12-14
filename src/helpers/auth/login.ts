@@ -1,9 +1,9 @@
 import { StatusEnum } from "@/enum/HttpStatus.enum";
-import { UserLogin } from "@/types/zTypes";
-import { ErrorHelper, verifyError } from "./errors/error-helper";
+import { IUserLogin } from "@/types/zTypes";
+import { ErrorHelper, verifyError } from "../errors/error-helper";
 import { API_URL } from "@/config/config";
 
-export async function login(userData: UserLogin) {
+export async function login(userData: IUserLogin) {
     try {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
@@ -12,10 +12,10 @@ export async function login(userData: UserLogin) {
             },
             body: JSON.stringify(userData),
         });
-
+        
         if (!res.ok) {
             const error = await res.json();
-
+            
             if (error.error === StatusEnum.USER_DELETED) {
                 throw new ErrorHelper(StatusEnum.USER_DELETED, "403");
             }

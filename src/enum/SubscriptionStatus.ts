@@ -1,5 +1,7 @@
 export enum SubscriptionStatus {
-  NOTHING = "NOTHING",
-  ACTIVE = "ACTIVE",
-  EXPIRED = "EXPIRED",
+  PENDING = 'pendig',
+  AUTHORIZED = 'authorized',
+  PAUSED = 'paused',
+  CANCELLED = 'cancelled',
+  NOTHING = 'nothing'
 }

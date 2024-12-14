@@ -10,12 +10,12 @@ export class ErrorHelper extends Error {
     }
 }
 
-export function verifyError(message: string): StatusEnum {
+export function verifyError(message: string): StatusEnum | string {
     const is_status = Object.values(StatusEnum).includes(message as StatusEnum);
     
     if (is_status) {
         return message as StatusEnum;
     } else {
-        return StatusEnum.UNKNOWN_ERROR;
+        return message;
     }
 }

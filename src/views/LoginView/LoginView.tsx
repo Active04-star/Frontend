@@ -3,17 +3,18 @@ import LoadingCircle from "@/components/general/loading-circle";
 import { StatusEnum } from "@/enum/HttpStatus.enum";
 import { UserRole } from "@/enum/userRole";
 import { zodValidate } from "@/helpers/validate-zod";
-import { AuthErrorHelper } from "@/scripts/errors/auth-error-helper";
-import { ErrorHelper } from "@/scripts/errors/error-helper";
-import { login } from "@/scripts/login";
-import { swalCustomError } from "@/scripts/swal/swal-custom-error";
-import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
+import { AuthErrorHelper } from "@/helpers/errors/auth-error-helper";
+import { ErrorHelper } from "@/helpers/errors/error-helper";
+import { login } from "@/helpers/auth/login";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { LoginErrors } from "@/types/Errortypes";
 import { UserLoginSchema } from "@/types/userLogin-schema";
-import { User, UserLogin } from "@/types/zTypes";
+import { IUser, IUserLogin } from "@/types/zTypes";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Link from "next/link";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const LoginView: React.FC = () => {
     password: "",
   };
 
-  const [userData, setUserData] = useState<UserLogin>(initialState);
+  const [userData, setUserData] = useState<IUserLogin>(initialState);
   const [errors, setErrors] = useState<LoginErrors | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -69,20 +70,20 @@ const LoginView: React.FC = () => {
     }
 
     try {
-      const response = await login(userData);
+      const response: IUser = await login(userData);
       const { token, user } = response;
-
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
+
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
 
       setUserData(initialState);
 
-      if ((user as User).role === UserRole.MANAGER) {
-        //SET ID DE CENTRO DEPORTIVO
+      if (user.role === UserRole.MANAGER) {
+        //TODO SET ID DE CENTRO DEPORTIVO
       }
-      else if ((user as User).role === UserRole.USER) {
-        router.push("/user");
-    }
+      else if (user.role === UserRole.USER) {
+        router.push("/");
+      }
 
     } catch (error) {
 
@@ -93,125 +94,150 @@ const LoginView: React.FC = () => {
         AuthErrorHelper(error);
 
       }
-    } finally {
-      // setIsSubmitting(false);
-
     }
+
+    setIsSubmitting(false);
   };
 
 
   return (
     <div className=" bg-custom-dark min-h-screen flex flex-col items-center justify-center  text-center">
-      <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif text-white">
-        Active
-      </h1>
       {
-        isSubmitting ? (
-          <div className="w-32 h-32">
-            <LoadingCircle />
-          </div>
-        ) :
+        isSubmitting ?
           (
-            <form onSubmit={handleSubmit} className="w-full max-w-sm">
-              <div className="mb-6">
-                <label
-                  className="block text-white mb-2 text-center font-medium text-lg"
-                  htmlFor="username"
-                >
-                  Usuario
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="email"
-                  value={userData.email}
-                  onChange={handleChange}
-                  placeholder="Active123@mail.com"
-                  className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                />
-                {
-                  userData.email && errors !== null && errors.email !== undefined && errors?.email._errors !== undefined
-                    ?
-                    (
-                      <span
-                        className="text-sm text-red-600"
-                        style={{ fontSize: "12px" }}
-                      >
-                        {errors.email._errors}
-                      </span>
-                    )
-                    :
-                    null
-                }
+            <>
+              <h1 className="text-4xl font-bold text-gray-900 mb-8 font-serif text-white">
+                Cargando...
+              </h1>
+              <div className="w-32 h-32">
+                <LoadingCircle />
               </div>
-              <div className="mb-6 relative">
-                         <label
-                           className="block text-white mb-2 text-center font-medium text-lg"
-                           htmlFor="password"
-                         >
-                           Contraseña
-                         </label>
-                         <div className="relative">
-                           <input
-                             type={showPassword ? "text" : "password"}
-                             id="password"
-                             name="password"
-                             value={userData.password}
-                             onChange={handleChange}
-                             placeholder="******"
-                             className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                           />
-                           <div
-                             className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                             onClick={() => setShowPassword(!showPassword)}
-                           >
-                             {showPassword ? (
-                               <FaEyeSlash style={{ color: "black" }} />
-                             ) : (
-                               <FaEye style={{ color: "black" }} />
-                             )}
-                           </div>
-                         </div>
-             
-                         {userData.password &&
-                         errors !== null &&
-                         errors.password !== undefined &&
-                         errors?.password._errors !== undefined ? (
-                           <>
-                             <span
-                               className="text-sm text-red-600"
-                               style={{ fontSize: "12px" }}
-                             >
-                               {errors.password._errors[0]}
-                             </span>
-             
-                             <div>
-                               <span
-                                 className="text-sm text-red-600"
-                                 style={{ fontSize: "12px" }}
-                               >
-                                 {errors.password._errors[1] !== undefined &&
-                                 errors.password._errors[1].length > 0
-                                   ? errors.password._errors[1]
-                                   : null}
-                               </span>
-                             </div>
-                           </>
-                         ) : null}
-                       </div>
-             
-              <button
-                type="submit"
-                className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
-              >
-                Ingresar
-              </button>
-            </form>
+            </>
+          ) :
+          (
+            <>
+              <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif text-white">
+                Active
+              </h1>
+              <form onSubmit={handleSubmit} className="w-full max-w-sm">
+                <div className="mb-6">
+                  <label
+                    className="block text-white mb-2 text-center font-medium text-lg"
+                    htmlFor="username"
+                  >
+                    Usuario
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="email"
+                    value={userData.email}
+                    onChange={handleChange}
+                    placeholder="Active123@mail.com"
+                    className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                  />
+                  {
+                    userData.email && errors !== null && errors.email !== undefined && errors?.email._errors !== undefined
+                      ?
+                      (
+                        <span
+                          className="text-sm text-red-600"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {errors.email._errors}
+                        </span>
+                      )
+                      :
+                      null
+                  }
+                </div>
+                <div className="mb-6 relative">
+                  <label
+                    className="block text-white mb-2 text-center font-medium text-lg"
+                    htmlFor="password"
+                  >
+                    Contraseña
+                  </label>
+                  <div className="relative">
+
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      value={userData.password}
+                      onChange={handleChange}
+                      placeholder="******"
+                      className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                    />
+                    <div
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {
+                        showPassword ?
+                          (
+                            <FaEyeSlash style={{ color: "black" }} />
+                          ) : (
+                            <FaEye style={{ color: "black" }} />
+                          )
+                      }
+                    </div>
+                  </div>
+                  {
+                    userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
+                      ?
+                      (
+                        <>
+                          <span
+                            className="text-sm text-red-600"
+                            style={{ fontSize: "12px" }}
+                          >
+                            {errors.password._errors[0]}
+                          </span>
+
+                          <div>
+                            <span
+                              className="text-sm text-red-600"
+                              style={{ fontSize: "12px" }}
+                            >
+                              {errors.password._errors[1] !== undefined && errors.password._errors[1].length > 0 ? errors.password._errors[1] : null}
+                            </span>
+                          </div>
+                        </>
+
+                      )
+                      :
+                      null
+                  }
+                </div>
+
+                <div className="w-auto flex justify-around">
+                  <Link href={"/register"}>
+                    <button
+                      type="submit"
+                      className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-zinc-800 bg-zinc-900"
+                    >
+                      Registrarse
+                    </button>
+                  </Link>
+
+                  <button
+                    type="submit"
+                    className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
+                  >
+                    Ingresar
+                  </button>
+                </div>
+
+              </form>
+            </>
+
+
+
           )
       }
-    </div>
+    </div >
   );
 };
 
 export default LoginView;
-//

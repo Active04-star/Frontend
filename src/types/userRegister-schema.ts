@@ -1,4 +1,3 @@
-import { fileSchema } from "@/types/file-schema";
 import { z } from "zod";
 
 export const mail_lenght_error = "El mail debe estar entre 3 - 50 caracteres";
@@ -45,8 +44,6 @@ export const UserRegisterSchema = z.object({
     password: passwordSchema,
 
     confirm_password: z.string(),
-
-    profile_image: fileSchema.nullable(),
 
 }).refine(
     (data) => data.password === data.confirm_password,
