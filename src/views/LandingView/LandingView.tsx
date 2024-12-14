@@ -12,7 +12,7 @@ import {
 import { BsBarChart, BsShieldCheck, BsMegaphone } from "react-icons/bs";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { IUser } from "@/types/zTypes";
-import { useLocalStorage } from "@/helpers/auth-helpers/useLocalStorage";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserSchemaWToken } from "@/types/user-schema";
 

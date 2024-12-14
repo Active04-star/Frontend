@@ -8,8 +8,7 @@ export function AuthErrorHelper(error: any) {
 
     swalNotifyError(new ErrorHelper(StatusEnum.INSUFFICIENT_PERMISSIONS, "")).then((result) => {
       if (result.isConfirmed) {
-        //TODO CAMBIAR ESTO
-        // window.location.href = "/pageUser";
+        window.location.href = "/";
 
       }
     });
@@ -27,7 +26,7 @@ export function AuthErrorHelper(error: any) {
 
     return;
   } else if (error.message !== StatusEnum.UNKNOWN_ERROR) {
-    console.log("Unknown here")
+    console.log(error);
     swalNotifyError(error);
 
     return;

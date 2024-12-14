@@ -1,6 +1,6 @@
 import { API_URL } from "@/config/config";
 import { StatusEnum } from "@/enum/HttpStatus.enum";
-import { ErrorHelper, verifyError } from "@/scripts/errors/error-helper";
+import { ErrorHelper, verifyError } from "@/helpers/errors/error-helper";
 import { IUserRegister } from "@/types/zTypes";
 
 export async function register(userData: IUserRegister) {

@@ -3,17 +3,18 @@ import LoadingCircle from "@/components/general/loading-circle";
 import { StatusEnum } from "@/enum/HttpStatus.enum";
 import { UserRole } from "@/enum/userRole";
 import { zodValidate } from "@/helpers/validate-zod";
-import { AuthErrorHelper } from "@/scripts/errors/auth-error-helper";
-import { ErrorHelper } from "@/scripts/errors/error-helper";
-import { login } from "@/scripts/login";
-import { swalCustomError } from "@/scripts/swal/swal-custom-error";
-import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
+import { AuthErrorHelper } from "@/helpers/errors/auth-error-helper";
+import { ErrorHelper } from "@/helpers/errors/error-helper";
+import { login } from "@/helpers/auth/login";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { LoginErrors } from "@/types/Errortypes";
 import { UserLoginSchema } from "@/types/userLogin-schema";
 import { IUser, IUserLogin } from "@/types/zTypes";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Link from "next/link";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -69,19 +70,19 @@ const LoginView: React.FC = () => {
     }
 
     try {
-      const response = await login(userData);
+      const response: IUser = await login(userData);
       const { token, user } = response;
-
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
+
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
 
       setUserData(initialState);
 
-      if ((user as IUser).user.role === UserRole.MANAGER) {
+      if (user.role === UserRole.MANAGER) {
         //TODO SET ID DE CENTRO DEPORTIVO
       }
-      else if ((user as IUser).user.role === UserRole.USER) {
-        router.push("/user");
+      else if (user.role === UserRole.USER) {
+        router.push("/");
       }
 
     } catch (error) {
@@ -93,10 +94,9 @@ const LoginView: React.FC = () => {
         AuthErrorHelper(error);
 
       }
-    } finally {
-      setIsSubmitting(false);
-
     }
+
+    setIsSubmitting(false);
   };
 
 
@@ -161,7 +161,7 @@ const LoginView: React.FC = () => {
                   <div className="relative">
 
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       id="password"
                       name="password"
                       value={userData.password}
@@ -173,11 +173,14 @@ const LoginView: React.FC = () => {
                       className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? (
-                        <FaEyeSlash style={{ color: "black" }} />
-                      ) : (
-                        <FaEye style={{ color: "black" }} />
-                      )}
+                      {
+                        showPassword ?
+                          (
+                            <FaEyeSlash style={{ color: "black" }} />
+                          ) : (
+                            <FaEye style={{ color: "black" }} />
+                          )
+                      }
                     </div>
                   </div>
                   {
@@ -207,12 +210,25 @@ const LoginView: React.FC = () => {
                       null
                   }
                 </div>
-                <button
-                  type="submit"
-                  className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
-                >
-                  Ingresar
-                </button>
+
+                <div className="w-auto flex justify-around">
+                  <Link href={"/register"}>
+                    <button
+                      type="submit"
+                      className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-zinc-800 bg-zinc-900"
+                    >
+                      Registrarse
+                    </button>
+                  </Link>
+
+                  <button
+                    type="submit"
+                    className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
+                  >
+                    Ingresar
+                  </button>
+                </div>
+
               </form>
             </>
 

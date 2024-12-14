@@ -2,33 +2,40 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useLocalStorage } from "@/helpers/auth-helpers/useLocalStorage";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
-import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { getSubPath } from "@/utils/getSubPath";
 
 const Navbar: React.FC = () => {
-  const [user,] = useLocalStorage("userSession", "");
-  const [userData, setUserData] = useState<IUser | null>(null);
-  const { user: authUser } = useUser();
+  // const [user,] = useLocalStorage("userSession", "");
+  // const [userData, setUserData] = useState<IUser | null>(null);
+  // const { user: authUser } = useUser();
+  const [actual, setActual] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage) {
-      setUserData(user);
-    }
+    setActual(getSubPath(window.location.href));
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("userSession");
-    localStorage.removeItem("restaurant");
 
-    if (authUser) {
-        window.location.href = "/api/auth/logout";
-    } else {
-        swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
-        window.location.href = "/";
-    }
-  };
+  // useEffect(() => {
+  //   if (typeof window !== "undefined" && window.localStorage) {
+  //     setUserData(user);
+  //   }
+  // }, []);
+
+  // const handleLogout = () => {
+  //   localStorage.removeItem("userSession");
+  //   localStorage.removeItem("restaurant");
+
+  //   if (authUser) {
+  //     window.location.href = "/api/auth/logout";
+  //   } else {
+  //     swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
+  //     window.location.href = "/";
+  //   }
+  // };
 
   return (
     <nav className=" bg-black fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
@@ -42,22 +49,27 @@ const Navbar: React.FC = () => {
             className="h-8"
           />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            
+
           </span>
         </Link>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            
-          <button
 
-            type="button"
-            className="text-white bg-yellow-600 focus:outline-none focus:black font-medium rounded-lg text-sm px-4 py-2 text-center "
-          >
-            <Link 
-            href= "/login">
-           Iniciar Sesion <s></s>
-            
-            </Link>
-          </button>
+          {
+            actual === "/login" || actual === "/register" ?
+              null
+              :
+              <Link href="/login">
+                <button
+
+                  type="button"
+                  className="text-white bg-yellow-600 focus:outline-none focus:black font-medium rounded-lg text-sm px-4 py-2 text-center "
+                >
+                  Iniciar Sesion <s></s>
+
+                </button>
+              </Link>
+          }
+
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
@@ -88,7 +100,7 @@ const Navbar: React.FC = () => {
           id="navbar-sticky"
         >
           <ul className=" bg-black flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 ">
-          
+
             <li>
               <Link
                 href="#about"
@@ -116,7 +128,7 @@ const Navbar: React.FC = () => {
           </ul>
         </div>
       </div>
-    </nav>
+    </nav >
   );
 };
 

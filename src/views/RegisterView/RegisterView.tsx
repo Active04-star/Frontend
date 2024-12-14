@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { ErrorHelper } from "@/scripts/errors/error-helper";
-import { swalNotifyError } from "@/scripts/swal/swal-notify-error";
-import { swalNotifyUnknownError } from "@/scripts/swal/swal-notify-unknown-error";
+import { ErrorHelper } from "@/helpers/errors/error-helper";
+import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
+import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
 import { zodValidate } from "@/helpers/validate-zod";
 import { IUserRegister } from "@/types/zTypes";
 import { UserRegisterSchema } from "@/types/userRegister-schema";
 import React, { useEffect, useState } from "react";
-import { swalCustomError } from "@/scripts/swal/swal-custom-error";
-import { useLocalStorage } from "@/helpers/auth-helpers/useLocalStorage";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RegisterErrors } from "@/types/Errortypes";
-import { register } from "@/scripts/register";
+import { register } from "@/helpers/auth/register";
 import LoadingCircle from "@/components/general/loading-circle";
 import { useRouter } from "next/navigation";
-import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
+import Link from "next/link";
 
 const RegisterView: React.FC = () => {
   const router = useRouter();
@@ -96,7 +97,7 @@ const RegisterView: React.FC = () => {
         "Registro exitoso",
         "Serás redirigido al login en breve."
       );
-      
+
       router.push("/login");
     } catch (error: any) {
 
@@ -108,10 +109,9 @@ const RegisterView: React.FC = () => {
 
       }
 
-    } finally {
-      setIsSubmitting(false);
-
     }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -291,17 +291,29 @@ const RegisterView: React.FC = () => {
                     ) : null}
                   </div>
 
-                  <button
-                    type="submit"
-                    className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
-                  >
-                    Registrarse
-                  </button>
+                  <div className="w-auto flex justify-around">
+                    <Link href={"/login"}>
+                      <button
+                        type="submit"
+                        className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-zinc-800 bg-zinc-900"
+                      >
+                        Iniciar Sesion
+                      </button>
+                    </Link>
+
+                    <button
+                      type="submit"
+                      className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
+                    >
+                      Registrarse
+                    </button>
+                  </div>
+
                 </form>
               </>
             )
         }
-      </div>
+      </div >
       {/* : */}
       {/* null} */}
     </>
