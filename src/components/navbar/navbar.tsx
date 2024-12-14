@@ -1,8 +1,35 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useLocalStorage } from "@/helpers/auth-helpers/useLocalStorage";
+import { IUser } from "@/types/zTypes";
+import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const Navbar: React.FC = () => {
+  const [user,] = useLocalStorage("userSession", "");
+  const [userData, setUserData] = useState<IUser | null>(null);
+  const { user: authUser } = useUser();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      setUserData(user);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userSession");
+    localStorage.removeItem("restaurant");
+
+    if (authUser) {
+        window.location.href = "/api/auth/logout";
+    } else {
+        swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
+        window.location.href = "/";
+    }
+  };
+
   return (
     <nav className=" bg-black fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">

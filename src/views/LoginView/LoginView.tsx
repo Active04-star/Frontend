@@ -10,7 +10,7 @@ import { swalCustomError } from "@/scripts/swal/swal-custom-error";
 import { swalNotifySuccess } from "@/scripts/swal/swal-notify-success";
 import { LoginErrors } from "@/types/Errortypes";
 import { UserLoginSchema } from "@/types/userLogin-schema";
-import { User, UserLogin } from "@/types/zTypes";
+import { IUser, IUserLogin } from "@/types/zTypes";
 import React, { useEffect, useState } from "react";
 
 const LoginView: React.FC = () => {
@@ -20,7 +20,7 @@ const LoginView: React.FC = () => {
     password: "",
   };
 
-  const [userData, setUserData] = useState<UserLogin>(initialState);
+  const [userData, setUserData] = useState<IUserLogin>(initialState);
   const [errors, setErrors] = useState<LoginErrors | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -75,8 +75,8 @@ const LoginView: React.FC = () => {
 
       setUserData(initialState);
 
-      if ((user as User).role === UserRole.MANAGER) {
-        //SET ID DE CENTRO DEPORTIVO
+      if ((user as IUser).user.role === UserRole.MANAGER) {
+        //TODO SET ID DE CENTRO DEPORTIVO
       }
 
       window.location.href = "/";
@@ -90,7 +90,7 @@ const LoginView: React.FC = () => {
 
       }
     } finally {
-      // setIsSubmitting(false);
+      setIsSubmitting(false);
 
     }
   };
@@ -98,98 +98,106 @@ const LoginView: React.FC = () => {
 
   return (
     <div className=" bg-custom-dark min-h-screen flex flex-col items-center justify-center  text-center">
-      <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif text-white">
-        Active
-      </h1>
       {
-        isSubmitting ? (
-          <div className="w-32 h-32">
-            <LoadingCircle />
-          </div>
-        ) :
+        isSubmitting ?
           (
-            <form onSubmit={handleSubmit} className="w-full max-w-sm">
-              <div className="mb-6">
-                <label
-                  className="block text-white mb-2 text-center font-medium text-lg"
-                  htmlFor="username"
-                >
-                  Usuario
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="email"
-                  value={userData.email}
-                  onChange={handleChange}
-                  placeholder="Active123@mail.com"
-                  className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                />
-                {
-                  userData.email && errors !== null && errors.email !== undefined && errors?.email._errors !== undefined
-                    ?
-                    (
-                      <span
-                        className="text-sm text-red-600"
-                        style={{ fontSize: "12px" }}
-                      >
-                        {errors.email._errors}
-                      </span>
-                    )
-                    :
-                    null
-                }
+            <>
+              <h1 className="text-4xl font-bold text-gray-900 mb-8 font-serif text-white">
+                Cargando...
+              </h1>
+              <div className="w-32 h-32">
+                <LoadingCircle />
               </div>
-              <div className="mb-6 relative">
-                <label
-                  className="block text-white text-lg mb-2 text-center font-medium"
-                  htmlFor="password"
-                >
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={userData.password}
-                  onChange={handleChange}
-                  placeholder="******"
-                  className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                />
-                {
-                  userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
-                    ?
-                    (
-                      <>
+            </>
+          ) :
+          (
+            <>
+              <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif text-white">
+                Active
+              </h1>
+              <form onSubmit={handleSubmit} className="w-full max-w-sm">
+                <div className="mb-6">
+                  <label
+                    className="block text-white mb-2 text-center font-medium text-lg"
+                    htmlFor="username"
+                  >
+                    Usuario
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="email"
+                    value={userData.email}
+                    onChange={handleChange}
+                    placeholder="Active123@mail.com"
+                    className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                  />
+                  {
+                    userData.email && errors !== null && errors.email !== undefined && errors?.email._errors !== undefined
+                      ?
+                      (
                         <span
                           className="text-sm text-red-600"
                           style={{ fontSize: "12px" }}
                         >
-                          {errors.password._errors[0]}
+                          {errors.email._errors}
                         </span>
-
-                        <div>
+                      )
+                      :
+                      null
+                  }
+                </div>
+                <div className="mb-6 relative">
+                  <label
+                    className="block text-white text-lg mb-2 text-center font-medium"
+                    htmlFor="password"
+                  >
+                    Contraseña
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={userData.password}
+                    onChange={handleChange}
+                    placeholder="******"
+                    className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                  />
+                  {
+                    userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
+                      ?
+                      (
+                        <>
                           <span
                             className="text-sm text-red-600"
                             style={{ fontSize: "12px" }}
                           >
-                            {errors.password._errors[1] !== undefined && errors.password._errors[1].length > 0 ? errors.password._errors[1] : null}
+                            {errors.password._errors[0]}
                           </span>
-                        </div>
-                      </>
 
-                    )
-                    :
-                    null
-                }
-              </div>
-              <button
-                type="submit"
-                className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
-              >
-                Ingresar
-              </button>
-            </form>
+                          <div>
+                            <span
+                              className="text-sm text-red-600"
+                              style={{ fontSize: "12px" }}
+                            >
+                              {errors.password._errors[1] !== undefined && errors.password._errors[1].length > 0 ? errors.password._errors[1] : null}
+                            </span>
+                          </div>
+                        </>
+
+                      )
+                      :
+                      null
+                  }
+                </div>
+                <button
+                  type="submit"
+                  className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
+                >
+                  Ingresar
+                </button>
+              </form>
+            </>
           )
       }
     </div>

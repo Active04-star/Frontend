@@ -1,9 +1,9 @@
 import { StatusEnum } from "@/enum/HttpStatus.enum";
-import { UserLogin } from "@/types/zTypes";
+import { IUserLogin } from "@/types/zTypes";
 import { ErrorHelper, verifyError } from "./errors/error-helper";
 import { API_URL } from "@/config/config";
 
-export async function login(userData: UserLogin) {
+export async function login(userData: IUserLogin) {
     try {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
