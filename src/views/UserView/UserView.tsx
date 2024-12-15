@@ -1,3 +1,5 @@
+'use client'
+
 import Card from '@/components/card/card';
 import { getComplexesDB } from '@/helpers/complexes.helpers';
 import React, { useEffect, useState } from 'react';
