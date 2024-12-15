@@ -70,8 +70,11 @@ const LoginView: React.FC = () => {
     }
 
     try {
+      localStorage.clear();
+
       const response: IUser = await login(userData);
       const { token, user } = response;
+      
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
 
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
