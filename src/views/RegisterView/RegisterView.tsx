@@ -8,7 +8,6 @@ import { IUserRegister } from "@/types/zTypes";
 import { UserRegisterSchema } from "@/types/userRegister-schema";
 import React, { useEffect, useState } from "react";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
-import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RegisterErrors } from "@/types/Errortypes";
 import { register } from "@/helpers/auth/register";
@@ -24,8 +23,7 @@ const RegisterView: React.FC = () => {
     name: "",
     email: "",
     password: "",
-    confirm_password: "",
-    profile_image: null,
+    confirm_password: ""
   };
 
   const [userData, setUserData] = useState<IUserRegister>(initalState);
@@ -35,8 +33,6 @@ const RegisterView: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isAllowed, setIsAllowed] = useState(true);
-  const [iuser] = useLocalStorage("userSession", "");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -47,13 +43,6 @@ const RegisterView: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    if (iuser.token === null || iuser.token === undefined) {
-      setIsAllowed(true);
-    } else {
-      setIsAllowed(false);
-    }
-  }, [iuser]);
 
   useEffect(() => {
     const data = zodValidate(userData, UserRegisterSchema);
@@ -64,6 +53,7 @@ const RegisterView: React.FC = () => {
       setErrors(null);
     }
   }, [userData]);
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -91,6 +81,8 @@ const RegisterView: React.FC = () => {
     }
 
     try {
+      localStorage.clear();
+
       await register(userData);
 
       swalNotifySuccess(
@@ -314,8 +306,6 @@ const RegisterView: React.FC = () => {
             )
         }
       </div >
-      {/* : */}
-      {/* null} */}
     </>
   );
 };
