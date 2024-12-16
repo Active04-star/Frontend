@@ -1,5 +1,5 @@
+import { IUser } from "@/types/zTypes";
 import { ISportCenter } from "./SportCenter_Interface";
-import { IUser } from "./user_Interface";
 
 export interface IReview {
   id: string;

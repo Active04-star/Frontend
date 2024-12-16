@@ -1,7 +1,7 @@
 import { ReservationStatus } from "@/enum/ReservationStatus";
 import { IField } from "./field_Interface";
 import { IPayment } from "./payment_Interface";
-import { IUser } from "./user_Interface";
+import { IUser } from "@/types/zTypes";
 
 export interface IReservation {
   id: string;
