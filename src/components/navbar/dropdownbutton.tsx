@@ -201,7 +201,7 @@ const DropDownButton: React.FC = () => {
                                 <li>
                                     <Link
                                         //TODO AQUI VA EL LINK A CONFIGURACION DE PERFIL DE USUARIO
-                                        href={"/AquiVaLaConfiguracionDePerfil"}
+                                        href={"/settings"}
                                         aria-disabled={actualPage === "/AquiVaLaConfiguracionDePerfil"}
                                         className={actualPage === "/AquiVaLaConfiguracionDePerfil" ? offStyle : onStyle}
                                     >

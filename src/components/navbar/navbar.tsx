@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
             </li>
             <li>
               <Link
-                href=""
+                href="user"
                 className="block py-2 px-3 text-gray-900 rounded md:p-0 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
               >
                 Reservar
