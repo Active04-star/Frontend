@@ -89,7 +89,7 @@ const NavbarUser = () => {
           </a>
         </li>
            
-            <li>
+            {/* <li>
             <a
   href="#"
   className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6"
@@ -112,7 +112,7 @@ const NavbarUser = () => {
   </span>
   <span className="ml-2 text-sm tracking-wide truncate">Perfil</span>
 </a>
-            </li>
+            </li> */}
             <li>
   <a
     href="#"
@@ -146,7 +146,7 @@ const NavbarUser = () => {
           </a>
         </li>
         <li>
-  <a href="#" className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6">
+  <a href="/registerSportcenter" className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6">
     <span className="inline-flex justify-center items-center ml-4">
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2c3.866 0 7 3.134 7 7 0 5.25-7 13-7 13S5 14.25 5 9c0-3.866 3.134-7 7-7z"></path>
