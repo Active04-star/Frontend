@@ -1,13 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
+import Swal from 'sweetalert2';
+import { useRouter } from "next/navigation";
 
 const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMenuClick }) => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userSession");
+
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    Toast.fire({
+      icon: "success",
+      title: "Logout successfuly",
+    });
+    router.push("/");
+  };
+
   return (
-    <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
+    <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-black text-gray-800">
       <div className="sticky flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
         <div className="flex items-center justify-center h-14 border-b"></div>
         <div className="overflow-y-auto overflow-x-hidden flex-grow">
           <ul className="flex flex-col py-4 space-y-1">
             {/* Menu Item "Panel" */}
+            <li>
+              <button
+              >
+                <span className="inline-flex justify-center items-center ml-4">
+                </span>
+                <span className="ml-2 text-sm tracking-wide truncate">Menu</span>
+              </button>
+            </li>
             <li>
               <button
                 onClick={() => onMenuClick("panel")}
@@ -36,6 +69,18 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMen
                 <span className="ml-2 text-sm tracking-wide truncate">Notificaciones</span>
               </button>
             </li>
+
+
+
+            <li>
+              <button
+              >
+                <span className="inline-flex justify-center items-center ml-4">
+                </span>
+                <span className="ml-2 text-sm tracking-wide truncate">Mis Canchas</span>
+              </button>
+            </li>
+
 
             {/* Menu Item "Canchas" */}
             <li>
@@ -67,6 +112,18 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMen
               </button>
             </li>
 
+
+
+            <li>
+              <button
+              >
+                <span className="inline-flex justify-center items-center ml-4">
+                </span>
+                <span className="ml-2 text-sm tracking-wide truncate">Cuenta</span>
+              </button>
+            </li>
+
+
             {/* Menu Item "Perfil" */}
             <li>
               <button
@@ -85,7 +142,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMen
             {/* Menu Item "Configuración" */}
             <li>
               <button
-                onClick={() => onMenuClick("configuracion")}
+                onClick={() => onMenuClick("settings")}
                 className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6"
               >
                 <span className="inline-flex justify-center items-center ml-4">
@@ -94,6 +151,32 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMen
                   </svg>
                 </span>
                 <span className="ml-2 text-sm tracking-wide truncate">Configuración</span>
+              </button>
+            </li>
+
+            {/* Menu Item "Cerrar sesión" */}
+            <li>
+              <button
+                onClick={handleLogout}
+                className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6"
+              >
+                <span className="inline-flex justify-center items-center ml-4">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.065-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 00-2.573-1.066c-.426-1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 001.065-2.572z"
+                    ></path>
+                  </svg>
+                </span>
+                <span className="ml-2 text-sm tracking-wide truncate">Cerrar sesión</span>
               </button>
             </li>
           </ul>

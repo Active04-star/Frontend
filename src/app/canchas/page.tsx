@@ -6,3 +6,4 @@ const CanchasPage: React.FC = () => {
 };
 
 export default CanchasPage;
+

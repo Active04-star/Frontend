@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useState } from "react";
 
 export default function SettingsView() {
@@ -6,8 +6,8 @@ export default function SettingsView() {
   const [name, setName] = useState("Usuario");
   const [password, setPassword] = useState("");
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; // Usamos "?" para verificar si 'files' existe
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
@@ -15,7 +15,11 @@ export default function SettingsView() {
   };
 
   const handleSave = () => {
-    alert("Cambios guardados:\n" + `Nombre: ${name}\nContraseña: ${password}`);
+    if (password === "") {
+      alert("La contraseña no puede estar vacía.");
+    } else {
+      alert("Cambios guardados:\n" + `Nombre: ${name}\nContraseña: ${password}`);
+    }
   };
 
   return (
@@ -27,10 +31,10 @@ export default function SettingsView() {
         <div className="flex flex-col items-center mb-6">
           <img
             src={profileImage}
-            alt="Foto de perfil"
-            className="w-24 h-24 rounded-full object-cover mb-4 bg-white    "
+            alt="Foto de perfil del usuario"
+            className="w-32 h-32 rounded-full object-cover mb-4 bg-white border-2 border-gray-300"
           />
-          <label className="cursor-pointer   bg-yellow-600 text-white py-2 px-4 rounded text-sm">
+          <label className="cursor-pointer bg-yellow-600 text-white py-2 px-4 rounded text-sm">
             Cambiar Foto
             <input
               type="file"
@@ -41,7 +45,7 @@ export default function SettingsView() {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-white mb-2">Cambiar nombre de usario</label>
+          <label className="block text-white mb-2">Cambiar nombre de usuario</label>
           <input
             type="text"
             value={name}
@@ -60,7 +64,7 @@ export default function SettingsView() {
         </div>
         <button
           onClick={handleSave}
-          className="w-full  bg-yellow-600 text-white py-2 px-4 rounded"
+          className="w-full bg-yellow-600 text-white py-2 px-4 rounded"
         >
           Guardar Cambios
         </button>
