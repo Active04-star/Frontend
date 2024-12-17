@@ -88,33 +88,6 @@ const ProfileView: React.FC = () => {
           {isEditing ? "Guardar cambios" : "Editar perfil"}
         </button>
       </div>
-
-      {/* Reservas pasadas */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Mis Reservas</h2>
-        {user.reservas.length === 0 ? (
-          <p className="text-gray-600">No tienes reservas realizadas.</p>
-        ) : (
-          <table className="min-w-full table-auto border-collapse">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Cancha</th>
-                <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Hora</th>
-                <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              {user.reservas.map((reserva) => (
-                <tr key={reserva.id} className="hover:bg-gray-100">
-                  <td className="px-6 py-4 text-gray-700 border-b">{reserva.cancha}</td>
-                  <td className="px-6 py-4 text-gray-700 border-b">{reserva.hora}</td>
-                  <td className="px-6 py-4 text-gray-700 border-b">{reserva.fecha}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
     </div>
   );
 };

@@ -1,6 +1,4 @@
 import Card from '@/components/card/card'; // Asegúrate de que Card pueda recibir y mostrar los datos de SportCenter
-import { getSportCentersDB } from '@/helpers/sportCenters_helpers'; // Debes crear esta función para obtener los datos de la DB
-import React, { useEffect, useState } from 'react';
 import { ISportCenter } from '@/interfaces/SportCenter_Interface'; // Usando la nueva interfaz ISportCenter
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
