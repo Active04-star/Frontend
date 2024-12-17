@@ -1,5 +1,3 @@
-'use client'
-
 import Card from '@/components/card/card'; // Asegúrate de que Card pueda recibir y mostrar los datos de SportCenter
 import { getSportCentersDB } from '@/helpers/sportCenters_helpers'; // Debes crear esta función para obtener los datos de la DB
 import React, { useEffect, useState } from 'react';
