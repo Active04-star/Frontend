@@ -1,4 +1,5 @@
 
+
 'use client';
 import SportCenterCard from '@/components/SportCenterCard/SportCenterCard'; // Usa el nombre correcto
 import React from 'react';

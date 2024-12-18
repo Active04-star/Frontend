@@ -1,7 +1,5 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
 import Sidebar from "@/components/adminSidebar/adminSidebar"
+import React from "react";
 
 const AdminView :  React.FC = () => {
   return (
