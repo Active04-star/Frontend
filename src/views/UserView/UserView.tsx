@@ -1,83 +1,87 @@
-'use client'
 
-import Card from '@/components/card/card'; // Asegúrate de que Card pueda recibir y mostrar los datos de SportCenter
-import { getSportCentersDB } from '@/helpers/sportCenters_helpers'; // Debes crear esta función para obtener los datos de la DB
-import React, { useEffect, useState } from 'react';
-import { ISportCenter } from '@/interfaces/SportCenter_Interface'; // Usando la nueva interfaz ISportCenter
+'use client';
+import SportCenterCard from '@/components/SportCenterCard/SportCenterCard'; // Usa el nombre correcto
+import React from 'react';
+import { ISportCenter } from '@/interfaces/SportCenter_Interface';
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
 import { SubscriptionStatus } from '@/enum/SubscriptionStatus';
 
-
 const UserView = () => {
-  // Datos harcodeados según la estructura de la interfaz ISportCenter
   const sportCenters: ISportCenter[] = [
-    
-      {
+    {
+      id: '1',
+      name: 'SportCenter 1',
+      address: 'Calle Ficticia 123',
+      averageRating: 4.5,
+      status: SportCenterStatus.ACTIVE,
+      reviews: [],
+      photos: [
+        {
+          id: '1',
+          imageUrl:
+            'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp',
+        },
+      ],
+      payments: [],
+      paymentsHistory: [],
+      schedules: [],
+      fields: [],
+      managers_list: [],
+      main_manager: {
         id: '1',
-        name: 'SportCenter 1',
-        address: 'Calle Ficticia 123',
-        averageRating: 4.5,
-        status: SportCenterStatus.ACTIVE,
-        reviews: [],
-        photos: [
-          { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
-        ],
-        payments: [],
-        paymentsHistory: [],
-        schedules: [],
-        fields: [],
-        managers_list: [],
-        main_manager: {
-          id: '1',
-          name: 'Juan Pérez',
-          email: 'juan@ejemplo.com',
-          profile_image: 'https://via.placeholder.com/50',
-          subscription_status : SubscriptionStatus.AUTHORIZED ,
-          role: UserRole.USER ,
-          was_banned:  false
-        },
-        sport_categories: []
+        name: 'Juan Pérez',
+        email: 'juan@ejemplo.com',
+        profile_image: 'https://via.placeholder.com/50',
+        subscription_status: SubscriptionStatus.AUTHORIZED,
+        role: UserRole.USER,
+        was_banned: false,
       },
-      {
+      sport_categories: [],
+    },
+    {
+      id: '2',
+      name: 'SportCenter 2',
+      address: 'Avenida Imaginaria 456',
+      averageRating: 4.0,
+      status: SportCenterStatus.ACTIVE,
+      reviews: [],
+      photos: [
+        {
+          id: '1',
+          imageUrl:
+            'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp',
+        },
+      ],
+      payments: [],
+      paymentsHistory: [],
+      schedules: [],
+      fields: [],
+      managers_list: [],
+      main_manager: {
         id: '2',
-        name: 'SportCenter 1',
-        address: 'Calle Ficticia 123',
-        averageRating: 4.5,
-        status: SportCenterStatus.ACTIVE,
-        reviews: [],
-        photos: [
-          { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
-        ],
-        payments: [],
-        paymentsHistory: [],
-        schedules: [],
-        fields: [],
-        managers_list: [],
-        main_manager: {
-          id: '1',
-          name: 'Juan Pérez',
-          email: 'juan@ejemplo.com',
-          profile_image: 'https://via.placeholder.com/50',
-          subscription_status : SubscriptionStatus.AUTHORIZED ,
-          role: UserRole.USER ,
-          was_banned:  false
-        },
-        sport_categories: []
+        name: 'María López',
+        email: 'maria@ejemplo.com',
+        profile_image: 'https://via.placeholder.com/50',
+        subscription_status: SubscriptionStatus.AUTHORIZED,
+        role: UserRole.USER,
+        was_banned: false,
       },
-    
+      sport_categories: [],
+    },
   ];
 
-
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {sportCenters.map((center) => (
-        <Card key={center.id} {...center} />
-      ))}
-    </div>
-  );
+    <div className="mt-8 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+  {sportCenters.map((center) => (
+    <SportCenterCard key={center.id} {...center} />
+  ))}
+</div>
+  )
 };
+
+
+
 
 export default UserView;
 
