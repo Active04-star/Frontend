@@ -2,13 +2,27 @@
 
 'use client';
 import SportCenterCard from '@/components/SportCenterCard/SportCenterCard'; // Usa el nombre correcto
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ISportCenter } from '@/interfaces/SportCenter_Interface';
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
 import { SubscriptionStatus } from '@/enum/SubscriptionStatus';
+import { useRouter } from 'next/navigation';
+
+
+const isUserLoggedIn = () => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user?.role !== undefined; 
+};
 
 const UserView = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoggedIn()) {
+      router.push('/login'); 
+    }
+  }, [router]);
   const sportCenters: ISportCenter[] = [
     {
       id: '1',
