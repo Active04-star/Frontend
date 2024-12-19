@@ -17,17 +17,16 @@ import { zodValidate } from "@/helpers/validate-zod";
 import { UserSchemaWToken } from "@/types/user-schema";
 
 const LandingView: React.FC = () => {
-  const [user,] = useLocalStorage("userSession", null);
+  const [user] = useLocalStorage("userSession", null);
   const [userData, setUserData] = useState<IUser | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const validate = zodValidate(user, UserSchemaWToken);
 
-      if(validate.success) {
+      if (validate.success) {
         setUserData(user);
       }
-
     }
   }, []);
 
@@ -39,22 +38,20 @@ const LandingView: React.FC = () => {
           <div className="w-1/2 flex flex-col justify-center px-10 text-white">
             <h1 className="text-5xl font-bold text-primary mb-4">Active</h1>
             <p className="text-xl mb-6">
-              LA MEJOR FORMA DE <span className="text-primary">RESERVAR</span>{" "}
+              LA MEJOR FORMA DE <span className="text-primary">REGISTRA</span>{" "}
               TU CANCHA
             </p>
             <div className="space-x-4">
-              {
-                userData !== null
-                  ?
-                  null
-                  :
-                  <button className="bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600">
-                    <Link href="/register">REGISTRATE</Link>
-                  </button>
-              }
-              <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
-                RESERVAR
-              </button>
+              {userData !== null ? null : (
+                <button className="bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600">
+                  <Link href="/register">REGISTRATE</Link>
+                </button>
+              )}
+              <Link href="">
+                <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                  INSCRIBE TU CENTRO DEPORTIVO
+                </button>
+              </Link>
             </div>
           </div>
 

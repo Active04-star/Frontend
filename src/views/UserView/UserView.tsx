@@ -1,70 +1,81 @@
-import Card from '@/components/card/card'; // Asegúrate de que Card pueda recibir y mostrar los datos de SportCenter
-import { ISportCenter } from '@/interfaces/SportCenter_Interface'; // Usando la nueva interfaz ISportCenter
+'use client'
+import { useEffect } from 'react';
+import Card from '@/components/card/card'; 
+import { ISportCenter } from '@/interfaces/SportCenter_Interface'; 
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
 import { SubscriptionStatus } from '@/enum/SubscriptionStatus';
+import { useRouter } from 'next/navigation';
 
+const isUserLoggedIn = () => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user?.role !== undefined; 
+};
 
 const UserView = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoggedIn()) {
+      router.push('/login'); 
+    }
+  }, [router]);
+
   // Datos harcodeados según la estructura de la interfaz ISportCenter
   const sportCenters: ISportCenter[] = [
-    
-      {
+    {
+      id: '1',
+      name: 'SportCenter 1',
+      address: 'Calle Ficticia 123',
+      averageRating: 4.5,
+      status: SportCenterStatus.ACTIVE,
+      reviews: [],
+      photos: [
+        { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
+      ],
+      payments: [],
+      paymentsHistory: [],
+      schedules: [],
+      fields: [],
+      managers_list: [],
+      main_manager: {
         id: '1',
-        name: 'SportCenter 1',
-        address: 'Calle Ficticia 123',
-        averageRating: 4.5,
-        status: SportCenterStatus.ACTIVE,
-        reviews: [],
-        photos: [
-          { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
-        ],
-        payments: [],
-        paymentsHistory: [],
-        schedules: [],
-        fields: [],
-        managers_list: [],
-        main_manager: {
-          id: '1',
-          name: 'Juan Pérez',
-          email: 'juan@ejemplo.com',
-          profile_image: 'https://via.placeholder.com/50',
-          subscription_status : SubscriptionStatus.AUTHORIZED ,
-          role: UserRole.USER ,
-          was_banned:  false
-        },
-        sport_categories: []
+        name: 'Juan Pérez',
+        email: 'juan@ejemplo.com',
+        profile_image: 'https://via.placeholder.com/50',
+        subscription_status: SubscriptionStatus.AUTHORIZED,
+        role: UserRole.USER,
+        was_banned: false
       },
-      {
+      sport_categories: []
+    },
+    {
+      id: '2',
+      name: 'SportCenter 2',
+      address: 'Calle Ficticia 456',
+      averageRating: 4.7,
+      status: SportCenterStatus.ACTIVE,
+      reviews: [],
+      photos: [
+        { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
+      ],
+      payments: [],
+      paymentsHistory: [],
+      schedules: [],
+      fields: [],
+      managers_list: [],
+      main_manager: {
         id: '2',
-        name: 'SportCenter 1',
-        address: 'Calle Ficticia 123',
-        averageRating: 4.5,
-        status: SportCenterStatus.ACTIVE,
-        reviews: [],
-        photos: [
-          { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
-        ],
-        payments: [],
-        paymentsHistory: [],
-        schedules: [],
-        fields: [],
-        managers_list: [],
-        main_manager: {
-          id: '1',
-          name: 'Juan Pérez',
-          email: 'juan@ejemplo.com',
-          profile_image: 'https://via.placeholder.com/50',
-          subscription_status : SubscriptionStatus.AUTHORIZED ,
-          role: UserRole.USER ,
-          was_banned:  false
-        },
-        sport_categories: []
+        name: 'Ana Gómez',
+        email: 'ana@ejemplo.com',
+        profile_image: 'https://via.placeholder.com/50',
+        subscription_status: SubscriptionStatus.AUTHORIZED,
+        role: UserRole.USER,
+        was_banned: false
       },
-    
+      sport_categories: []
+    }
   ];
-
-
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
