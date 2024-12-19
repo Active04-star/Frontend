@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -74,7 +75,7 @@ const LoginView: React.FC = () => {
 
       const response: IUser = await login(userData);
       const { token, user } = response;
-      
+
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
 
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
@@ -84,9 +85,8 @@ const LoginView: React.FC = () => {
       if (user.role === UserRole.MANAGER) {
         //TODO SET ID DE CENTRO DEPORTIVO
       }
-      else if (user.role === UserRole.USER) {
-        router.push("/");
-      }
+
+      router.push("/");
 
     } catch (error) {
 
@@ -97,9 +97,10 @@ const LoginView: React.FC = () => {
         AuthErrorHelper(error);
 
       }
+      
+      setIsSubmitting(false);
     }
 
-    setIsSubmitting(false);
   };
 
 
@@ -215,28 +216,52 @@ const LoginView: React.FC = () => {
                 </div>
 
                 <div className="w-auto flex justify-around">
-                  <Link href={"/register"}>
-                    <button
-                      type="submit"
-                      className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-zinc-800 bg-zinc-900"
-                    >
-                      Registrarse
-                    </button>
-                  </Link>
 
                   <button
                     type="submit"
-                    className="mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
+                    className="mt-5 bg-primary text-dark px-6 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
                   >
                     Ingresar
                   </button>
                 </div>
 
+                <div className="mt-3">
+                  <span className="mr-4">
+                    ¿No tienes cuenta?
+                  </span>
+                  <Link href={"/register"}>
+                    <span className="text-yellow-600">
+                      Regístrate
+                    </span>
+                  </Link>
+                </div>
+
+                <div className="flex justify-around py-5">
+                  <div className="w-2/5 border-b border-white mb-3"></div>
+                  <div className="mx-2">
+                    o
+                  </div>
+                  <div className="w-2/5 border-b border-white mb-3"></div>
+                </div>
+
+                <div className="w-auto flex justify-around">
+                  <Link
+                    type="submit"
+                    className="mt-5 bg-primary text-dark px-6 py-2 rounded bg-orange-100 text-black flex justify-between"
+                    href={"api/auth/login"}>
+                    {/* <AiOutlineGoogle className="text-red-700 "/>{" "} */}
+                    <Image
+                      src="https://auth.openai.com/assets/google-logo-NePEveMl.svg"
+                      alt="google icon"
+                      width={25}
+                      height={25}
+                      className="mr-2"
+                    />
+                    Continuar con Google
+                  </Link>
+                </div>
               </form>
             </>
-
-
-
           )
       }
     </div >

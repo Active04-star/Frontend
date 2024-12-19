@@ -10,25 +10,21 @@ import {
   AiOutlineCreditCard,
 } from "react-icons/ai";
 import { BsBarChart, BsShieldCheck, BsMegaphone } from "react-icons/bs";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { IUser } from "@/types/zTypes";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserSchemaWToken } from "@/types/user-schema";
 
 const LandingView: React.FC = () => {
   const [user,] = useLocalStorage("userSession", null);
-  const [userData, setUserData] = useState<IUser | null>(null);
+  const [show, setShow] = useState<boolean>(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage) {
       const validate = zodValidate(user, UserSchemaWToken);
 
-      if(validate.success) {
-        setUserData(user);
+      if(!validate.success) {
+        setShow(true);  
       }
 
-    }
   }, []);
 
   return (
@@ -44,7 +40,7 @@ const LandingView: React.FC = () => {
             </p>
             <div className="space-x-4">
               {
-                userData !== null
+                show === false
                   ?
                   null
                   :
