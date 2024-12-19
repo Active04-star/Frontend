@@ -148,19 +148,7 @@ const DropDownButton: React.FC = () => {
                     <div className="absolute right-0 max-w-fit max-h-fit">
                         <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
                             <ul className="py-2">
-                                {userData && userData.user.role === UserRole.USER ? (
-                                    <li>
-                                        {/* TODO AQUI VA LA REDIRECCION AL FORMULARIO DE CENTRO DEPORTIVO */}
-                                        <Link
-                                            href={"/AquiVaElFormularioACentroDeportivo"}
-                                            aria-disabled={actualPage === "/AquiVaElFormularioACentroDeportivo"}
-                                            className={actualPage === "/AquiVaElFormularioACentroDeportivo" ? offStyle : onStyle}
-                                        >
-                                            <AiOutlineDollar className="mr-2" />{" "}
-                                            Para Negocios
-                                        </Link>
-                                    </li>
-                                ) : null}
+                             
 
                                 {userData && userData.user.role === UserRole.MANAGER && (
                                     <li>

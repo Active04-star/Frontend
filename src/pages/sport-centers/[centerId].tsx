@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
-import FieldCards from "@/components/fieldCard/fieldCard"
+import FieldCards from "@/components/SportCenterCard/SportCenterCard"
 
 
 
@@ -35,13 +35,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 
-const SportCenterPage: React.FC<SportCenterPageProps> = ({ id }) => {
-  return (
-    <div>
-      <FieldCards />
-      <p>ID: {id}</p>
-    </div>
-  );
-};
+//const SportCenterPage: React.FC<SportCenterPageProps> = ({ id }) => {
+//  return (
+//    <div>
+//      <FieldCards />
+//      <p>ID: {id}</p>
+//    </div>
+//  );
+//};
 
-export default SportCenterPage;
+//export default SportCenterPage;
