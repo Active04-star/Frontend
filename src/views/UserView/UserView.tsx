@@ -1,11 +1,14 @@
-'use client'
-import { useEffect } from 'react';
-import Card from '@/components/card/card'; 
-import { ISportCenter } from '@/interfaces/SportCenter_Interface'; 
+
+
+'use client';
+import SportCenterCard from '@/components/SportCenterCard/SportCenterCard'; // Usa el nombre correcto
+import React, { useEffect } from 'react';
+import { ISportCenter } from '@/interfaces/SportCenter_Interface';
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
 import { SubscriptionStatus } from '@/enum/SubscriptionStatus';
 import { useRouter } from 'next/navigation';
+
 
 const isUserLoggedIn = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -20,8 +23,6 @@ const UserView = () => {
       router.push('/login'); 
     }
   }, [router]);
-
-  // Datos harcodeados según la estructura de la interfaz ISportCenter
   const sportCenters: ISportCenter[] = [
     {
       id: '1',
@@ -31,7 +32,11 @@ const UserView = () => {
       status: SportCenterStatus.ACTIVE,
       reviews: [],
       photos: [
-        { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
+        {
+          id: '1',
+          imageUrl:
+            'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp',
+        },
       ],
       payments: [],
       paymentsHistory: [],
@@ -45,19 +50,23 @@ const UserView = () => {
         profile_image: 'https://via.placeholder.com/50',
         subscription_status: SubscriptionStatus.AUTHORIZED,
         role: UserRole.USER,
-        was_banned: false
+        was_banned: false,
       },
-      sport_categories: []
+      sport_categories: [],
     },
     {
       id: '2',
       name: 'SportCenter 2',
-      address: 'Calle Ficticia 456',
-      averageRating: 4.7,
+      address: 'Avenida Imaginaria 456',
+      averageRating: 4.0,
       status: SportCenterStatus.ACTIVE,
       reviews: [],
       photos: [
-        { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
+        {
+          id: '1',
+          imageUrl:
+            'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp',
+        },
       ],
       payments: [],
       paymentsHistory: [],
@@ -66,25 +75,28 @@ const UserView = () => {
       managers_list: [],
       main_manager: {
         id: '2',
-        name: 'Ana Gómez',
-        email: 'ana@ejemplo.com',
+        name: 'María López',
+        email: 'maria@ejemplo.com',
         profile_image: 'https://via.placeholder.com/50',
         subscription_status: SubscriptionStatus.AUTHORIZED,
         role: UserRole.USER,
-        was_banned: false
+        was_banned: false,
       },
-      sport_categories: []
-    }
+      sport_categories: [],
+    },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {sportCenters.map((center) => (
-        <Card key={center.id} {...center} />
-      ))}
-    </div>
-  );
+    <div className="mt-8 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+  {sportCenters.map((center) => (
+    <SportCenterCard key={center.id} {...center} />
+  ))}
+</div>
+  )
 };
+
+
+
 
 export default UserView;
 
