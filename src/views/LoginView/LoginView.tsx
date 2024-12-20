@@ -105,12 +105,12 @@ const LoginView: React.FC = () => {
 
 
   return (
-    <div className=" bg-custom-dark min-h-screen flex flex-col items-center justify-center  text-center">
+    <div className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
       {
         isSubmitting ?
           (
             <>
-              <h1 className="text-4xl font-bold text-gray-900 mb-8 font-serif text-white">
+              <h1 className="text-4xl font-bold mb-8 font-serif text-white">
                 Cargando...
               </h1>
               <div className="w-32 h-32">
@@ -120,7 +120,7 @@ const LoginView: React.FC = () => {
           ) :
           (
             <>
-              <h1 className="text-5xl font-bold text-gray-900 mb-8 font-serif text-white">
+              <h1 className="text-5xl font-bold mb-8 font-serif text-white">
                 Active
               </h1>
               <form onSubmit={handleSubmit} className="w-full max-w-sm">

@@ -1,7 +1,7 @@
 "use client";
 import { UserRole } from "@/enum/userRole";
+import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
 import Link from "next/link";
@@ -69,11 +69,8 @@ const DropDownButton: React.FC = () => {
     }, [user]);
 
 
-    const handleLogout = () => {
-        localStorage.clear();
-
-        swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
-        window.location.href = "/";
+    const handleLogout = async () => {
+        logout(true);
     };
 
 
