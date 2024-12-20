@@ -1,5 +1,6 @@
-'use client';
+"use client";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function SettingsView() {
   const [profileImage, setProfileImage] = useState("/default-profile.jpg");
@@ -7,7 +8,7 @@ export default function SettingsView() {
   const [password, setPassword] = useState("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; // Usamos "?" para verificar si 'files' existe
+    const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
@@ -29,11 +30,15 @@ export default function SettingsView() {
           Configuración
         </h1>
         <div className="flex flex-col items-center mb-6">
-          <img
-            src={profileImage}
-            alt="Foto de perfil del usuario"
-            className="w-32 h-32 rounded-full object-cover mb-4 bg-white border-2 border-gray-300"
-          />
+          <div className="relative w-32 h-32 mb-4">
+            <Image
+              src={profileImage}
+              alt="Foto de perfil del usuario"
+              className="rounded-full object-cover bg-white border-2 border-gray-300"
+              layout="fill" // Ajusta la imagen al contenedor
+              objectFit="cover" // Corta la imagen para que ocupe el espacio disponible
+            />
+          </div>
           <label className="cursor-pointer bg-yellow-600 text-white py-2 px-4 rounded text-sm">
             Cambiar Foto
             <input

@@ -10,7 +10,7 @@ import {
   AiOutlineCreditCard,
 } from "react-icons/ai";
 import { BsBarChart, BsShieldCheck, BsMegaphone } from "react-icons/bs";
-import { useUser } from "@auth0/nextjs-auth0/client";
+//import { useUser } from "@auth0/nextjs-auth0/client";   // comentado por build, en caso de necesitarlo descomentar
 import { IUser } from "@/types/zTypes";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { zodValidate } from "@/helpers/validate-zod";

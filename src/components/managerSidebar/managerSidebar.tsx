@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";        a usar en el futuro , comentado para realizar build
 import Swal from 'sweetalert2';
 import { useRouter } from "next/navigation";
 

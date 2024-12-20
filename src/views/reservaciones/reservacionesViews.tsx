@@ -11,7 +11,7 @@ const ReservacionesViews: React.FC = () => {
   ];
 
   // Días de la semana (por ejemplo, para mostrar la fecha)
-  const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  //const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]; // a usarse en el futuro , comentado para hacer build 
 
   // Función para formatear la fecha en formato dd/mm/yyyy
   const formatFecha = (fecha: Date) => {

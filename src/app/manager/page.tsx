@@ -7,7 +7,6 @@ import NotificacionesView from "@/views/Notificaciones/NotificacionesView";  // 
 import PanelView from "@/views/Panel/PanelView";  // Vista del Panel Principal
 import CanchasView from "@/views/Canchas/CanchasViews";  // Vista de las canchas
 import ReservacionesViews from "@/views/reservaciones/reservacionesViews";  // Vista de Reservaciones
-import ProfileView from "@/views/PerfilViews/PerfilView";  // Vista del Perfil de Usuario
 import PerfilView from "@/views/configuracionViews/configuracionViews";  // Vista de Configuración
 import SettingsView from "@/views/SettingsView/SettingsView";
 
