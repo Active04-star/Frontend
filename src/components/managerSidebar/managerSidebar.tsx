@@ -1,5 +1,6 @@
 import React from "react";
 import { logout } from "@/helpers/auth/logout";
+import Link from "next/link";
 
 const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMenuClick }) => {
 
@@ -121,6 +122,27 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMen
                 <span className="ml-2 text-sm tracking-wide truncate">Perfil</span>
               </button>
             </li>
+            <li>
+              <Link href = "/premiumCard">
+  <button
+
+    className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6"
+  >
+    <span className="inline-flex justify-center items-center ml-4">
+      <svg
+        className="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.77 5.82 22l1.09-7.86-5-4.87 6.91-1.01L12 2z"></path>
+      </svg>
+    </span>
+    
+    <span className="ml-2 text-sm tracking-wide truncate">Pásate a premium</span>
+  </button>
+    </Link>
+</li>
 
             {/* Menu Item "Configuración" */}
             <li>
