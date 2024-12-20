@@ -2,27 +2,41 @@
 
 'use client';
 import SportCenterCard from '@/components/SportCenterCard/SportCenterCard'; // Usa el nombre correcto
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ISportCenter } from '@/interfaces/SportCenter_Interface';
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
 import { SubscriptionStatus } from '@/enum/SubscriptionStatus';
 import { useRouter } from 'next/navigation';
+import { IUser } from '@/types/zTypes';
 
 
-const isUserLoggedIn = () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  return user?.role !== undefined; 
-};
 
 const UserView = () => {
-  const router = useRouter();
+  const [userData, setUserData] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  const router = useRouter();
+  
   useEffect(() => {
-    if (!isUserLoggedIn()) {
-      router.push('/login'); 
+    if (typeof window !== "undefined" && window.localStorage) {
+      const aux = JSON.parse(localStorage.getItem("userSession")!);
+      setUserData(aux);
+      setLoading(false);
     }
-  }, [router]);
+  }, []);
+  
+  useEffect(() => {
+    if (!loading) {
+      if (!userData?.token) {
+        router.push("/login");
+      }
+    }
+  }, [loading, userData, router]);
+  if (loading) return <div>Loading...</div>;
+
+
+  
   const sportCenters: ISportCenter[] = [
     {
       id: '1',
@@ -87,17 +101,24 @@ const UserView = () => {
   ];
 
   return (
-    <div className="mt-8 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-  {sportCenters.map((center) => (
-    <SportCenterCard key={center.id} {...center} />
-  ))}
+    <div className="mt-[200px]  mb-8 grid gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  {sportCenters.length > 0 ? (
+    sportCenters.map((center) => (
+      <SportCenterCard key={center.id} {...center} />
+    ))
+  ) : (
+    <p className="col-span-full text-center text-lg font-medium text-gray-500">
+      No hay centros deportivos disponibles.
+    </p>
+  )}
 </div>
+
   )
 };
 
 
 
-
+ 
 export default UserView;
 
 // comentado para la demo1 , agregar cuando esté bien gestionado en el back el  traer a todos los centros deportivos 

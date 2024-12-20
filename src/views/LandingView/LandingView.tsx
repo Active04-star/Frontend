@@ -47,7 +47,7 @@ const LandingView: React.FC = () => {
                   <Link href="/register">REGISTRATE</Link>
                 </button>
               )}
-              <Link href="">
+              <Link href="/premiumCard">
                 <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
                   INSCRIBE TU CENTRO DEPORTIVO
                 </button>
