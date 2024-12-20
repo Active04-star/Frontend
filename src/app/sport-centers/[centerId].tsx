@@ -1,11 +1,11 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
-import FieldCards from "@/components/SportCenterCard/SportCenterCard"
+// import FieldCards from "@/components/SportCenterCard/SportCenterCard"
 
 
 
-type SportCenterPageProps = {
-  id: string;
-};
+// type SportCenterPageProps = {
+//   id: string;
+// };
 
 
 // Generar rutas dinámicas en build time

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import LoadingCircle from "@/components/general/loading-circle";
 import { API_URL } from "@/config/config";

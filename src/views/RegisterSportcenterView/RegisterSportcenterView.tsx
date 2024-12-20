@@ -6,17 +6,17 @@ export default function RegisterSportcenter() {
   const [userData, setUserData] = useState({
     name: "",
     address: "",
-    images: "",
+    images: "", //NOTA IMAGEN NO VA EN EL REGISTRO, EL RESTO ESTA OK
   });
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState<{ name: string, address: string, images: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
