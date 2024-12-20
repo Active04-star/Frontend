@@ -1,7 +1,6 @@
 import CanchasView from "@/views/Canchas/CanchasViews"
-import React from "react";
 
-const CanchasPage: React.FC = () => {
+const CanchasPage = () => {
   return <CanchasView />;
 };
 

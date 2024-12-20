@@ -1,4 +1,5 @@
 // src/views/Panel/CanchasView.tsx
+"use client";
 import React from "react";
 
 const CanchasView: React.FC = () => {
