@@ -71,25 +71,24 @@ const LoginView: React.FC = () => {
 
     try {
       localStorage.clear();
-
+    
       const response: IUser = await login(userData);
       const { token, user } = response;
-
+    
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
-
+    
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
-
+    
       setUserData(initialState);
-
+    
       if (user.role === UserRole.MANAGER) {
-        //TODO SET ID DE CENTRO DEPORTIVO
+        // TODO: SET ID DE CENTRO DEPORTIVO
       } else if (user.role === UserRole.USER) {
         router.push("/user");
-
+        return; // Detenemos la ejecución para evitar redirecciones adicionales.
       }
-
-      router.push("/");
-
+    
+      router.push("/"); // Redirección predeterminada si no se cumplen las condiciones anteriores.
     } catch (error) {
       if (
         error instanceof ErrorHelper &&
@@ -99,10 +98,10 @@ const LoginView: React.FC = () => {
       } else {
         AuthErrorHelper(error);
       }
-
+    
       setIsSubmitting(false);
     }
-
+    
   };
 
   return (

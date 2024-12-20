@@ -1,14 +1,19 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterSportcenter() {
+  const router = useRouter(); // Hook para redirigir
   const [userData, setUserData] = useState({
     name: "",
     address: "",
     images: "", //NOTA IMAGEN NO VA EN EL REGISTRO, EL RESTO ESTA OK
   });
-  const [errors, setErrors] = useState<{ name: string, address: string, images: string } | null>(null);
+  const [errors, setErrors] = useState<{
+    name: string;
+    address: string;
+    images: string;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,10 +25,11 @@ export default function RegisterSportcenter() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simular validación o envío de datos
     setTimeout(() => {
       console.log("Formulario enviado:", userData);
       setIsSubmitting(false);
+
+      router.push("/manager");
     }, 2000);
   };
 
