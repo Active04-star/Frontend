@@ -4,12 +4,11 @@ import LoadingCircle from "@/components/general/loading-circle";
 import { API_URL } from "@/config/config";
 import { UserRole } from "@/enum/userRole";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserSchemaWToken } from "@/types/user-schema";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 const LoadingView: React.FC = () => {
     const { user, isLoading, error } = useUser();
@@ -20,7 +19,7 @@ const LoadingView: React.FC = () => {
 
         const handle = async () => {
             if (!isLoading) {
-                console.log(user);
+                // console.log(user);
                 if (user) {
 
                     try {
@@ -42,41 +41,35 @@ const LoadingView: React.FC = () => {
 
                         const data = await response.json();
                         const validate = zodValidate(data, UserSchemaWToken);
-
+                        
                         if (validate.success) {
-
-                            // localStorage.setItem("userSession", JSON.stringify({
-                            //     token: data.token,
-                            //     user: data.user,
-                            // }));
 
                             setSession({ token: data.token, user: data.user });
 
                             if (data.user.role === UserRole.MAIN_MANAGER) {
                                 // const id = await fetchRestaurantData();
                                 // setComplex(id);
-
                             }
 
                             window.location.href = "/"
                         } else {
-                            console.log("invalid Response From Backend:" + validate.errors);
+                            console.log("invalid Response From Backend:");
+                            console.log(validate.errors);
 
                         }
 
                     } catch (error) {
                         console.log(error);
+                        await swalCustomError("No se pudo iniciar sesion con auth0",).then((result) => {
+
+                            if (result.isConfirmed) {
+                                window.location.href = "/";
+                            }
+                        });
 
                     }
 
-                } else {
-                    await swalCustomError("No se pudo iniciar sesion con auth0",).then((result) => {
-
-                        if (result.isConfirmed) {
-                            window.location.href = "/";
-                        }
-                    });
-                }
+                } 
             }
         }
 
@@ -93,9 +86,6 @@ const LoadingView: React.FC = () => {
                     <p className="mb-4 text-lg font-light text-white">
                         Por favor, espera mientras autenticamos la información.
                     </p>
-                    {/* <div className="inline-flex bg-black text-white font-medium rounded-lg text-sm px-5 py-2.5 my-4">
-                        {message}...
-                    </div> */}
                     <div className="min-w-full flex justify-around">
                         <div className="w-32 h-32">
                             <LoadingCircle />
