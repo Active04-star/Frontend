@@ -34,9 +34,7 @@ const LoginView: React.FC = () => {
     setUserData({ ...userData, [name]: value });
   };
 
-
   useEffect(() => {
-
     const data = zodValidate(userData, UserLoginSchema);
 
     if (!data.success) {
@@ -44,9 +42,7 @@ const LoginView: React.FC = () => {
     } else {
       setErrors(null);
     }
-
-  }, [userData])
-
+  }, [userData]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,7 +60,10 @@ const LoginView: React.FC = () => {
     const data = zodValidate(userData, UserLoginSchema);
 
     if (!data.success) {
-      swalCustomError("Error en Logueo", "Por favor corrige los errores antes de continuar.");
+      swalCustomError(
+        "Error en Logueo",
+        "Por favor corrige los errores antes de continuar."
+      );
 
       setIsSubmitting(false);
       return;
@@ -84,25 +83,27 @@ const LoginView: React.FC = () => {
 
       if (user.role === UserRole.MANAGER) {
         //TODO SET ID DE CENTRO DEPORTIVO
+      } else if (user.role === UserRole.USER) {
+        router.push("/user");
+
       }
 
       router.push("/");
 
     } catch (error) {
-
-      if (error instanceof ErrorHelper && error.message === StatusEnum.USER_DELETED) {
+      if (
+        error instanceof ErrorHelper &&
+        error.message === StatusEnum.USER_DELETED
+      ) {
         swalCustomError(StatusEnum.USER_DELETED, "No se pudo logear");
-
       } else {
         AuthErrorHelper(error);
-
       }
-      
+
       setIsSubmitting(false);
     }
 
   };
-
 
   return (
     <div className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
@@ -140,20 +141,17 @@ const LoginView: React.FC = () => {
                     placeholder="Active123@mail.com"
                     className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
                   />
-                  {
-                    userData.email && errors !== null && errors.email !== undefined && errors?.email._errors !== undefined
-                      ?
-                      (
-                        <span
-                          className="text-sm text-red-600"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {errors.email._errors}
-                        </span>
-                      )
-                      :
-                      null
-                  }
+                  {userData.email &&
+                    errors !== null &&
+                    errors.email !== undefined &&
+                    errors?.email._errors !== undefined ? (
+                    <span
+                      className="text-sm text-red-600"
+                      style={{ fontSize: "12px" }}
+                    >
+                      {errors.email._errors}
+                    </span>
+                  ) : null}
                 </div>
                 <div className="mb-6 relative">
                   <label
@@ -163,7 +161,6 @@ const LoginView: React.FC = () => {
                     Contraseña
                   </label>
                   <div className="relative">
-
                     <input
                       type={showPassword ? "text" : "password"}
                       id="password"
@@ -177,43 +174,40 @@ const LoginView: React.FC = () => {
                       className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {
-                        showPassword ?
-                          (
-                            <FaEyeSlash style={{ color: "black" }} />
-                          ) : (
-                            <FaEye style={{ color: "black" }} />
-                          )
-                      }
+                      {showPassword ? (
+                        <FaEyeSlash style={{ color: "black" }} />
+                      ) : (
+                        <FaEye style={{ color: "black" }} />
+                      )}
                     </div>
                   </div>
-                  {
-                    userData.password && errors !== null && errors.password !== undefined && errors?.password._errors !== undefined
-                      ?
-                      (
-                        <>
-                          <span
-                            className="text-sm text-red-600"
-                            style={{ fontSize: "12px" }}
-                          >
-                            {errors.password._errors[0]}
-                          </span>
+                  {userData.password &&
+                    errors !== null &&
+                    errors.password !== undefined &&
+                    errors?.password._errors !== undefined ? (
+                    <>
+                      <span
+                        className="text-sm text-red-600"
+                        style={{ fontSize: "12px" }}
+                      >
+                        {errors.password._errors[0]}
+                      </span>
 
-                          <div>
-                            <span
-                              className="text-sm text-red-600"
-                              style={{ fontSize: "12px" }}
-                            >
-                              {errors.password._errors[1] !== undefined && errors.password._errors[1].length > 0 ? errors.password._errors[1] : null}
-                            </span>
-                          </div>
-                        </>
-
-                      )
-                      :
-                      null
-                  }
+                      <div>
+                        <span
+                          className="text-sm text-red-600"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {errors.password._errors[1] !== undefined &&
+                            errors.password._errors[1].length > 0
+                            ? errors.password._errors[1]
+                            : null}
+                        </span>
+                      </div>
+                    </>
+                  ) : null}
                 </div>
+
 
                 <div className="w-auto flex justify-around">
 
@@ -260,7 +254,7 @@ const LoginView: React.FC = () => {
                     Continuar con Google
                   </Link>
                 </div>
-              </form>
+              </form >
             </>
           )
       }
