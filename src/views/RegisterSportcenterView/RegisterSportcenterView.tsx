@@ -1,29 +1,35 @@
-'use client'
+"use client";
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterSportcenter() {
+  const router = useRouter(); // Hook para redirigir
   const [userData, setUserData] = useState({
     name: "",
     address: "",
-    images: "",
+    images: "", //NOTA IMAGEN NO VA EN EL REGISTRO, EL RESTO ESTA OK
   });
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState<{
+    name: string;
+    address: string;
+    images: string;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simular validación o envío de datos
     setTimeout(() => {
       console.log("Formulario enviado:", userData);
       setIsSubmitting(false);
+
+      router.push("/manager");
     }, 2000);
   };
 
@@ -34,18 +40,21 @@ export default function RegisterSportcenter() {
           <h1 className="text-4xl font-bold text-white mb-8 font-serif">
             Cargando...
           </h1>
-          <div className="w-32 h-32"> 
-
+          <div className="w-32 h-32">
             <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
           </div>
         </>
       ) : (
         <>
-          <h1 className="text-5xl font-bold text-white mb-8">Registra tu Complejo deportivo</h1>
+          <h1 className="text-5xl font-bold text-white mb-8">
+            Registra tu Complejo deportivo
+          </h1>
           <form onSubmit={handleSubmit} className="w-full max-w-sm">
-
             <div className="mb-6">
-              <label className="block text-white mb-2 text-center font-medium text-lg" htmlFor="name">
+              <label
+                className="block text-white mb-2 text-center font-medium text-lg"
+                htmlFor="name"
+              >
                 Nombre del Complejo
               </label>
               <input
@@ -58,14 +67,20 @@ export default function RegisterSportcenter() {
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
               {userData.name && errors?.name && (
-                <span className="text-sm text-red-600" style={{ fontSize: "12px" }}>
+                <span
+                  className="text-sm text-red-600"
+                  style={{ fontSize: "12px" }}
+                >
                   {errors.name}
                 </span>
               )}
             </div>
 
             <div className="mb-6">
-              <label className="block text-white mb-2 text-center font-medium text-lg" htmlFor="address">
+              <label
+                className="block text-white mb-2 text-center font-medium text-lg"
+                htmlFor="address"
+              >
                 Dirección
               </label>
               <input
@@ -78,15 +93,20 @@ export default function RegisterSportcenter() {
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
               {userData.address && errors?.address && (
-                <span className="text-sm text-red-600" style={{ fontSize: "12px" }}>
+                <span
+                  className="text-sm text-red-600"
+                  style={{ fontSize: "12px" }}
+                >
                   {errors.address}
                 </span>
               )}
             </div>
 
-            
             <div className="mb-6">
-              <label className="block text-white mb-2 text-center font-medium text-lg" htmlFor="images">
+              <label
+                className="block text-white mb-2 text-center font-medium text-lg"
+                htmlFor="images"
+              >
                 Imágen (Opcional)
               </label>
               <input
@@ -101,20 +121,11 @@ export default function RegisterSportcenter() {
             </div>
 
             <div className="w-auto flex justify-around">
-              <Link href="/login">
-                <button
-                  type="button"
-                  className="mt-5 bg-zinc-900 text-white px-4 py-2 rounded hover:bg-zinc-800"
-                >
-                  Iniciar Sesión
-                </button>
-              </Link>
-
               <button
                 type="submit"
                 className="mt-5 bg-yellow-600 text-dark px-4 py-2 rounded hover:bg-yellow-700"
               >
-                Registrar 
+                Registrar
               </button>
             </div>
           </form>

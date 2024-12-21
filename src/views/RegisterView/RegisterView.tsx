@@ -15,6 +15,7 @@ import LoadingCircle from "@/components/general/loading-circle";
 import { useRouter } from "next/navigation";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import Link from "next/link";
+import Image from "next/image";
 
 const RegisterView: React.FC = () => {
   const router = useRouter();
@@ -101,9 +102,9 @@ const RegisterView: React.FC = () => {
 
       }
 
+      setIsSubmitting(false);
     }
 
-    setIsSubmitting(false);
   };
 
   return (
@@ -284,14 +285,14 @@ const RegisterView: React.FC = () => {
                   </div>
 
                   <div className="w-auto flex justify-around">
-                    <Link href={"/login"}>
+                    {/* <Link href={"/login"}>
                       <button
                         type="submit"
                         className=" mt-5 bg-primary text-dark px-4 py-2 rounded hover:bg-zinc-800 bg-zinc-900"
                       >
                         Iniciar Sesion
                       </button>
-                    </Link>
+                    </Link> */}
 
                     <button
                       type="submit"
@@ -301,6 +302,41 @@ const RegisterView: React.FC = () => {
                     </button>
                   </div>
 
+                  <div className="mt-3">
+                    <span className="mr-4">
+                      ¿Ya tienes una cuenta?
+                    </span>
+                    <Link href={"/login"}>
+                      <span className="text-yellow-600">
+                        Iniciar sesión
+                      </span>
+                    </Link>
+                  </div>
+
+                  <div className="flex justify-around py-5">
+                    <div className="w-2/5 border-b border-white mb-3"></div>
+                    <div className="mx-2">
+                      o
+                    </div>
+                    <div className="w-2/5 border-b border-white mb-3"></div>
+                  </div>
+
+                  <div className="w-auto flex justify-around">
+                    <Link
+                      type="submit"
+                      className="mt-5 bg-primary text-dark px-6 py-2 rounded bg-orange-100 text-black flex justify-between"
+                      href={"api/auth/login"}>
+
+                      <Image
+                        src="https://auth.openai.com/assets/google-logo-NePEveMl.svg"
+                        alt="google icon"
+                        width={25}
+                        height={25}
+                        className="mr-2"
+                      />
+                      Continuar con Google
+                    </Link>
+                  </div>
                 </form>
               </>
             )

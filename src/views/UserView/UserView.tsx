@@ -1,80 +1,124 @@
-import Card from '@/components/card/card'; // Asegúrate de que Card pueda recibir y mostrar los datos de SportCenter
-import { ISportCenter } from '@/interfaces/SportCenter_Interface'; // Usando la nueva interfaz ISportCenter
+
+
+'use client';
+import SportCenterCard from '@/components/SportCenterCard/SportCenterCard'; // Usa el nombre correcto
+import React, { useEffect, useState } from 'react';
+import { ISportCenter } from '@/interfaces/SportCenter_Interface';
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
 import { SubscriptionStatus } from '@/enum/SubscriptionStatus';
+import { useRouter } from 'next/navigation';
+import { IUser } from '@/types/zTypes';
+
 
 
 const UserView = () => {
-  // Datos harcodeados según la estructura de la interfaz ISportCenter
+  const [userData, setUserData] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const aux = JSON.parse(localStorage.getItem("userSession")!);
+      setUserData(aux);
+      setLoading(false);
+    }
+  }, []);
+  
+  useEffect(() => {
+    if (!loading) {
+      if (!userData?.token) {
+        router.push("/login");
+      }
+    }
+  }, [loading, userData, router]);
+  if (loading) return <div>Loading...</div>;
+
+
+  
   const sportCenters: ISportCenter[] = [
-    
-      {
+    {
+      id: '1',
+      name: 'SportCenter 1',
+      address: 'Calle Ficticia 123',
+      averageRating: 4.5,
+      status: SportCenterStatus.ACTIVE,
+      reviews: [],
+      photos: [
+        {
+          id: '1',
+          imageUrl:
+            'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp',
+        },
+      ],
+      payments: [],
+      paymentsHistory: [],
+      schedules: [],
+      fields: [],
+      managers_list: [],
+      main_manager: {
         id: '1',
-        name: 'SportCenter 1',
-        address: 'Calle Ficticia 123',
-        averageRating: 4.5,
-        status: SportCenterStatus.ACTIVE,
-        reviews: [],
-        photos: [
-          { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
-        ],
-        payments: [],
-        paymentsHistory: [],
-        schedules: [],
-        fields: [],
-        managers_list: [],
-        main_manager: {
-          id: '1',
-          name: 'Juan Pérez',
-          email: 'juan@ejemplo.com',
-          profile_image: 'https://via.placeholder.com/50',
-          subscription_status : SubscriptionStatus.AUTHORIZED ,
-          role: UserRole.USER ,
-          was_banned:  false
-        },
-        sport_categories: []
+        name: 'Juan Pérez',
+        email: 'juan@ejemplo.com',
+        profile_image: 'https://via.placeholder.com/50',
+        subscription_status: SubscriptionStatus.AUTHORIZED,
+        role: UserRole.USER,
+        was_banned: false,
       },
-      {
+      sport_categories: [],
+    },
+    {
+      id: '2',
+      name: 'SportCenter 2',
+      address: 'Avenida Imaginaria 456',
+      averageRating: 4.0,
+      status: SportCenterStatus.ACTIVE,
+      reviews: [],
+      photos: [
+        {
+          id: '1',
+          imageUrl:
+            'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp',
+        },
+      ],
+      payments: [],
+      paymentsHistory: [],
+      schedules: [],
+      fields: [],
+      managers_list: [],
+      main_manager: {
         id: '2',
-        name: 'SportCenter 1',
-        address: 'Calle Ficticia 123',
-        averageRating: 4.5,
-        status: SportCenterStatus.ACTIVE,
-        reviews: [],
-        photos: [
-          { id: '1', imageUrl: 'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp' }
-        ],
-        payments: [],
-        paymentsHistory: [],
-        schedules: [],
-        fields: [],
-        managers_list: [],
-        main_manager: {
-          id: '1',
-          name: 'Juan Pérez',
-          email: 'juan@ejemplo.com',
-          profile_image: 'https://via.placeholder.com/50',
-          subscription_status : SubscriptionStatus.AUTHORIZED ,
-          role: UserRole.USER ,
-          was_banned:  false
-        },
-        sport_categories: []
+        name: 'María López',
+        email: 'maria@ejemplo.com',
+        profile_image: 'https://via.placeholder.com/50',
+        subscription_status: SubscriptionStatus.AUTHORIZED,
+        role: UserRole.USER,
+        was_banned: false,
       },
-    
+      sport_categories: [],
+    },
   ];
 
-
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {sportCenters.map((center) => (
-        <Card key={center.id} {...center} />
-      ))}
-    </div>
-  );
+    <div className="mt-[200px]  mb-8 grid gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  {sportCenters.length > 0 ? (
+    sportCenters.map((center) => (
+      <SportCenterCard key={center.id} {...center} />
+    ))
+  ) : (
+    <p className="col-span-full text-center text-lg font-medium text-gray-500">
+      No hay centros deportivos disponibles.
+    </p>
+  )}
+</div>
+
+  )
 };
 
+
+
+ 
 export default UserView;
 
 // comentado para la demo1 , agregar cuando esté bien gestionado en el back el  traer a todos los centros deportivos 

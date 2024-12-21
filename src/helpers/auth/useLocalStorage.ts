@@ -19,10 +19,11 @@ export function useLocalStorage(key: string, initialValue: any) {
       window.localStorage.setItem(key, JSON.stringify(value));
 
     } catch (error) {
+      console.log("Failed to store value: " + value);
       console.error(error);
 
     }
   };
-  
+
   return [storedValue, setValue];
 }
