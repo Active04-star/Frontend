@@ -1,7 +1,7 @@
 "use client";
 import { UserRole } from "@/enum/userRole";
+import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { AiOutlineCalendar, AiOutlineDollar, AiOutlineKey, AiOutlineLogout, AiOu
 
 const DropDownButton: React.FC = () => {
     const [userData, setUserData] = useState<IUser | null>(null);
-    const [actualPage, setActualPage] = useState("");
+    const [actualPage, setActualPage] = useState("loading");
     const [user,] = useLocalStorage("userSession", "");
     const divRef = useRef<HTMLDivElement>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -69,11 +69,8 @@ const DropDownButton: React.FC = () => {
     }, [user]);
 
 
-    const handleLogout = () => {
-        localStorage.clear();
-
-        swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
-        window.location.href = "/";
+    const handleLogout = async () => {
+        logout(true);
     };
 
 
@@ -129,7 +126,7 @@ const DropDownButton: React.FC = () => {
 
                     </div>
                     :
-                    actualPage === "/login" || actualPage === "/register" ?
+                    actualPage === "loading" || actualPage === "/login" || actualPage === "/register" ?
                         null
                         :
                         <Link href="/login">
@@ -152,16 +149,16 @@ const DropDownButton: React.FC = () => {
                                     <li>
                                         {/* TODO AQUI VA LA REDIRECCION AL FORMULARIO DE CENTRO DEPORTIVO */}
                                         <Link
-                                            href={"/AquiVaElFormularioACentroDeportivo"}
-                                            aria-disabled={actualPage === "/AquiVaElFormularioACentroDeportivo"}
-                                            className={actualPage === "/AquiVaElFormularioACentroDeportivo" ? offStyle : onStyle}
+                                            href={"/for-business"}
+                                            aria-disabled={actualPage === "/for-business"}
+                                            className={actualPage === "/for-business" ? offStyle : onStyle}
                                         >
                                             <AiOutlineDollar className="mr-2" />{" "}
                                             Para Negocios
                                         </Link>
                                     </li>
                                 ) : null}
-
+                             
                                 {userData && userData.user.role === UserRole.MANAGER && (
                                     <li>
                                         <Link

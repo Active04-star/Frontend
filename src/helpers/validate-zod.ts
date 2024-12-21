@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 /** Metodo para verificacion de errores de formulario, errores sujetos a constraints en los schemas
  * En caso de contener un error, devuelve un objeto con un array de errores para cada campo
  * 

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/navbar/navbar";  // Barra de navegación
 import MSidebar from "@/components/managerSidebar/managerSidebar";  // Sidebar del administrador
@@ -18,7 +17,7 @@ const ManagerPage = () => {
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); // Ancho inicial en píxeles
 
   // Estado para manejar la altura del sidebar
-  const [sidebarHeight, setSidebarHeight] = useState<number>(window.innerHeight); // Altura inicial igual al alto de la ventana
+  const [sidebarHeight, setSidebarHeight] = useState<number>(0); // Altura inicial igual al alto de la ventana
 
   // Función para manejar el clic en los elementos del menú del sidebar
   const handleMenuClick = (viewName: string) => {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -10,17 +11,23 @@ import {
   AiOutlineCreditCard,
 } from "react-icons/ai";
 import { BsBarChart, BsShieldCheck, BsMegaphone } from "react-icons/bs";
+<<<<<<< HEAD
 //import { useUser } from "@auth0/nextjs-auth0/client";   // comentado por build, en caso de necesitarlo descomentar
 import { IUser } from "@/types/zTypes";
+=======
+>>>>>>> fe28609bbca6d15884d37e407b238b7d653e4047
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserSchemaWToken } from "@/types/user-schema";
+import { IUser } from "@/interfaces/user_Interface";
 
 const LandingView: React.FC = () => {
   const [user,] = useLocalStorage("userSession", null);
+  const [show, setShow] = useState<boolean>(false);
   const [userData, setUserData] = useState<IUser | null>(null);
 
   useEffect(() => {
+<<<<<<< HEAD
     if (typeof window !== "undefined" && window.localStorage) {
       const validate = zodValidate(user, UserSchemaWToken);
   
@@ -29,6 +36,15 @@ const LandingView: React.FC = () => {
       }
     }
   }, [user]);
+=======
+    const validate = zodValidate(user, UserSchemaWToken);
+
+    if (!validate.success) {
+      setShow(true);
+    }
+
+  }, []);
+>>>>>>> fe28609bbca6d15884d37e407b238b7d653e4047
 
   return (
     <>
@@ -38,22 +54,25 @@ const LandingView: React.FC = () => {
           <div className="w-1/2 flex flex-col justify-center px-10 text-white">
             <h1 className="text-5xl font-bold text-primary mb-4">Active</h1>
             <p className="text-xl mb-6">
-              LA MEJOR FORMA DE <span className="text-primary">RESERVAR</span>{" "}
+              LA MEJOR FORMA DE <span className="text-primary">REGISTRA</span>{" "}
               TU CANCHA
             </p>
             <div className="space-x-4">
               {
-                userData !== null
-                  ?
+                userData !== null ?
                   null
                   :
-                  <button className="bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600">
-                    <Link href="/register">REGISTRATE</Link>
-                  </button>
+                  (
+                    <button className="bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600">
+                      <Link href="/register">REGISTRATE</Link>
+                    </button>
+                  )
               }
-              <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
-                RESERVAR
-              </button>
+              <Link href="/registerSportcenter">
+                <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                  INSCRIBE TU CENTRO DEPORTIVO
+                </button>
+              </Link>
             </div>
           </div>
 

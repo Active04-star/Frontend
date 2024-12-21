@@ -1,7 +1,12 @@
 'use client'
 
+<<<<<<< HEAD
 //import { getSportCentersDB } from '@/helpers/sportCenters_helpers'; // Debes crear esta función para obtener los datos de la DB
 // import React, { useEffect, useState } from 'react';               // a usarse en el futuro , comentado para hacer build 
+=======
+import { getSportCentersDB } from '@/helpers/sportCenters_helpers'; // Debes crear esta función para obtener los datos de la DB
+import React from 'react';
+>>>>>>> fe28609bbca6d15884d37e407b238b7d653e4047
 import { ISportCenter } from '@/interfaces/SportCenter_Interface'; // Usando la nueva interfaz ISportCenter
 import { SportCenterStatus } from '@/enum/sportCenterStatus.enum';
 import { UserRole } from '@/enum/userRole';
