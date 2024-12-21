@@ -11,7 +11,7 @@ const ReservacionesViews: React.FC = () => {
   ];
 
   // Días de la semana (por ejemplo, para mostrar la fecha)
-  const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  //const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]; // a usarse en el futuro , comentado para hacer build 
 
   // Función para formatear la fecha en formato dd/mm/yyyy
   const formatFecha = (fecha: Date) => {
@@ -25,15 +25,15 @@ const ReservacionesViews: React.FC = () => {
   const [reservaSeleccionada, setReservaSeleccionada] = useState<{ hora: string; participante: string; canchaId: number } | null>(null);
 
   // Función para manejar el clic en una reserva para mostrar sus detalles
-  const handleReservaClick = (canchaId: number, hora: string) => {
-    const cancha = canchas.find(c => c.id === canchaId);
-    if (cancha) {
-      const reserva = cancha.reservas.find(r => r.hora === hora);
-      if (reserva) {
-        setReservaSeleccionada({ ...reserva, canchaId }); // Mostrar detalles de la reserva
-      }
-    }
-  };
+  //const handleReservaClick = (canchaId: number, hora: string) => {                 funcion comentada para realizar build
+  //  const cancha = canchas.find(c => c.id === canchaId);
+  //  if (cancha) {
+  //    const reserva = cancha.reservas.find(r => r.hora === hora);
+  //    if (reserva) {
+  //      setReservaSeleccionada({ ...reserva, canchaId }); // Mostrar detalles de la reserva
+  //    }
+  //  }
+  //};
 
   // Función para cancelar una reserva
   const handleCancelarReserva = (canchaId: number, hora: string) => {

@@ -18,9 +18,13 @@ export async function getSportCentersDB(): Promise<ISportCenter[]> {
 
     // Devolvemos los datos
     return sportCenters;
-  } catch (error: any) {
-    // En caso de error, lanzamos un mensaje con la descripción del fallo
-    throw new Error(`Failed to fetch Sport Centers: ${error.message}`);
+  } catch (error: unknown) {
+    // Verificamos que el error sea una instancia de Error
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch Sport Centers: ${error.message}`);
+    }
+    // Si el error no es del tipo esperado, lanzamos un error genérico
+    throw new Error("Failed to fetch Sport Centers: Unknown error");
   }
 }
 
@@ -40,8 +44,12 @@ export async function getSportCentersById(id: string): Promise<ISportCenter> {
 
     // Devolvemos el Sport Center encontrado
     return sportCenter;
-  } catch (error: any) {
-    // En caso de error, lanzamos un mensaje con la descripción del fallo
-    throw new Error(`Failed to fetch Sport Center by ID: ${error.message}`);
+  } catch (error: unknown) {
+    // Verificamos que el error sea una instancia de Error
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch Sport Center by ID: ${error.message}`);
+    }
+    // Si el error no es del tipo esperado, lanzamos un error genérico
+    throw new Error("Failed to fetch Sport Center by ID: Unknown error");
   }
 }
