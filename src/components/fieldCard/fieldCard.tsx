@@ -22,15 +22,3 @@ const FieldCard: React.FC<IField> = ({ id, number , price  }) => {
 };
 
 export default FieldCard;
-
-//  id: string;
-//  number: number;
-//  price: number; // Decimal convertido a número para simplificar en el frontend
-//  reservations?: IReservation[]; // Relación con IReservation (opcional)
-//  payments?: IPayment[]; // Relación con IPayment (opcional)
-//  paymentsHistory?: IPaymentHistory[]; // Relación con IPaymentHistory (opcional)
-//  schedules: IFieldSchedule[]; // Relación con IFieldSchedule
-//  photos?: IImage[]; // Relación con IImage (opcional)
-//  reviews?: IReview[]; // Relación con IReview (opcional)
-//  sportCategory?: ISportCategory; // Relación con ISportCategory (opcional)
-//  sportcenter: ISportCenter; // Relación con ISportCenter (obligatoria)

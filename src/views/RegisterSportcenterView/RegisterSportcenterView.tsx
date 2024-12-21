@@ -8,19 +8,38 @@ export default function RegisterSportcenter() {
     address: "",
     images: "",
   });
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState<{ name?: string; address?: string }>({});
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+  const validateForm = () => {
+    const newErrors: { name?: string; address?: string } = {};
+    if (!userData.name.trim()) {
+      newErrors.name = "El nombre del complejo es obligatorio.";
+    }
+    if (!userData.address.trim()) {
+      newErrors.address = "La dirección es obligatoria.";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Retorna true si no hay errores
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+
+    // Validación en tiempo real (opcional)
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return; // No envía el formulario si hay errores
+    }
     setIsSubmitting(true);
 
-    // Simular validación o envío de datos
+    // Simular envío de datos
     setTimeout(() => {
       console.log("Formulario enviado:", userData);
       setIsSubmitting(false);
@@ -34,18 +53,21 @@ export default function RegisterSportcenter() {
           <h1 className="text-4xl font-bold text-white mb-8 font-serif">
             Cargando...
           </h1>
-          <div className="w-32 h-32"> 
-
+          <div className="w-32 h-32">
             <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
           </div>
         </>
       ) : (
         <>
-          <h1 className="text-5xl font-bold text-white mb-8">Registra tu Complejo deportivo</h1>
+          <h1 className="text-5xl font-bold text-white mb-8">
+            Registra tu Complejo Deportivo
+          </h1>
           <form onSubmit={handleSubmit} className="w-full max-w-sm">
-
             <div className="mb-6">
-              <label className="block text-white mb-2 text-center font-medium text-lg" htmlFor="name">
+              <label
+                className="block text-white mb-2 text-center font-medium text-lg"
+                htmlFor="name"
+              >
                 Nombre del Complejo
               </label>
               <input
@@ -57,7 +79,7 @@ export default function RegisterSportcenter() {
                 placeholder="Ej: Cafetería Central"
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
-              {userData.name && errors?.name && (
+              {errors.name && (
                 <span className="text-sm text-red-600" style={{ fontSize: "12px" }}>
                   {errors.name}
                 </span>
@@ -65,7 +87,10 @@ export default function RegisterSportcenter() {
             </div>
 
             <div className="mb-6">
-              <label className="block text-white mb-2 text-center font-medium text-lg" htmlFor="address">
+              <label
+                className="block text-white mb-2 text-center font-medium text-lg"
+                htmlFor="address"
+              >
                 Dirección
               </label>
               <input
@@ -77,16 +102,18 @@ export default function RegisterSportcenter() {
                 placeholder="Ej: Calle Principal 123"
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
-              {userData.address && errors?.address && (
+              {errors.address && (
                 <span className="text-sm text-red-600" style={{ fontSize: "12px" }}>
                   {errors.address}
                 </span>
               )}
             </div>
 
-            
             <div className="mb-6">
-              <label className="block text-white mb-2 text-center font-medium text-lg" htmlFor="images">
+              <label
+                className="block text-white mb-2 text-center font-medium text-lg"
+                htmlFor="images"
+              >
                 Imágen (Opcional)
               </label>
               <input
@@ -114,7 +141,7 @@ export default function RegisterSportcenter() {
                 type="submit"
                 className="mt-5 bg-yellow-600 text-dark px-4 py-2 rounded hover:bg-yellow-700"
               >
-                Registrar 
+                Registrar
               </button>
             </div>
           </form>

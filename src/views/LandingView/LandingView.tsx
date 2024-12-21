@@ -23,13 +23,12 @@ const LandingView: React.FC = () => {
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const validate = zodValidate(user, UserSchemaWToken);
-
-      if(validate.success) {
+  
+      if (validate.success) {
         setUserData(user);
       }
-
     }
-  }, []);
+  }, [user]);
 
   return (
     <>
