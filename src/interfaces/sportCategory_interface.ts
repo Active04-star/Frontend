@@ -1,5 +1,5 @@
 import { IField } from "./field_Interface"; // Asumiendo que tienes una interfaz 'Field' para el frontend
-import { ISportCenter } from "./SportCenter_Interface"; // Asumiendo que tienes una interfaz 'SportCenter' para el frontend
+import { ISportCenter } from "./sport_center.interface";
 
 export interface ISportCategory {
   id: string;

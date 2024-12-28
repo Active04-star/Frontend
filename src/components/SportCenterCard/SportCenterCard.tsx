@@ -1,21 +1,21 @@
 import React from 'react';
 import Image from 'next/image';
-import { ISportCenter } from '@/interfaces/SportCenter_Interface';
+import { ISportCenter } from '@/interfaces/sport_center.interface';
 
 const SportCenterCard: React.FC<ISportCenter> = ({
   name,
   address,
   averageRating,
   photos,
-  main_manager,
 }) => {
+  
   return (
     <div className="flex justify-center items-center p-2">
     <div className="flex flex-col bg-white shadow-md rounded-lg overflow-hidden transform transition hover:scale-105 hover:shadow-lg w-60">
       {/* Imagen */}
       <div className="relative w-full h-32">
         <Image
-          src={photos[0]?.imageUrl || '/placeholder-image.jpg'}
+          src={photos[0] || '/placeholder-image.jpg'}
           alt={name}
           layout="fill"
           objectFit="cover"
@@ -27,9 +27,9 @@ const SportCenterCard: React.FC<ISportCenter> = ({
       <div className="flex flex-col p-3">
         <h2 className="text-sm font-semibold text-gray-800 truncate">{name}</h2>
         <p className="text-xs text-gray-500 truncate mt-1">{address}</p>
-        <p className="text-xs text-gray-600 mt-1">
+        {/* <p className="text-xs text-gray-600 mt-1">
           <span className="font-medium">Manager:</span> {main_manager?.name || 'Desconocido'}
-        </p>
+        </p> */}
   
         {/* Rating */}
         <div className="mt-2 flex items-center">

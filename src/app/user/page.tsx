@@ -5,12 +5,10 @@ import React from "react";
 const user = () => {
   return (
     <>
-    <NavbarUser />;
-    <UserView/>
+      <NavbarUser />;
+      <UserView />
     </>
   )
-  
-  
 };
 
 export default user;

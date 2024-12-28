@@ -3,7 +3,7 @@ import { IPayment } from "./payment_Interface"; // Relación con la interfaz IPa
 import { IUser } from "./user_Interface"; // Relación con la interfaz IUser
 import { IField } from "./field_Interface"; // Relación con la interfaz IField
 import { IReservation } from "./reservation_Interface"; // Relación con la interfaz IReservation
-import { ISportCenter } from "././SportCenter_Interface"; // Relación con la interfaz ISportCenter
+import { ISportCenter } from "./sport_center.interface";
 
 export interface IPaymentHistory {
   id: string;

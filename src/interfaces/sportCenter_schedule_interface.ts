@@ -1,4 +1,3 @@
-import { ISportCenter } from "./SportCenter_Interface"; // Asumiendo que tienes una interfaz 'SportCenter' para el frontend
 import { IFieldSchedule } from "./field_schedule.Interface"; // Asumiendo que tienes una interfaz 'FieldSchedule' para el frontend
 import { DayOfWeek } from "../enum/DayOfWeek"; // Importando el tipo 'DayOfWeek'
 
@@ -9,5 +8,4 @@ export interface ISportCenterSchedule {
   opening_time: string; // Hora de apertura
   closing_time: string; // Hora de cierre
   fieldSchedules: IFieldSchedule[]; // Relación con los horarios de los campos
-  sportcenter: ISportCenter; // Relación con el SportCenter
 }

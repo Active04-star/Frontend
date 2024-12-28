@@ -2,7 +2,6 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
 import Image from 'next/image';  // Importa el componente Image de Next.js
 import { IField } from '@/interfaces/field_Interface';  // Asegúrate de importar las interfaces correctas
-import { ISportCenter } from '@/interfaces/SportCenter_Interface';
 import { API_URL } from "@/config/config";
 
 interface Props {
@@ -47,18 +46,17 @@ const FieldPage = ({ fieldData, centerId, fieldId }: Props) => {
       <p>Field ID: {fieldId}</p>
       <div className="field-images">
         {/* Usamos el componente Image de Next.js en lugar de <img> */}
-        {fieldData.photos?.length ? (
-          fieldData.photos.map((photo) => (
-            <Image
-              key={photo.id}
-              src={photo.imageUrl}
-              alt={`Campo ${fieldId}`}
-              width={500}  // Añadimos un tamaño (ajústalo según sea necesario)
-              height={300} // Añadimos un tamaño (ajústalo según sea necesario)
-            />
-          ))
+        {fieldData.photos ? (
+          // fieldData.photos.map((photo) => (
+          <Image
+            src={fieldData.photos}
+            alt={`Campo ${fieldId}`}
+            width={500}  // Añadimos un tamaño (ajústalo según sea necesario)
+            height={300} // Añadimos un tamaño (ajústalo según sea necesario)
+          />
+          // ))
         ) : (
-          <p>No hay fotos disponibles para este campo.</p>
+          <p>No hay imagenes disponibles para este campo.</p>
         )}
       </div>
     </div>

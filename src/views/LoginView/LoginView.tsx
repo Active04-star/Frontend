@@ -1,6 +1,5 @@
 "use client";
 import LoadingCircle from "@/components/general/loading-circle";
-import { StatusEnum } from "@/enum/HttpStatus.enum";
 import { UserRole } from "@/enum/userRole";
 import { zodValidate } from "@/helpers/validate-zod";
 import { AuthErrorHelper } from "@/helpers/errors/auth-error-helper";
@@ -16,6 +15,9 @@ import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
+import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
+import { API_URL } from "@/config/config";
+import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -60,10 +62,7 @@ const LoginView: React.FC = () => {
     const data = zodValidate(userData, UserLoginSchema);
 
     if (!data.success) {
-      swalCustomError(
-        "Error en Logueo",
-        "Por favor corrige los errores antes de continuar."
-      );
+      swalCustomError("Error en Logueo", "Por favor corrige los errores antes de continuar.");
 
       setIsSubmitting(false);
       return;
@@ -71,37 +70,44 @@ const LoginView: React.FC = () => {
 
     try {
       localStorage.clear();
-    
+
       const response: IUser = await login(userData);
       const { token, user } = response;
-    
+
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
-    
+
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
-    
+
       setUserData(initialState);
-    
-      if (user.role === UserRole.MANAGER) {
-        // TODO: SET ID DE CENTRO DEPORTIVO
+
+      if (user.role === UserRole.MANAGER || user.role === UserRole.MAIN_MANAGER) {
+
+        const data = await fetchAndCatch(`${API_URL}/user/center/${user.id}`, {
+          method: "GET"
+        });
+
+        localStorage.setItem("sportCenter", JSON.stringify(data.id));
+
       } else if (user.role === UserRole.USER) {
         router.push("/user");
-        return; // Detenemos la ejecución para evitar redirecciones adicionales.
+        return;
+
       }
-    
+
       router.push("/"); // Redirección predeterminada si no se cumplen las condiciones anteriores.
     } catch (error) {
-      if (
-        error instanceof ErrorHelper &&
-        error.message === StatusEnum.USER_DELETED
-      ) {
-        swalCustomError(StatusEnum.USER_DELETED, "No se pudo logear");
+
+      if (error instanceof ErrorHelper && error.message === ApiStatusEnum.USER_DELETED) {
+        swalCustomError(ApiStatusEnum.USER_DELETED, "No se pudo logear");
+
       } else {
         AuthErrorHelper(error);
+
       }
-    
+
       setIsSubmitting(false);
     }
-    
+
   };
 
   return (

@@ -1,12 +1,12 @@
 import { ErrorHelper } from "./error-helper";
 import { swalNotifyError } from "../swal/swal-notify-error";
-import { StatusEnum } from "@/enum/HttpStatus.enum";
+import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function AuthErrorHelper(error: any) {
-  if (error.message === StatusEnum.INSUFFICIENT_PERMISSIONS) {
+  if (error.message === ApiStatusEnum.INSUFFICIENT_PERMISSIONS) {
 
-    swalNotifyError(new ErrorHelper(StatusEnum.INSUFFICIENT_PERMISSIONS, "")).then((result) => {
+    swalNotifyError(new ErrorHelper(ApiStatusEnum.INSUFFICIENT_PERMISSIONS, "")).then((result) => {
       if (result.isConfirmed) {
         window.location.href = "/";
 
@@ -14,9 +14,9 @@ export function AuthErrorHelper(error: any) {
     });
 
     return;
-  } else if (error.message === StatusEnum.TOKEN_EXPIRED) {
+  } else if (error.message === ApiStatusEnum.TOKEN_EXPIRED) {
 
-    swalNotifyError(new ErrorHelper(StatusEnum.TOKEN_EXPIRED, "Cerrando sesion")).then((result) => {
+    swalNotifyError(new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "Cerrando sesion")).then((result) => {
       if (result.isConfirmed) {
         window.location.href = "/login";
         localStorage.clear();
@@ -25,7 +25,7 @@ export function AuthErrorHelper(error: any) {
     });;
 
     return;
-  } else if (error.message !== StatusEnum.UNKNOWN_ERROR) {
+  } else if (error.message !== ApiStatusEnum.UNKNOWN_ERROR) {
     console.log(error);
     swalNotifyError(error);
 
