@@ -1,4 +1,4 @@
-import { StatusEnum } from "@/enum/HttpStatus.enum";
+import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 
 export class ErrorHelper extends Error {
     error: string | undefined;
@@ -10,11 +10,11 @@ export class ErrorHelper extends Error {
     }
 }
 
-export function verifyError(message: string): StatusEnum | string {
-    const is_status = Object.values(StatusEnum).includes(message as StatusEnum);
+export function verifyError(message: string): ApiStatusEnum | string {
+    const is_status = Object.values(ApiStatusEnum).includes(message as ApiStatusEnum);
     
     if (is_status) {
-        return message as StatusEnum;
+        return message as ApiStatusEnum;
     } else {
         return message;
     }

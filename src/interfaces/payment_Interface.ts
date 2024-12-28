@@ -2,9 +2,9 @@ import { PaymentStatus } from "../enum/PaymentStatus"; // Enum para el estado de
 import { PaymentMethod } from "../enum/PaymentMethod"; // Enum para el método de pago
 import { IPaymentHistory } from "./paymentHistory_interface"; // Relación con la interfaz IPaymentHistory
 import { IField } from "./field_Interface"; // Relación con la interfaz IField
-import { ISportCenter } from "./SportCenter_Interface"; // Relación con la interfaz ISportCenter
 import { IUser } from "./user_Interface"; // Relación con la interfaz IUser
 import { IReservation } from "./reservation_Interface"; // Relación con la interfaz IReservation
+import { ISportCenter } from "./sport_center.interface";
 
 export interface IPayment {
   id: string;

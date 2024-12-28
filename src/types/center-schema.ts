@@ -1,4 +1,4 @@
-import { SportCenterStatus } from "@/enum/sportCenterStatus.enum";
+import { SportCenterStatus } from "@/enum/sportCenterStatus";
 import { z } from "zod";
 
 /**Centro deportivo proveniente del back

@@ -1,7 +1,7 @@
 import { IReservation } from "./reservation_Interface"; // Relación con la interfaz IReservation
 import { IUser } from "./user_Interface"; // Relación con la interfaz IUser
-import { ISportCenter } from "./SportCenter_Interface"; // Relación con la interfaz ISportCenter
 import { IField } from "./field_Interface"; // Relación con la interfaz IField
+import { ISportCenter } from "./sport_center.interface";
 
 export interface IReview {
   id: string; // ID único de la reseña

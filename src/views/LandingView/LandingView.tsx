@@ -5,38 +5,20 @@ import Image from "next/image";
 import Navbar from "@/components/navbar/navbar";
 import Link from "next/link";
 import { FaCalendarAlt, FaUserSlash, FaCashRegister } from "react-icons/fa";
-import {
-  AiOutlineCloud,
-  AiOutlineUserSwitch,
-  AiOutlineCreditCard,
-} from "react-icons/ai";
+import { AiOutlineCloud, AiOutlineUserSwitch, AiOutlineCreditCard } from "react-icons/ai";
 import { BsBarChart, BsShieldCheck, BsMegaphone } from "react-icons/bs";
-<<<<<<< HEAD
-//import { useUser } from "@auth0/nextjs-auth0/client";   // comentado por build, en caso de necesitarlo descomentar
-import { IUser } from "@/types/zTypes";
-=======
->>>>>>> fe28609bbca6d15884d37e407b238b7d653e4047
+// import { IUser } from "@/types/zTypes";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserSchemaWToken } from "@/types/user-schema";
-import { IUser } from "@/interfaces/user_Interface";
+// import { IUser } from "@/interfaces/user_Interface";
 
 const LandingView: React.FC = () => {
   const [user,] = useLocalStorage("userSession", null);
   const [show, setShow] = useState<boolean>(false);
-  const [userData, setUserData] = useState<IUser | null>(null);
+  // const [userData, setUserData] = useState<IUser | null>(null);
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (typeof window !== "undefined" && window.localStorage) {
-      const validate = zodValidate(user, UserSchemaWToken);
-  
-      if (validate.success) {
-        setUserData(user);
-      }
-    }
-  }, [user]);
-=======
     const validate = zodValidate(user, UserSchemaWToken);
 
     if (!validate.success) {
@@ -44,7 +26,6 @@ const LandingView: React.FC = () => {
     }
 
   }, []);
->>>>>>> fe28609bbca6d15884d37e407b238b7d653e4047
 
   return (
     <>
@@ -59,7 +40,7 @@ const LandingView: React.FC = () => {
             </p>
             <div className="space-x-4">
               {
-                userData !== null ?
+                !show ?
                   null
                   :
                   (

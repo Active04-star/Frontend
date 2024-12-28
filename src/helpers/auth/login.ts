@@ -1,7 +1,7 @@
-import { StatusEnum } from "@/enum/HttpStatus.enum";
 import { IUserLogin } from "@/types/zTypes";
 import { ErrorHelper, verifyError } from "../errors/error-helper";
 import { API_URL } from "@/config/config";
+import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 
 export async function login(userData: IUserLogin) {
     try {
@@ -16,8 +16,8 @@ export async function login(userData: IUserLogin) {
         if (!res.ok) {
             const error = await res.json();
             
-            if (error.error === StatusEnum.USER_DELETED) {
-                throw new ErrorHelper(StatusEnum.USER_DELETED, "403");
+            if (error.error === ApiStatusEnum.USER_DELETED) {
+                throw new ErrorHelper(ApiStatusEnum.USER_DELETED, "403");
             }
             throw new ErrorHelper(verifyError(error.message), error.status);
 
