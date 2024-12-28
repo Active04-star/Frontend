@@ -13,5 +13,5 @@ const ManagerView: React.FC = () => {
     <MSidebar onMenuClick={handleMenuClick} />
   );
 };
-
+  
 export default ManagerView;

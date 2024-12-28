@@ -5,6 +5,7 @@ import Link from "next/link";
 const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMenuClick }) => {
 
   const handleLogout = () => {
+    
     localStorage.removeItem("userSession");
 
     logout(true);
