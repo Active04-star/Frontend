@@ -10,5 +10,4 @@ export const SportCenterSchema = z.object({
 
   address: z.string(),
 
-  status: z.nativeEnum(SportCenterStatus),
 });

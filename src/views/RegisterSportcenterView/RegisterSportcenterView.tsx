@@ -1,39 +1,78 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ISportCenter } from "@/types/zTypes";
+import { IUser } from "@/interfaces/user_Interface";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
+import { ErrorHelper } from "@/helpers/errors/error-helper";
+import { UserRole } from "@/enum/userRole";
+import { API_URL } from "@/config/config";
 
 export default function RegisterSportcenter() {
   const router = useRouter(); // Hook para redirigir
-  const [userData, setUserData] = useState({
+  const [iuser, setUser] = useLocalStorage("userSession", "");
+  const user: Partial<IUser> = iuser.user;
+  const [isAllowed, setIsAllowed] = useState(true);
+
+  const [formData, setFormData] = useState<Partial<ISportCenter>>({
     name: "",
     address: "",
-    images: "", //NOTA IMAGEN NO VA EN EL REGISTRO, EL RESTO ESTA OK
   });
   const [errors, setErrors] = useState<{
     name: string;
     address: string;
-    images: string;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+  useEffect(() => {
+    if (user === null && user === undefined || user.role !== UserRole.USER) {
+      setIsAllowed(false);
+
+     router.push('/')
+
+    }
+
+  }, [user])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, type, value, files } = e.target as HTMLInputElement;
+
+    if (type === "file" && files && files[0]) {
+      setImageFile(files[0]);
+      // No asignamos el File a imgUrl, solo guardamos el archivo
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      console.log("Formulario enviado:", userData);
-      setIsSubmitting(false);
-
-      router.push("/manager");
-    }, 2000);
+  if(user.role===UserRole.USER){
+    try {
+      const sportCenterData={...formData}
+      const userSession = localStorage.getItem("userSession");
+      const token = userSession ? JSON.parse(userSession).token : null;
+      const user = userSession ? JSON.parse(userSession).user : null;
+    const new_restaurant = { ...sportCenterData, manager: user.id };
+      const responde=await fetch(`${API_URL}/sportcenter/create`,{method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Incluir el token en la cabecera
+        },
+        body: JSON.stringify(new_restaurant)})
+    } catch (error) {
+      
+    }
+  }
   };
 
   return (
+    <>
     <div className="min-h-screen flex flex-col items-center justify-center bg-custom-dark text-center">
       {isSubmitting ? (
         <>
@@ -61,12 +100,12 @@ export default function RegisterSportcenter() {
                 type="text"
                 id="name"
                 name="name"
-                value={userData.name}
+                value={formData.name}
                 onChange={handleChange}
                 placeholder="Ej: Cafetería Central"
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
-              {userData.name && errors?.name && (
+              {formData.name && errors?.name && (
                 <span
                   className="text-sm text-red-600"
                   style={{ fontSize: "12px" }}
@@ -87,12 +126,12 @@ export default function RegisterSportcenter() {
                 type="text"
                 id="address"
                 name="address"
-                value={userData.address}
+                value={formData.address}
                 onChange={handleChange}
                 placeholder="Ej: Calle Principal 123"
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
-              {userData.address && errors?.address && (
+              {formData.address && errors?.address && (
                 <span
                   className="text-sm text-red-600"
                   style={{ fontSize: "12px" }}
@@ -102,7 +141,7 @@ export default function RegisterSportcenter() {
               )}
             </div>
 
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <label
                 className="block text-white mb-2 text-center font-medium text-lg"
                 htmlFor="images"
@@ -113,12 +152,12 @@ export default function RegisterSportcenter() {
                 type="text"
                 id="images"
                 name="images"
-                value={userData.images}
+                value={formData.images}
                 onChange={handleChange}
                 placeholder="URL de la imagen principal"
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
-            </div>
+            </div> */}
 
             <div className="w-auto flex justify-around">
               <button
@@ -132,5 +171,6 @@ export default function RegisterSportcenter() {
         </>
       )}
     </div>
+    </>
   );
 }

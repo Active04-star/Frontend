@@ -22,6 +22,6 @@ export interface ISportCenter {
   schedules: ISportCenterSchedule[]; // Relación con los horarios del centro deportivo
   fields: IField[]; // Relación con los campos deportivos
   managers_list: SportCenterManagers[]; // Relación con los gerentes del centro deportivo
-  main_manager: IUser; // Relación con el gerente principal
+  manager: IUser; // Relación con el gerente principal
   sport_categories: ISportCategory[]; // Relación con las categorías deportivas
 }
