@@ -23,4 +23,4 @@ export type ISportCenter = z.infer<typeof SportCenterSchema>;
 
 /**Login de Usuario de formulario, se valida con `UserLoginSchema`
  */
-export type IUserLogin = z.infer<typeof UserLoginSchema>
+export type IUserLogin = z.infer<typeof UserLoginSchema>;

@@ -8,11 +8,8 @@ export async function fetchSearchCenters(): Promise<ISportCenterList> {
   const response = await fetchAndCatch(`${API_URL}/sportcenter/search`, {
     method: "GET"
   });
-
-  console.log(response);
-
+  
   return response;
-
 }
 
 export async function fetchCenterById(id: string): Promise<void> {
