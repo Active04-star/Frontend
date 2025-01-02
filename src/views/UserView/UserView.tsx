@@ -55,17 +55,6 @@ const UserView: React.FC = () => {
   );
 };
 
-/**  ESTO ESTA MAL IMPLEMENTADO, NO VA A FUNCIONAR AQUI  */
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const response = await fetch(`${API_URL}/sportcenter/search`);
-//   const sportCenters = await response.json();
-
-//   return {
-//     props: {
-//       sportCenters,
-//     },
-//   };
-// };
 
 export default UserView;
 
