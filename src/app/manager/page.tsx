@@ -8,6 +8,7 @@ import CanchasView from "@/views/Canchas/CanchasViews";  // Vista de las canchas
 import ReservacionesViews from "@/views/reservaciones/reservacionesViews";  // Vista de Reservaciones
 import PerfilView from "@/views/configuracionViews/configuracionViews";  // Vista de Configuración
 import SettingsView from "@/views/SettingsView/SettingsView";
+import PremiumCard from "@/views/PremiumCard/PremiumCard";
 
 const ManagerPage = () => {
   // Estado para manejar la vista actual
@@ -90,6 +91,10 @@ const ManagerPage = () => {
 
         {currentView === "perfil" && (
           <PerfilView />
+        )}
+
+        {currentView==='premiumCard' && (
+          <PremiumCard/>
         )}
       </div>
     </div>

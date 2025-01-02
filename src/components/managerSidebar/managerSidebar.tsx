@@ -122,9 +122,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMen
               </button>
             </li>
             <li>
-              <Link href = "/premiumCard">
-  <button
-// <button onClick={()=>onMenuClick('premium_card')}
+  <button onClick={()=>onMenuClick('premiumCard')}
 
     className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6"
   >
@@ -141,7 +139,6 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMen
     
     <span className="ml-2 text-sm tracking-wide truncate">Pásate a premium</span>
   </button>
-    </Link>
 </li>
 
             {/* Menu Item "Configuración" */}
