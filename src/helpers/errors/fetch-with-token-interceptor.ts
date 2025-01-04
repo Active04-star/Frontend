@@ -28,6 +28,12 @@ export async function fetchWithAuth(url: string | URL | globalThis.Request, opti
 
             return data;
         } catch (error) {
+
+            if(error instanceof ErrorHelper && error.message === ApiStatusEnum.TOKEN_EXPIRED) {
+                window.location.href = "/api/auth/logout";
+                localStorage.clear();
+            }
+
             throw error;
         }
 

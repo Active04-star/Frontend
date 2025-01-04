@@ -5,8 +5,8 @@ import React from 'react'
 const settings = () => {
   return (
     <>
-    <NavbarUser/>
-    <SettingsView/>
+      <NavbarUser />
+      <SettingsView />
     </>
   )
 }
