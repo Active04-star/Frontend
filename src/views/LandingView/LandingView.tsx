@@ -7,24 +7,31 @@ import Link from "next/link";
 import { FaCalendarAlt, FaUserSlash, FaCashRegister } from "react-icons/fa";
 import { AiOutlineCloud, AiOutlineUserSwitch, AiOutlineCreditCard } from "react-icons/ai";
 import { BsBarChart, BsShieldCheck, BsMegaphone } from "react-icons/bs";
-// import { IUser } from "@/types/zTypes";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserSchemaWToken } from "@/types/user-schema";
-// import { IUser } from "@/interfaces/user_Interface";
+import LoadingCircle from "@/components/general/loading-circle";
 
 const LandingView: React.FC = () => {
   const [user,] = useLocalStorage("userSession", null);
+  const [center,] = useLocalStorage("sportCenter", null);
   const [show, setShow] = useState<boolean>(false);
-  // const [userData, setUserData] = useState<IUser | null>(null);
+  const [isManager, setIsManager] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (center !== undefined && center !== null) {
+      console.log(center);
+      setIsManager(true);
+    }
+
     const validate = zodValidate(user, UserSchemaWToken);
 
     if (!validate.success) {
       setShow(true);
     }
 
+    setIsLoading(false);
   }, []);
 
   return (
@@ -49,11 +56,23 @@ const LandingView: React.FC = () => {
                     </button>
                   )
               }
-              <Link href="/registerSportcenter">
-                <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
-                  INSCRIBE TU CENTRO DEPORTIVO
-                </button>
-              </Link>
+              {isLoading ?
+                <div className="w-8 h-8">
+                  <LoadingCircle />
+                </div>
+                : isManager ?
+                  <Link href="/manager">
+                    <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                      PANEL DE CONTROL
+                    </button>
+                  </Link>
+                  :
+                  <Link href="/registerSportcenter">
+                    <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                      INSCRIBE TU CENTRO DEPORTIVO
+                    </button>
+                  </Link>
+              }
             </div>
           </div>
 

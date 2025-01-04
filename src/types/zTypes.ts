@@ -4,6 +4,7 @@ import { UserSchemaWToken } from "./user-schema";
 import { CenterRegisterSchema } from "./centerRegister-schema";
 import { SportCenterSchema } from "./center-schema";
 import { UserLoginSchema } from "./userLogin-schema";
+import { PasswordUpdateSchema, UserUpdateSchema } from "./userUpdate-schema";
 
 /**Registro de Usuario de formulario, se valida con `UserRegisterSchema`
  */
@@ -16,7 +17,6 @@ export type IUser = z.infer<typeof UserSchemaWToken>;
 /**Centro deportivo de formulario, se valida con `CenterRegisterSchema`
  */
 export type ICenterRegister = z.infer<typeof CenterRegisterSchema>;
-export type CenterFormFields = keyof ICenterRegister;
 
 /**Centro deportivo proveniente del back, se valida con `SportCenterSchema`
  */
@@ -25,3 +25,11 @@ export type ISportCenter = z.infer<typeof SportCenterSchema>;
 /**Login de Usuario de formulario, se valida con `UserLoginSchema`
  */
 export type IUserLogin = z.infer<typeof UserLoginSchema>;
+
+/**Actualización de Usuario (nombre), se valida con `UserUpdateSchema`
+ */
+export type IUserUpdate = z.infer<typeof UserUpdateSchema>;
+
+/**Actualización de contraseña, se valida con `PasswordUpdateSchema`
+ */
+export type IPasswordUpdate = z.infer<typeof PasswordUpdateSchema>;

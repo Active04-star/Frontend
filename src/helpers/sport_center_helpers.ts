@@ -11,24 +11,3 @@ export async function fetchSearchCenters(): Promise<ISportCenterList> {
   
   return response;
 }
-
-export async function fetchCenterById(id: string): Promise<void> {
-  try {
-    // const sportCenter = sportCenters.find((item) => item.id === id);
-
-    // Si no encontramos el Sport Center, lanzamos un error
-    // if (!sportCenter) {
-    // throw new Error(`Sport Center with ID ${id} not found`);
-    // }
-
-    // Devolvemos el Sport Center encontrado
-    // return sportCenter;
-  } catch (error: unknown) {
-    // Verificamos que el error sea una instancia de Error
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch Sport Center by ID: ${error.message}`);
-    }
-    // Si el error no es del tipo esperado, lanzamos un error genérico
-    throw new Error("Failed to fetch Sport Center by ID: Unknown error");
-  }
-}

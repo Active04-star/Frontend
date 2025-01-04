@@ -50,5 +50,4 @@ export const UserRegisterSchema = z.object({
     {
         path: ["confirm_password"],
         message: "Las contraseñas deben coincidir",
-    }
-);
+    });
