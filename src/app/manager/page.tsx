@@ -12,7 +12,7 @@ import PremiumCard from "@/views/PremiumCard/PremiumCard";
 
 const ManagerPage = () => {
   // Estado para manejar la vista actual
-  const [currentView, setCurrentView] = useState<string>("");
+  const [currentView, setCurrentView] = useState<string>("panel");
 
   // Estado para manejar el ancho del sidebar
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); // Ancho inicial en píxeles

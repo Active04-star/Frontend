@@ -1,8 +1,8 @@
-import PanelView from "@/views/Panel/PanelView";
+import NotificacionesView from "@/views/Notificaciones/NotificacionesView";
 import React from "react";
 
 const NotificacionesPage: React.FC = () => {
-  return <PanelView />;
+  return <NotificacionesView />;
 };
 
 export default NotificacionesPage;
