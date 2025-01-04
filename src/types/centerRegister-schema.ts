@@ -10,5 +10,5 @@ export const CenterRegisterSchema = z.object({
 
     address: z.string().min(5, address_lenght_error).max(120, address_lenght_error),
 
-    manager: z.string().uuid("No hay una id de manager valida en esta peticion"),
+    
 });

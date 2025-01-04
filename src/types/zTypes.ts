@@ -16,6 +16,7 @@ export type IUser = z.infer<typeof UserSchemaWToken>;
 /**Centro deportivo de formulario, se valida con `CenterRegisterSchema`
  */
 export type ICenterRegister = z.infer<typeof CenterRegisterSchema>;
+export type CenterFormFields = keyof ICenterRegister;
 
 /**Centro deportivo proveniente del back, se valida con `SportCenterSchema`
  */
