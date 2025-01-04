@@ -1,11 +1,13 @@
 import React from "react";
 import Navbar from "@/components/navbar/navbar";
+import RegisterSportcenter from "@/views/RegisterSportcenterView/RegisterSportcenterView";
 
 const Business = () => {
     return (
         <>
             <Navbar />
-            {/* TODO FORMULARIO DE REGISTRO DE NEGOCIO AQUI */}
+            <RegisterSportcenter/>
+
         </>
     );
 };
