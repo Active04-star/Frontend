@@ -7,5 +7,5 @@ export function logout(fire_swal: boolean): void {
         swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
     }
 
-    window.location.href = "/";
+    window.location.href = "/api/auth/logout";
 }

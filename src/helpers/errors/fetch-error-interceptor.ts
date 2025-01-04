@@ -13,10 +13,9 @@ export async function fetchAndCatch(url: string | URL | globalThis.Request, opti
 
         if (response.status === 401) {
             throw new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "401");
-        } else
-            if (!response.ok) {
-                throw new ErrorHelper(verifyError(data.message), data.status);
-            }
+        } else if (!response.ok) {
+            throw new ErrorHelper(verifyError(data.message), data.status);
+        }
 
         return data;
     } catch (error) {

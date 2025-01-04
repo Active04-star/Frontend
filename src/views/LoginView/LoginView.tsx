@@ -16,8 +16,9 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
-import { API_URL } from "@/config/config";
-import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
+import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
+import { getUserType } from "@/helpers/auth/getUserType";
+import { AUTH0_CLIENT_ID, AUTH0_ISSUER_BASE_URL } from "@/config/config";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -31,10 +32,12 @@ const LoginView: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUserData({ ...userData, [name]: value });
   };
+
 
   useEffect(() => {
     const data = zodValidate(userData, UserLoginSchema);
@@ -46,11 +49,31 @@ const LoginView: React.FC = () => {
     }
   }, [userData]);
 
+
+  const redirectToAuth = (email: string) => {
+    // window.location.href = `${AUTH0_ISSUER_BASE_URL}/authorize?client_id=${AUTH0_CLIENT_ID}&response_type=code&scope=openid%20profile%20email&login_hint=${encodeURIComponent(email)}`
+    window.location.href = `api/auth/login?login_hint=${encodeURIComponent(email)}`
+  };
+
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isSubmitting) return;
     setIsSubmitting(true);
+
+    const validation = zodValidate(userData, UserLoginSchema);
+
+    if (validation.errors === undefined || validation.errors.email === undefined) {
+      const response = await getUserType(userData.email);
+
+      if(response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
+
+        redirectToAuth(userData.email.toLowerCase());
+        return;
+      }
+
+    }
 
     if (Object.values(userData).find((data) => data === "") === "") {
       swalCustomError("Error en Logueo", "Los campos están vacios.");
@@ -59,9 +82,9 @@ const LoginView: React.FC = () => {
       return;
     }
 
-    const data = zodValidate(userData, UserLoginSchema);
+    // const data = zodValidate(userData, UserLoginSchema);
 
-    if (!data.success) {
+    if (!validation.success) {
       swalCustomError("Error en Logueo", "Por favor corrige los errores antes de continuar.");
 
       setIsSubmitting(false);
@@ -79,22 +102,15 @@ const LoginView: React.FC = () => {
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
 
       setUserData(initialState);
+      getCenterIfManager(user);
 
-      if (user.role === UserRole.MANAGER || user.role === UserRole.MAIN_MANAGER) {
-
-        const data = await fetchAndCatch(`${API_URL}/user/center/${user.id}`, {
-          method: "GET"
-        });
-
-        localStorage.setItem("sportCenter", JSON.stringify(data.id));
-
-      } else if (user.role === UserRole.USER) {
+      if (user.role === UserRole.USER) {
         router.push("/user");
         return;
 
       }
 
-      router.push("/"); // Redirección predeterminada si no se cumplen las condiciones anteriores.
+      router.push("/");
     } catch (error) {
 
       if (error instanceof ErrorHelper && error.message === ApiStatusEnum.USER_DELETED) {
@@ -109,6 +125,7 @@ const LoginView: React.FC = () => {
     }
 
   };
+
 
   return (
     <div className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
@@ -247,8 +264,7 @@ const LoginView: React.FC = () => {
                   <Link
                     type="submit"
                     className="mt-5 bg-primary text-dark px-6 py-2 rounded bg-orange-100 text-black flex justify-between"
-                    href={"api/auth/login"}>
-                    {/* <AiOutlineGoogle className="text-red-700 "/>{" "} */}
+                    href="api/auth/login">
                     <Image
                       src="https://auth.openai.com/assets/google-logo-NePEveMl.svg"
                       alt="google icon"
