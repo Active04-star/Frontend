@@ -95,7 +95,7 @@ function PremiumCard() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 pt-20">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 p-10 text-white">
@@ -124,18 +124,6 @@ function PremiumCard() {
               isLoading={isLoading}
               onSubscribe={createCheckout}
             />
-          </div>
-
-          {/* Footer */}
-          <div className="mt-8 text-center space-y-3">
-            <div className="flex items-center justify-center text-gray-600 hover:text-yellow-600 transition-colors">
-              <HelpCircle className="w-4 h-4 mr-1" />
-              <a href="#" className="text-sm underline">¿Tienes dudas? Contáctanos</a>
-            </div>
-            <p className="text-xs text-gray-500">
-              Se aplican <a href="#" className="text-yellow-600 hover:text-yellow-700 underline">Términos y Condiciones</a>.
-              <br />***+ impuestos aplicables.
-            </p>
           </div>
         </div>
       </div>
