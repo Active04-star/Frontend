@@ -1,8 +1,9 @@
 import React from "react";
 import { logout } from "@/helpers/auth/logout";
 import Link from "next/link";
+import { ViewName } from "@/app/manager/page";
 
-const MSidebar: React.FC<{ onMenuClick: (viewName: string) => void }> = ({ onMenuClick }) => {
+const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({ onMenuClick }) => {
 
   const handleLogout = () => {
     
