@@ -20,7 +20,7 @@ const BotonVolver: React.FC = () => {
     <button
       onClick={manejarVolver}
       style={{ top: `${navbarHeight + 16}px` }} // Calcula la altura de la navbar más un margen
-      className="fixed left-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none z-10"
+      className="fixed left-4 px-4 py-2 bg-yellow-600  text-white rounded-md  hover:bg-yellow-700 focus:outline-none z-10"
     >
       Volver
     </button>
