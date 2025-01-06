@@ -6,7 +6,7 @@ export async function getCenterIfManager(user: any): Promise<void> {
     if (user.role === UserRole.MANAGER || user.role === UserRole.MAIN_MANAGER) {
 
         try {
-            const data = await fetchAndCatch(`${API_URL}/user/center/${user.id}`, {
+            const data = await fetchAndCatch(`${API_URL}/manager/center/${user.id}`, {
                 method: "GET"
             });
 

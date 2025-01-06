@@ -95,6 +95,7 @@ const LoadingView: React.FC = () => {
                                         window.location.href = "/";
                                     }
                                 });
+                                window.location.href = "/api/auth/logout";
 
                             }
                         }
@@ -106,13 +107,16 @@ const LoadingView: React.FC = () => {
                 }
 
             } catch (error: any) {
-
+                
                 if (error.message === "Cookie not found") {
+                    setShow(true);
                     window.location.href = "/";
+                } else {
                     setShow(false);
+                    console.log(error);
                 }
             }
-            
+
         }
 
         handle();

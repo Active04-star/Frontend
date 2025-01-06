@@ -13,25 +13,30 @@ import { UserSchemaWToken } from "@/types/user-schema";
 import LoadingCircle from "@/components/general/loading-circle";
 
 const LandingView: React.FC = () => {
-  const [user,] = useLocalStorage("userSession", null);
-  const [center,] = useLocalStorage("sportCenter", null);
+  const [user] = useLocalStorage("userSession", "");
+  const [sportCenter,] = useLocalStorage("sportCenter", "");
+
   const [show, setShow] = useState<boolean>(false);
   const [isManager, setIsManager] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (center !== undefined && center !== null) {
-      console.log(center);
-      setIsManager(true);
+    setIsLoading(true);
+
+    if (typeof window !== "undefined" && window.localStorage) {
+
+      const validate = zodValidate(user, UserSchemaWToken);
+
+      if (!validate.success) {
+        setShow(true);
+      }
+
+      if (sportCenter !== null && sportCenter !== "") {
+        setIsManager(true);
+      }
+
+      setIsLoading(false);
     }
-
-    const validate = zodValidate(user, UserSchemaWToken);
-
-    if (!validate.success) {
-      setShow(true);
-    }
-
-    setIsLoading(false);
   }, []);
 
   return (
@@ -67,7 +72,7 @@ const LandingView: React.FC = () => {
                     </button>
                   </Link>
                   :
-                  <Link href="/registerSportcenter">
+                  <Link href="/for-business">
                     <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
                       INSCRIBE TU CENTRO DEPORTIVO
                     </button>

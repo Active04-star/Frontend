@@ -20,7 +20,6 @@ export default function SettingsView() {
 
   // const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   useEffect(() => {
     if (user) {
       setName({

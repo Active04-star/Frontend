@@ -14,8 +14,10 @@ export async function updateUser(id: string, body: Partial<IUserUpdate & IPasswo
             body: JSON.stringify({ name: body.name })
         });
 
-    } else if (body.password !== undefined && body.confirm_password !== undefined) {
-        response = await fetchWithAuth(`${API_URL}/NO_EXISTE_ESTA_RUTA_AUN/${id}`, {
+    }
+
+    if (body.password !== undefined && body.confirm_password !== undefined) {
+        response = await fetchWithAuth(`${API_URL}/auth/update-password/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

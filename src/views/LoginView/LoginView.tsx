@@ -18,7 +18,6 @@ import Image from "next/image";
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
 import { getUserType } from "@/helpers/auth/getUserType";
-import { AUTH0_CLIENT_ID, AUTH0_ISSUER_BASE_URL } from "@/config/config";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -49,9 +48,23 @@ const LoginView: React.FC = () => {
     }
   }, [userData]);
 
+  
+  useEffect(() => {
+    const queryString = new URLSearchParams(window.location.search);
+    const queryParams = Object.fromEntries(queryString.entries()) as { from: string };
+
+    if (queryParams.from === "business") {
+      swalCustomError("Necesitas una cuenta", "Debes estar registrado para poder acceder a esta funcion");
+
+    } else if (queryParams.from === "out_session") {
+      swalCustomError("La sesion ha expirado!", "Debes iniciar sesion nuevamente");
+
+    }
+
+  }, []);
+
 
   const redirectToAuth = (email: string) => {
-    // window.location.href = `${AUTH0_ISSUER_BASE_URL}/authorize?client_id=${AUTH0_CLIENT_ID}&response_type=code&scope=openid%20profile%20email&login_hint=${encodeURIComponent(email)}`
     window.location.href = `api/auth/login?login_hint=${encodeURIComponent(email)}`
   };
 
@@ -67,7 +80,7 @@ const LoginView: React.FC = () => {
     if (validation.errors === undefined || validation.errors.email === undefined) {
       const response = await getUserType(userData.email);
 
-      if(response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
+      if (response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
 
         redirectToAuth(userData.email.toLowerCase());
         return;
@@ -104,13 +117,8 @@ const LoginView: React.FC = () => {
       setUserData(initialState);
       getCenterIfManager(user);
 
-      if (user.role === UserRole.USER) {
-        router.push("/user");
-        return;
 
-      }
-
-      router.push("/");
+      router.push("/auth/redirect");
     } catch (error) {
 
       if (error instanceof ErrorHelper && error.message === ApiStatusEnum.USER_DELETED) {

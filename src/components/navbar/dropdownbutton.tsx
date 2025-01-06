@@ -18,7 +18,6 @@ const DropDownButton: React.FC = () => {
     const offStyle = "flex items-center block px-4 py-2 text-gray-400 hover:bg-gray-100 transition-colors duration-200 pointer-events-none";
     const onStyle = "flex items-center block px-4 py-2 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400";
 
-//TODO AGREGAR EL COMPONENTE LOADING PARA EVITAR VISTAS INDESEADAS; (TALVEZ EN EL NAVBAR)
     useEffect(() => {
         setActualPage(getSubPath(window.location.href));
 
@@ -174,9 +173,9 @@ const DropDownButton: React.FC = () => {
                                     <li>
                                         <Link
                                             //TODO AQUI VA EL LINK AL DASHBOARD DE ADMIN
-                                            href={"/AquiVaElDashboardDeManager"}
-                                            aria-disabled={actualPage === "/AquiVaElDashboardDeManager"}
-                                            className={actualPage === "/AquiVaElDashboardDeManager" ? offStyle : onStyle}
+                                            href={"/manager"}
+                                            aria-disabled={actualPage === "/manager"}
+                                            className={actualPage === "/manager" ? offStyle : onStyle}
                                         >
                                             <AiOutlineKey className="mr-2" />{" "}
                                             Administracion
@@ -199,8 +198,8 @@ const DropDownButton: React.FC = () => {
                                     <Link
                                         //TODO AQUI VA EL LINK A CONFIGURACION DE PERFIL DE USUARIO
                                         href={"/settings"}
-                                        aria-disabled={actualPage === "/AquiVaLaConfiguracionDePerfil"}
-                                        className={actualPage === "/AquiVaLaConfiguracionDePerfil" ? offStyle : onStyle}
+                                        aria-disabled={actualPage === "/settings"}
+                                        className={actualPage === "/settings" ? offStyle : onStyle}
                                     >
                                         <AiOutlineSetting className="mr-2" />{" "}
                                         Configuracion
