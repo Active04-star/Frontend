@@ -4,7 +4,6 @@ import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import React from "react";
 
 const PanelView: React.FC = () => {
-  const [user] = useLocalStorage("userSession", null);
   const [center] = useLocalStorage("sportCenter", null);
 
   const handlePublish = (id: string) => {
