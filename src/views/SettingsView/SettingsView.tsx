@@ -60,7 +60,7 @@ export default function SettingsView() {
         password: password.password,
         confirm_password: password.confirm_password,
       });
-
+    
       localStorage.setItem(
         "userSession",
         JSON.stringify({
@@ -68,17 +68,19 @@ export default function SettingsView() {
           user: { ...user.user, name: response?.user.name },
         })
       );
-
+    
       window.location.reload();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof ErrorHelper) {
         swalNotifyError(error);
+      } else if (error instanceof Error) {
+        swalNotifyUnknownError(error.message);
       } else {
-        swalNotifyUnknownError(error);
+        swalNotifyUnknownError("Unexpected error occurred.");
       }
     }
-  };
-
+  }
+    
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
       <div className="bg-black p-6 rounded-lg shadow-md w-full max-w-md mt-48">

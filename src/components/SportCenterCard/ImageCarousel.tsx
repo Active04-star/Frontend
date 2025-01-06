@@ -1,7 +1,8 @@
+'use client'; // Asegúrate de que esto esté incluido
+
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Upload } from 'lucide-react';
-
-
+import Image from 'next/image'; // Importa el componente de Next.js
 
 interface ImageCarouselProps {
   images: string[];
@@ -37,10 +38,12 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
 
   return (
     <div className="relative w-full h-64">
-      <img
+      <Image
         src={images[currentIndex]}
         alt={`Sport center image ${currentIndex + 1}`}
-        className="w-full h-full object-cover rounded-t-lg"
+        fill // Para llenar el contenedor
+        sizes="100vw"
+        className="object-cover rounded-t-lg"
       />
       
       {images.length > 1 && (

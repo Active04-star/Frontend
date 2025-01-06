@@ -1,4 +1,5 @@
 // src/views/Panel/PanelView.tsx
+"use client"
 import ManagerSportCenterCard from "@/components/SportCenterCard/sportCenterCard.managerVIew";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import React from "react";

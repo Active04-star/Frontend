@@ -28,11 +28,16 @@ const initialSchedules: Schedule[] = Object.values(DayOfWeek).map((day) => ({
 export default function ScheduleForm() {
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
 
-  const handleScheduleChange = (index: number, field: keyof Schedule, value: any) => {
+  const handleScheduleChange = (
+    index: number,
+    field: keyof Schedule,
+    value: string | boolean
+  ) => {
     const newSchedules = [...schedules];
     newSchedules[index] = { ...newSchedules[index], [field]: value };
     setSchedules(newSchedules);
   };
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
