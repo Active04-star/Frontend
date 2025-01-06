@@ -33,7 +33,7 @@ const LandingView: React.FC = () => {
     }
 
     setIsLoading(false);
-  }, []);
+  }, [center, user]);
 
   if (isLoading) {
     return (

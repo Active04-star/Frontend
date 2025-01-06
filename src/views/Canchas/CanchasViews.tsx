@@ -53,7 +53,7 @@ const CanchasView: React.FC = () => {
     };
 
     fetchData()
-  }, []);
+  }, [sportCenter.id]);
 
   // Función para manejar el clic en el botón de editar
   const handleEditClick = (id: string) => {
