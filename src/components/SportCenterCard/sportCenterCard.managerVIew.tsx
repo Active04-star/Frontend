@@ -25,10 +25,10 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps>=({
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="relative">
         <ImageCarousel
-          images={sportCenter.photos || []}
+          images={sportCenter?.photos || []}
           onImageUpload={onImageUpload}
         />
-        {sportCenter.status === 'draft' && (
+        {sportCenter?.status === 'draft' && (
           <button
             onClick={handlePublish}
             className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
@@ -40,11 +40,11 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps>=({
       </div>
 
       <SportCenterDetails
-        name={sportCenter.name}
-        address={sportCenter.address}
-        averageRating={sportCenter.averageRating || 0}
-        fieldsCount={sportCenter.fields?.length || 0}
-        sportCategories={sportCenter.sportCategories || []}
+        name={sportCenter?.name}
+        address={sportCenter?.address}
+        averageRating={sportCenter?.averageRating || 0}
+        fieldsCount={sportCenter?.fields?.length || 0}
+        sportCategories={sportCenter?.sportCategories || []}
       />
     </div>
   );
