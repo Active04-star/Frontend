@@ -16,7 +16,7 @@ const PanelView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 pt-20 bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20">
       {/* Título del panel */}
       <h1 className="text-4xl font-semibold text-center text-indigo-700 mb-6">
         Bienvenido al Panel
