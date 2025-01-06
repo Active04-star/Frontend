@@ -1,5 +1,5 @@
 import { API_URL } from "@/config/config";
-import { StatusEnum } from "@/enum/HttpStatus.enum";
+import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 import { ErrorHelper, verifyError } from "@/helpers/errors/error-helper";
 import { IUserRegister } from "@/types/zTypes";
 
@@ -16,8 +16,8 @@ export async function register(userData: IUserRegister) {
     if (!res.ok) {
       const error = await res.json();
 
-      if (error.error === StatusEnum.MAIL_IN_USE) {
-        throw new ErrorHelper(StatusEnum.MAIL_IN_USE, "409");
+      if (error.error === ApiStatusEnum.MAIL_IN_USE) {
+        throw new ErrorHelper(ApiStatusEnum.MAIL_IN_USE, "409");
       }
       throw new ErrorHelper(verifyError(error.message), error.status);
     }
