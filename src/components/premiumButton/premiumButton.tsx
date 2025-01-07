@@ -1,5 +1,5 @@
-import { IUser } from '@/interfaces/user_Interface';
-import { Crown, AlertCircle } from 'lucide-react';
+import { IUser } from "@/interfaces/user_Interface";
+import { Crown, AlertCircle } from "lucide-react";
 
 interface PremiumButtonProps {
   user: IUser | null;
@@ -7,7 +7,11 @@ interface PremiumButtonProps {
   onSubscribe: () => void;
 }
 
-export const PremiumButton = ({ user, isLoading, onSubscribe }: PremiumButtonProps) => {
+export const PremiumButton = ({
+  user,
+  isLoading,
+  onSubscribe,
+}: PremiumButtonProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center space-x-2 text-gray-500">

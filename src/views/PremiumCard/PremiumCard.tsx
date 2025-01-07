@@ -18,7 +18,7 @@ const features = [
 
 function PremiumCard() {
   const [userLocalStorage] = useLocalStorage("userSession", null);
-  const { token, user } = userLocalStorage;
+  const { token, user } = userLocalStorage || { token: null, user: null };
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
