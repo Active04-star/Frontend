@@ -1,20 +1,23 @@
 import { API_URL } from "@/config/config";
-import { fetchAndCatch } from "../errors/fetch-error-interceptor";
+import { fetchWithAuth } from "../errors/fetch-with-token-interceptor";
 import { IUser } from "@/types/zTypes";
+import { UserRole } from "@/enum/userRole";
 
-export async function getCenterIfManager(userData: IUser): Promise<void> {
-    const {user,token}=userData
-        try {
-            const data = await fetchAndCatch(`${API_URL}/manager/center/${user.id}`, {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`, // Incluir el token en la cabecera
-                }
+export async function getCenterIfManager(user: IUser): Promise<string | undefined> {
+
+    try {
+        if (user.user.role === UserRole.MAIN_MANAGER || user.user.role === UserRole.MANAGER) {
+            const data = await fetchWithAuth(`${API_URL}/manager/center/${user.user.id}`, {
+                method: "GET"
             });
 
             localStorage.setItem("sportCenter", JSON.stringify(data));
-        } catch (error) {
-            throw error;
+
+            return data;
         }
+
+        return;
+    } catch (error) {
+        throw error;
+    }
 }

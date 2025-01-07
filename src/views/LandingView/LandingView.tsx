@@ -16,32 +16,38 @@ import {
 import { BsBarChart, BsMegaphone, BsShieldCheck } from "react-icons/bs";
 
 const LandingView: React.FC = () => {
-  const [user] = useLocalStorage("userSession", null);
-  const [center] = useLocalStorage("sportCenter", null);
+  const [user] = useLocalStorage("userSession", "");
+  const [sportCenter,] = useLocalStorage("sportCenter", "");
   const [show, setShow] = useState<boolean>(false);
   const [isManager, setIsManager] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (center !== undefined && center !== null) {
-      setIsManager(true);
+    setIsLoading(true);
+
+    if (typeof window !== "undefined" && window.localStorage) {
+
+      const validate = zodValidate(user, UserSchemaWToken);
+
+      if (!validate.success) {
+        setShow(true);
+      }
+
+      if (sportCenter !== null && sportCenter !== "") {
+        setIsManager(true);
+      }
+
+      setIsLoading(false);
     }
+  }, []);
 
-    const validate = zodValidate(user, UserSchemaWToken);
-    if (!validate.success) {
-      setShow(true);
-    }
-
-    setIsLoading(false);
-  }, [center, user]);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-dark">
-        <LoadingCircle />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex w-96 h-96 justify-center items-center bg-dark">
+  //       <LoadingCircle />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -55,26 +61,34 @@ const LandingView: React.FC = () => {
               TU CANCHA
             </p>
             <div className="space-x-4">
-              {show && (
-                <button className="bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600">
+
+              {show &&
+                (<button className="bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-600">
                   <Link href="/register">REGISTRATE</Link>
-                </button>
-              )}
-              {isManager ? (
-                <Link href="/manager">
-                  <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
-                    PANEL DE CONTROL
-                  </button>
-                </Link>
-              ) : (
-                <Link href="/for-business">
-                  <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
-                    INSCRIBE TU CENTRO DEPORTIVO
-                  </button>
-                </Link>
-              )}
+                </button>)
+              }
+
+              {
+                isLoading ?
+                  <div className="w-8 h-8">
+                    <LoadingCircle />
+                  </div>
+                  : isManager ?
+                    (<Link href="/manager">
+                      <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                        PANEL DE CONTROL
+                      </button>
+                    </Link>)
+                    :
+                    (<Link href="/for-business">
+                      <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                        INSCRIBE TU CENTRO DEPORTIVO
+                      </button>
+                    </Link>)
+              }
             </div>
           </div>
+
           <div className="w-1/2 relative">
             <Image
               src="https://images.pexels.com/photos/2277980/pexels-photo-2277980.jpeg?cs=srgb&dl=pexels-king-siberia-1123639-2277980.jpg&fm=jpg"
@@ -166,10 +180,10 @@ const LandingView: React.FC = () => {
                   Sanciona jugadores según las reglas de tu cancha.
                 </p>
                 <h4 className="font-bold mt-4 mb-2 flex items-center  text-black">
-                    <FaCashRegister className="text-green-500 mr-2" /> Gestión
-                    de cajas
-                  </h4>
-                  <p  className="text-gray-700">Controla los ingresos y egresos con transparencia.</p>
+                  <FaCashRegister className="text-green-500 mr-2" /> Gestión
+                  de cajas
+                </h4>
+                <p className="text-gray-700">Controla los ingresos y egresos con transparencia.</p>
               </div>
 
               <div>

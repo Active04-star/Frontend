@@ -18,6 +18,7 @@ export enum ApiStatusEnum {
   PASSWORD_UPDATE_FAILED = 'Error al actualizar la contraseña',
   PASSWORDS_DONT_MATCH = 'Las contraseñas no coinciden',
   HASHING_FAILED = 'Encriptado de contraseña fallido!',
+  PASSWORD_SAME_AS_OLD = "La nueva contraseña no puede ser igual a la anterior",
 
   // User
   USER_DELETED = 'Este usuario fue eliminado!',
