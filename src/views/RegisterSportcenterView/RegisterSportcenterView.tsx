@@ -16,7 +16,7 @@ import BotonVolver from "@/components/back-button/back-button";
 import { ModalInformacion } from "@/components/modal/modal.component";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 
-type FormErrors<T> = { [K in keyof T]?: string[]; };
+type FormErrors<T> = { [K in keyof T]?: string[] };
 
 export default function RegisterSportcenter() {
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -67,24 +67,17 @@ export default function RegisterSportcenter() {
       const validatedData = CenterRegisterSchema.parse(sportCenter);
       console.log("Form data is valid:", validatedData);
       const new_sportcenter = { ...sportCenter, manager: user.id };
-      const response = await fetchWithAuth(`${API_URL}/sportcenter/create`, {
+      await fetchWithAuth(`${API_URL}/sportcenter/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(new_sportcenter),
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Centro deportivo registrado con éxito:", data);
 
-        localStorage.removeItem("userSession");
-        swalNotifySuccess("Creacion exitosa", "seras redirigido a login");
-        router.push("/login");
-      } else {
-        const errorData = await response.json();
-        swalNotifyError(errorData.message);
-      }
+      localStorage.removeItem("userSession");
+      swalNotifySuccess("Creacion exitosa", "seras redirigido a login");
+      router.push("/login");
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
@@ -109,12 +102,11 @@ export default function RegisterSportcenter() {
         setHide(false);
       }
     }
-
   }, [iuser]);
 
   return (
     <>
-      {hide ? null :
+      {hide ? null : (
         <>
           {isModalOpen && <ModalInformacion closeModal={closeModal} />}
           <BotonVolver />
@@ -152,7 +144,9 @@ export default function RegisterSportcenter() {
                       className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
                     />
                     {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">{errors.name[0]}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.name[0]}
+                      </p>
                     )}
                   </div>
 
@@ -211,7 +205,7 @@ export default function RegisterSportcenter() {
             )}
           </div>
         </>
-      }
+      )}
     </>
   );
 }
