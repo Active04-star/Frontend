@@ -1,4 +1,4 @@
-import { IUser } from '@/interfaces/user_Interface';
+import { IUser } from '@/types/zTypes';
 import { Crown, AlertCircle } from 'lucide-react';
 
 interface PremiumButtonProps {
@@ -17,7 +17,7 @@ export const PremiumButton = ({ user, isLoading, onSubscribe }: PremiumButtonPro
     );
   }
 
-  if (user?.stripeCustomerId) {
+  if (user?.user.stripeCustomerId) {
     return (
       <button
         className="w-full py-4 bg-gray-200 text-gray-500 rounded-xl font-semibold cursor-not-allowed transition flex items-center justify-center space-x-2"

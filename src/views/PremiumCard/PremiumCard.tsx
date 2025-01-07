@@ -5,8 +5,8 @@ import { Crown } from "lucide-react";
 import { PremiumButton } from "@/components/premiumButton/premiumButton";
 import { PremiumFeature } from "@/components/premiumFeature/premiumFeature";
 import { API_URL } from "@/config/config";
-import { IUser } from "@/interfaces/user_Interface";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { IUser } from "@/types/zTypes";
 
 const features = [
   "Gestiona ilimitadas canchas y deportes",
@@ -17,19 +17,18 @@ const features = [
 ];
 
 function PremiumCard() {
-  const [userLocalStorage] = useLocalStorage("userSession", null);
-  const { token, user } = userLocalStorage;
+  const [user] = useLocalStorage("userSession", null);
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchUserData = useCallback(async () => {
-    if (!user?.id) {
+    if (!user.user?.id) {
       return;
     }
 
     try {
       const response = await fetch(
-        `${API_URL}/user/solo-para-testing/${user.id}`,
+        `${API_URL}/user/solo-para-testing/${user.user.id}`,
         {
           method: "GET",
           headers: {
@@ -47,7 +46,7 @@ function PremiumCard() {
     } catch (error) {
       console.error("Error al obtener los datos del usuario:", error);
     }
-  }, [user?.id]);
+  }, [user?.user.id]);
 
   useEffect(() => {
     fetchUserData();
@@ -120,14 +119,14 @@ function PremiumCard() {
           </ul>
 
           <div className="mt-8">
-            {userData?.stripeCustomerId ? (
+            {userData?.user.stripeCustomerId ? (
               <p className="text-center text-green-600 font-bold">
                 ¡Ya tienes Premium!
               </p>
             ) : (
               <PremiumButton
                 isLoading={isLoading}
-                user={user}
+                user={userData}
                 onSubscribe={createCheckout}
               />
             )}

@@ -117,9 +117,7 @@ const LoginView: React.FC = () => {
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
 
       setUserData(initialState);
-      if (user.role === UserRole.MAIN_MANAGER || user.role === UserRole.MANAGER) {
-        getCenterIfManager(response);
-      }
+      getCenterIfManager(response);
 
       const roleRoutes = {
         [UserRole.USER]: "/user",

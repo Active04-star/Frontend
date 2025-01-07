@@ -37,7 +37,7 @@ const LoadingView: React.FC = () => {
                             try {
                                 const { email, name, sub, picture: profile_image } = user;
 
-                                const response: Response = await fetch(`${API_URL}/auth/authenticate`, {
+                                const response = await fetchAndCatch(`${API_URL}/auth/authenticate`, {
                                     method: "POST",
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -51,13 +51,12 @@ const LoadingView: React.FC = () => {
                                     })
                                 });
 
-                                const data: unknown = await response.json();
-                                const validate = zodValidate(data, UserSchemaWToken);
+                                const validate = zodValidate(response, UserSchemaWToken);
 
                                 if (validate.success) {
 
-                                    setSession({ token: (data as IUser).token, user: (data as IUser).user });
-                                    getCenterIfManager(data as IUser);
+                                    setSession({ token: (response as IUser).token, user: (response as IUser).user });
+                                    getCenterIfManager(response as IUser);
 
                                     if (user.role === UserRole.USER) {
                                         window.location.href = "/user";
