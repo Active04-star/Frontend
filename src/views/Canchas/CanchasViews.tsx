@@ -1,153 +1,225 @@
-// src/views/Panel/CanchasView.tsx
 "use client";
-import LoadingCircle from "@/components/general/loading-circle";
-import { API_URL } from "@/config/config";
-import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
-import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-import { AuthErrorHelper } from "@/helpers/errors/auth-error-helper";
-import { ErrorHelper } from "@/helpers/errors/error-helper";
-import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
-import { IField } from "@/interfaces/field_Interface";
-import React, { useEffect, useState } from "react";
 
-const CanchasView: React.FC = () => {
-  const [sportCenter,] = useLocalStorage("sportCenter", "");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasFields, setHasFields] = useState<boolean>(false);
-  const [canchas, setCanchas] = useState<IField[]>([]);
-  // Lista de canchas con sus datos (por ejemplo, nombre, tipo, disponibilidad)
-  // const canchas = [
-  //   { id: 1, nombre: "Cancha 1", tipo: "Fútbol 11", disponible: true },
-  //   { id: 2, nombre: "Cancha 2", tipo: "Fútbol 7", disponible: false },
-  //   { id: 3, nombre: "Cancha 3", tipo: "Tenis", disponible: true },
-  //   { id: 4, nombre: "Cancha 4", tipo: "Fútbol 5", disponible: true },
-  //   { id: 5, nombre: "Cancha 5", tipo: "Paddle", disponible: false },
-  // ];
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import Swal from "sweetalert2";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+
+interface Cancha {
+  id: string;
+  name: string;
+  address: string;
+  averageRating: number;
+  isDeleted: boolean;
+  status: string;
+  photos: string[];
+}
+
+const CanchasPanelView: React.FC = () => {
+  const [canchas, setCanchas] = useState<Cancha[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    status: "Activa",
+  });
+
+  const [user] = useLocalStorage("userSession", null);
+  const [center] = useLocalStorage("sportCenter", null);
+
+  const userUUID = "uuid-del-usuario-logueado"; // Este debería ser el UUID real del usuario.
+
+  const handleCreateCancha = () => {
+    setShowCreateForm(true);
+  };
+
+  const handleBack = () => {
+    setShowCreateForm(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const requestData = {
+      ...formData,
+      manager: userUUID,
+    };
+
+    try {
+      const response = await fetch("http://localhost:4000/sportcenter/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al crear la cancha");
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        text: "Tu cancha ha sido creada con éxito.",
+        confirmButtonText: "Aceptar",
+      }).then(() => {
+        setShowCreateForm(false);
+        setFormData({ name: "", address: "", status: "Activa" });
+      });
+    } catch (error: any) {
+      console.error("Error al crear la cancha:", error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un error al crear la cancha. Inténtalo de nuevo.",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
 
   useEffect(() => {
-    setIsLoading(true);
-
-    const fetchData = async () => {
+    const fetchCanchas = async () => {
       try {
-
-        const response = await fetchWithAuth(`${API_URL}/manager/fields/${sportCenter.id}`, {
-          method: "GET",
-        });
-
-        setHasFields(true);
-        setCanchas(response);
-      } catch (error) {
-
-        if (error instanceof ErrorHelper) {
-          if (error.message === ApiStatusEnum.CENTER_HAS_NO_FIELDS) {
-            setHasFields(false);
-          }
-
-        } else {
-          AuthErrorHelper(error);
+        const response = await fetch("http://localhost:4000/sportcenter/search?page=1&limit=10");
+        if (!response.ok) {
+          throw new Error("Error al obtener las canchas");
         }
-
+        const result = await response.json();
+        setCanchas(result.sport_centers || []);
+      } catch (error: any) {
+        console.error("Error al cargar las canchas:", error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchData()
-  }, [sportCenter.id]);
+    fetchCanchas();
+  }, []);
 
-  // Función para manejar el clic en el botón de editar
-  const handleEditClick = (id: string) => {
-    console.log(`Editar cancha con ID: ${id}`);
-    // Aquí puedes agregar la lógica para redirigir a un formulario de edición o abrir un modal
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-100">
-      {/* Encabezado general de la vista */}
-      <h1 className="text-4xl font-semibold text-center text-red-600 mb-6">
-        Tus Canchas
-      </h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20">
+      <h1 className="text-4xl font-semibold text-center text-indigo-700 mb-6">Bienvenido al Panel</h1>
 
-      {/* Título para la tabla de canchas */}
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        Tus canchas
-      </h2>
-
-      {
-        isLoading ?
-          (
-            <div className="bg-white shadow-lg rounded-lg mb-6 flex justify-center items-center h-72">
-              <div className="w-64 h-64">
-                <LoadingCircle />
+      {showCreateForm ? (
+        <div className="create-form-container">
+          <h2>Crear Cancha</h2>
+          <form onSubmit={handleSubmit} className="create-form">
+            <div>
+              <label htmlFor="name">Nombre de la Cancha:</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="address">Dirección:</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="status">Estado:</label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                required
+              >
+                <option value="Activa">Activa</option>
+                <option value="Inactiva">Inactiva</option>
+              </select>
+            </div>
+            <div>
+              <button type="submit">Crear Cancha</button>
+            </div>
+            <div>
+              <button type="button" onClick={handleBack}>Atrás</button>
+            </div>
+          </form>
+        </div>
+      ) : (
+        <div
+          className="card-container"
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-around",
+            gap: "20px", // Añade espacio entre las tarjetas
+            padding: "20px",
+          }}
+        >
+          {canchas.map((cancha) => (
+            <div
+              key={cancha.id}
+              className="card"
+              style={{
+                maxWidth: "320px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                backgroundColor: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              <div
+                className="card-image"
+                style={{
+                  backgroundImage: cancha.photos.length > 0 ? `url(${cancha.photos[0]})` : "url('/default-image.jpg')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  height: "200px",
+                }}
+              >
+                <Image
+                  src={cancha.photos.length > 0 ? cancha.photos[0] : "/default-image.jpg"}
+                  alt={cancha.name}
+                  width={320}
+                  height={200}
+                  className="card-img"
+                  style={{ opacity: 0 }}
+                />
+              </div>
+              <div className="card-content" style={{ padding: "15px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "10px" }}>{cancha.name}</h3>
+                <section className="details" style={{ fontSize: "14px", color: "#555" }}>
+                  <p><strong>Dirección:</strong> {cancha.address}</p>
+                  <p><strong>Calificación promedio:</strong> {cancha.averageRating}</p>
+                  <p><strong>Estado:</strong> {cancha.isDeleted ? "Eliminada" : "Activa"}</p>
+                </section>
               </div>
             </div>
-          )
-          :
-          !hasFields ?
-            <p className="text-black">No hay canchas aun</p>
-            :
-            (
-              <>
-                {/* Botones de carga y descarga alineados a la derecha */}
-                {/* NO HAY TIEMPO, QUEDA COMO EXTRA */}
-                {/* <div className="flex justify-end space-x-4 mb-4">
-                  <button className="bg-blue-500 text-white p-2 rounded-md">
-                    Download
-                  </button>
-                  <button className="bg-green-500 text-white p-2 rounded-md">
-                    Upload
-                  </button>
-                </div> */}
+          ))}
+        </div>
+      )}
 
-                {/* Vista de las canchas en formato tabla estilo Excel */}
-                <div className="overflow-x-auto bg-white shadow-lg rounded-lg mb-6">
-                  <table className="min-w-full table-auto border-collapse">
-                    <thead className="bg-gray-200">
-                      <tr>
-                        <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Nombre</th>
-                        <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Tipo</th>
-                        <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Precio</th>
-                        <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Disponibilidad</th>
-                        <th className="px-6 py-4 text-left font-semibold text-gray-700 border-b">Acciones</th> {/* Columna para las acciones */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {canchas.map((cancha) => (
-                        <tr key={cancha.id} className="hover:bg-gray-100">
-                          <td className="px-6 py-4 text-gray-700 border-b">{cancha.number}</td>
-                          <td className="px-6 py-4 text-gray-700 border-b">{cancha.sportCategory?.name || "Sin Categoria"}</td>
-                          <td className="px-6 py-4 text-gray-700 border-b">{`$${cancha.price}`}</td>
-                          <td
-                            className={`px-6 py-4 text-gray-700 font-semibold border-b ${cancha.isActive ? "text-green-600" : "text-red-600"}`}
-                          >
-                            {cancha.isActive ? "Disponible" : "No disponible"}
-                          </td>
-                          <td className="px-6 py-4 text-gray-700 border-b">
-                            {/* Botón de editar al lado de cada cancha */}
-                            <button
-                              onClick={() => handleEditClick(cancha.id)}
-                              className="bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 transition duration-200"
-                            >
-                              Editar
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Botón para crear una nueva cancha, alineado a la derecha */}
-                <div className="flex justify-end mt-4">
-                  <button className="bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 transition duration-200">
-                    Crear Cancha
-                  </button>
-                </div>
-              </>
-            )
-      }
-    </div >
+      <button className="create-button" onClick={handleCreateCancha}>Crear Cancha</button>
+    </div>
   );
 };
 
-export default CanchasView;
+export default CanchasPanelView;
