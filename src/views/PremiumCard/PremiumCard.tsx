@@ -5,8 +5,8 @@ import { Crown } from "lucide-react";
 import { PremiumButton } from "@/components/premiumButton/premiumButton";
 import { PremiumFeature } from "@/components/premiumFeature/premiumFeature";
 import { API_URL } from "@/config/config";
+import { IUser } from "@/interfaces/user_Interface";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-import { IUser } from "@/types/zTypes";
 
 const features = [
   "Gestiona ilimitadas canchas y deportes",
@@ -17,18 +17,22 @@ const features = [
 ];
 
 function PremiumCard() {
-  const [user] = useLocalStorage("userSession", null);
+  const [userLocalStorage] = useLocalStorage("userSession", null);
+  const { token, user } = userLocalStorage || { token: null, user: null };
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
 
   const fetchUserData = useCallback(async () => {
-    if (!user.user?.id) {
+    if (!user?.id) {
+      setIsPageLoading(false);
       return;
     }
 
     try {
       const response = await fetch(
-        `${API_URL}/user/solo-para-testing/${user.user.id}`,
+        `${API_URL}/user/solo-para-testing/${user.id}`,
         {
           method: "GET",
           headers: {
@@ -43,10 +47,14 @@ function PremiumCard() {
 
       const data: IUser = await response.json();
       setUserData(data);
+      console.log('data',data);
+      
     } catch (error) {
       console.error("Error al obtener los datos del usuario:", error);
-    }
-  }, [user?.user.id]);
+    }finally {
+    setIsPageLoading(false); // Set loading to false when done
+  }
+  }, [user?.id]);
 
   useEffect(() => {
     fetchUserData();
@@ -94,6 +102,13 @@ function PremiumCard() {
     }
   };
 
+  if (isPageLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 pt-20">
+        <div className="text-white">Cargando...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 pt-20">
@@ -119,7 +134,7 @@ function PremiumCard() {
           </ul>
 
           <div className="mt-8">
-            {userData?.user.stripeCustomerId ? (
+            {userData?.stripeCustomerId ? (
               <p className="text-center text-green-600 font-bold">
                 ¡Ya tienes Premium!
               </p>
