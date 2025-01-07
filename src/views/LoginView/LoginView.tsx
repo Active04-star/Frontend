@@ -46,13 +46,13 @@ const LoginView: React.FC = () => {
     }
   }, [userData]);
 
-  
+
   useEffect(() => {
     const queryString = new URLSearchParams(window.location.search);
     const queryParams = Object.fromEntries(queryString.entries()) as { from: string };
 
     if (queryParams.from === "business") {
-      swalCustomError("Necesitas una cuenta", "Debes estar registrado para poder acceder a esta funcion");
+      swalCustomError("Necesitas una cuenta", "Debes estar registrado para poder acceder a esta funcion", [, 6000]);
 
     } else if (queryParams.from === "out_session") {
       swalCustomError("La sesion ha expirado!", "Debes iniciar sesion nuevamente");
@@ -66,7 +66,7 @@ const LoginView: React.FC = () => {
     window.location.href = `api/auth/login?login_hint=${encodeURIComponent(email)}`
   };
 
-  
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -117,7 +117,7 @@ const LoginView: React.FC = () => {
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
 
       setUserData(initialState);
-      if (user.role === UserRole.MAIN_MANAGER) {
+      if (user.role === UserRole.MAIN_MANAGER || user.role === UserRole.MANAGER) {
         getCenterIfManager(response);
       }
 
@@ -149,7 +149,7 @@ const LoginView: React.FC = () => {
     }
   };
 
-  
+
   return (
     <div className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
       {isSubmitting ? (
@@ -184,9 +184,9 @@ const LoginView: React.FC = () => {
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
               {userData.email &&
-              errors !== null &&
-              errors.email !== undefined &&
-              errors?.email._errors !== undefined ? (
+                errors !== null &&
+                errors.email !== undefined &&
+                errors?.email._errors !== undefined ? (
                 <span
                   className="text-sm text-red-600"
                   style={{ fontSize: "12px" }}
@@ -224,9 +224,9 @@ const LoginView: React.FC = () => {
                 </div>
               </div>
               {userData.password &&
-              errors !== null &&
-              errors.password !== undefined &&
-              errors?.password._errors !== undefined ? (
+                errors !== null &&
+                errors.password !== undefined &&
+                errors?.password._errors !== undefined ? (
                 <>
                   <span
                     className="text-sm text-red-600"
@@ -241,7 +241,7 @@ const LoginView: React.FC = () => {
                       style={{ fontSize: "12px" }}
                     >
                       {errors.password._errors[1] !== undefined &&
-                      errors.password._errors[1].length > 0
+                        errors.password._errors[1].length > 0
                         ? errors.password._errors[1]
                         : null}
                     </span>

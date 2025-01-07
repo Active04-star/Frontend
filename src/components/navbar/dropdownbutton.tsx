@@ -86,7 +86,7 @@ const DropDownButton: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  
+
   return (
     <div ref={divRef} className="relative">
       {userData ? (
@@ -129,71 +129,71 @@ const DropDownButton: React.FC = () => {
           </button>
         </div >
       ) : actualPage === "loading" || actualPage === "/login" || actualPage === "/register" ? null : (
-  <Link href="/login">
-    <button
-      type="button"
-      className="text-white font-bold bg-yellow-600 focus:outline-none rounded-lg text-sm px-4 py-2 text-center"
-    >
-      Iniciar Sesión
-    </button>
-  </Link>
-)}
+        <Link href="/login">
+          <button
+            type="button"
+            className="text-white font-bold bg-yellow-600 focus:outline-none rounded-lg text-sm px-4 py-2 text-center"
+          >
+            Iniciar Sesión
+          </button>
+        </Link>
+      )}
 
-{
-  isDropdownOpen ? (
-    <div className="absolute right-0 max-w-fit max-h-fit">
-      <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
-        <ul className="py-2">
-          {userData?.user.role === UserRole.MAIN_MANAGER && (
-            <li>
-              <Link
-                href="/manager"
-                className={actualPage === "/manager" ? offStyle : onStyle}
-              >
-                <AiOutlineKey className="mr-2" /> Panel de Manager
-              </Link>
-            </li>
-          )}
-          {userData?.user.role === UserRole.ADMIN && (
-            <li>
-              <Link
-                href="/admin"
-                className={actualPage === "/admin" ? offStyle : onStyle}
-              >
-                <AiOutlineKey className="mr-2" /> Panel de Admin
-              </Link>
-            </li>
-          )}
-          {userData?.user.role === UserRole.USER && (
-            <>
-              <li>
-                <Link
-                  href="/reservar"
-                  className={actualPage === "/reservar" ? offStyle : onStyle}
-                >
-                  <AiOutlineCalendar className="mr-2" /> Reservar
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/settings"
-                  className={actualPage === "/settings" ? offStyle : onStyle}
-                >
-                  <AiOutlineSetting className="mr-2" /> Configuración
-                </Link>
-              </li>
-            </>
-          )}
-          <li>
-            <button onClick={handleLogout} className={onStyle}>
-              <AiOutlineLogout className="mr-2" /> Cerrar Sesión
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  ) : null
-}
+      {
+        isDropdownOpen ? (
+          <div className="absolute right-0 max-w-fit max-h-fit">
+            <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
+              <ul className="py-2">
+                {userData?.user.role === UserRole.MAIN_MANAGER && (
+                  <li>
+                    <Link
+                      href="/manager"
+                      className={actualPage === "/manager" || actualPage === "" ? offStyle : onStyle}
+                    >
+                      <AiOutlineKey className="mr-2" /> Panel de Manager
+                    </Link>
+                  </li>
+                )}
+                {userData?.user.role === UserRole.ADMIN && (
+                  <li>
+                    <Link
+                      href="/admin"
+                      className={actualPage === "/admin" || actualPage === "" ? offStyle : onStyle}
+                    >
+                      <AiOutlineKey className="mr-2" /> Panel de Admin
+                    </Link>
+                  </li>
+                )}
+                {userData?.user.role === UserRole.USER && (
+                  <>
+                    <li>
+                      <Link
+                        href="/user"
+                        className={actualPage === "/user" || actualPage === "" ? offStyle : onStyle}
+                      >
+                        <AiOutlineCalendar className="mr-2" /> Reservar
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/settings"
+                        className={actualPage === "/settings" || actualPage === "" ? offStyle : onStyle}
+                      >
+                        <AiOutlineSetting className="mr-2" /> Configuración
+                      </Link>
+                    </li>
+                  </>
+                )}
+                <li>
+                  <button onClick={handleLogout} className={onStyle}>
+                    <AiOutlineLogout className="mr-2" /> Cerrar Sesión
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        ) : null
+      }
     </div >
   );
 };

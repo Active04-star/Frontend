@@ -3,9 +3,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function logout(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { out_session } = req.query;
+    const { from } = req.query;
+    console.log("out_session:")
+    console.log(from)
     await handleLogout(req, res, {
-      returnTo: typeof out_session === "string" ? `/login?from=${out_session}` : "/",
+      returnTo: typeof from === "string" ? `/login?from=${from}` : "/",
     });
 
   } catch (error) {

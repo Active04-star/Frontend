@@ -11,6 +11,7 @@ import { UserSchemaWToken } from "@/types/user-schema";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
 import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
+import { IUser } from "@/types/zTypes";
 
 const LoadingView: React.FC = () => {
     const { user, isLoading, error: e } = useUser();
@@ -50,32 +51,18 @@ const LoadingView: React.FC = () => {
                                     })
                                 });
 
-                                const data = await response.json();
+                                const data: unknown = await response.json();
                                 const validate = zodValidate(data, UserSchemaWToken);
 
                                 if (validate.success) {
 
-                                    setSession({ token: data.token, user: data.user });
-                                    getCenterIfManager(data.user);
+                                    setSession({ token: (data as IUser).token, user: (data as IUser).user });
+                                    getCenterIfManager(data as IUser);
 
                                     if (user.role === UserRole.USER) {
                                         window.location.href = "/user";
                                         return;
                                     }
-
-                                    // if (user.role === UserRole.MANAGER || data.user.role === UserRole.MAIN_MANAGER) {
-                                    //     const data = await fetchAndCatch(`${API_URL}/user/center/${user.id}`, {
-                                    //         method: "GET"
-                                    //     });
-
-                                    //     localStorage.setItem("sportCenter", JSON.stringify(data.id));
-                                    // } else if (user.role === UserRole.USER) {
-                                    //     router.push("/user");
-                                    //     return;
-
-                                    // }
-
-
 
                                     window.location.href = "/"
                                 } else {

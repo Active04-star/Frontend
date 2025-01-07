@@ -41,13 +41,13 @@ const LandingView: React.FC = () => {
     }
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-dark">
-        <LoadingCircle />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex w-96 h-96 justify-center items-center bg-dark">
+  //       <LoadingCircle />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -88,7 +88,7 @@ const LandingView: React.FC = () => {
               }
             </div>
           </div>
-          
+
           <div className="w-1/2 relative">
             <Image
               src="https://images.pexels.com/photos/2277980/pexels-photo-2277980.jpeg?cs=srgb&dl=pexels-king-siberia-1123639-2277980.jpg&fm=jpg"
