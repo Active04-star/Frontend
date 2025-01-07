@@ -1,39 +1,49 @@
-// pages/[centerId].tsx
 import { GetStaticProps, GetStaticPaths } from 'next';
 import FieldCard from '@/components/fieldCard/fieldCard';
-import { IField } from '@/interfaces/field_Interface'
 import { API_URL } from "@/config/config";
-import { ISportCenterList } from '@/interfaces/sport_center_list.interface';
 import { ISportCenter } from '@/interfaces/sport_center.interface';
 
 interface Props {
   centerData: ISportCenter;
 }
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  const response = await fetch(`${API_URL}/sportcenter/search`);
+  const sportCenters = await response.json();
 
-// type SportCenterPageProps = {
-//   id: string;
-// };
+  const paths = sportCenters.flatMap((center: { id: string }) => ({
+    params: { centerId: center.id },
+  }));
 
+  console.log('Paths generados:', paths); // Verifica las rutas generadas
 
-// Generar rutas dinámicas en build time
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   const response = await fetch(`${API_URL}/sportcenter/search`);
-//   const sportCenters: ISportCenterList = await response.json();  // Tipamos sportCenters
-//   const paths = sportCenters.sport_centers.map((center) =>
-//     center.fields.map((field) => ({
-//       params: { centerId: center.id, fieldId: field.id },
-//     }))
-//   )
-//     .flat(); // Usamos flat() para aplanar el array
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+};
 
-//   return { paths, fallback: 'blocking' };
-// };
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { centerId } = context.params!;
-  const response = await fetch(`${API_URL}/${centerId}`);
-  const centerData: ISportCenterList = await response.json();  // Tipamos centerData
+  const response = await fetch(`${API_URL}/sportcenter/${centerId}`);
+  
+  if (!response.ok) {
+    console.error('Error al obtener los datos del centro deportivo:', response.statusText);
+    return {
+      notFound: true, // Si no se encuentra el centro, retorna 404
+    };
+  }
+
+  const centerData: ISportCenter = await response.json();
+
+  // Verificar que centerData tiene los datos correctos
+  if (!centerData) {
+    console.error('No se encontró el centro deportivo con ID:', centerId);
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
@@ -45,11 +55,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const SportCenterPage = ({ centerData }: Props) => {
   return (
     <div>
-      <h1>{centerData.name}</h1>
-      <div className="flex flex-wrap gap-4">
-        {/* {centerData.fields.map((field: IField) => (  // Tipamos field
+      <h1 className="text-2xl font-bold mb-6">{centerData.name}</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {centerData.fields.map((field) => (
           <FieldCard key={field.id} {...field} />
-        ))} */}
+        ))}
       </div>
     </div>
   );
