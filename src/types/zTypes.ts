@@ -6,6 +6,8 @@ import { SportCenterSchema } from "./center-schema";
 import { UserLoginSchema } from "./userLogin-schema";
 import { PasswordUpdateSchema, UserUpdateSchema } from "./userUpdate-schema";
 import { FieldCreationSchema } from "./field-schema";
+import { FieldBlockSchema } from "./fieldBlock.type";
+import { SportCenterScheduleSchema } from "./sportCenterSchedules.type";
 
 /**Registro de Usuario de formulario, se valida con `UserRegisterSchema`
  */
@@ -38,3 +40,11 @@ export type IPasswordUpdate = z.infer<typeof PasswordUpdateSchema>;
 /**Registro de Cancha de formulario, se valida con `FieldSchema`
  */
 export type IFieldCreation = z.infer<typeof FieldCreationSchema>;
+
+/**
+ */
+export type IField_Block = z.infer<typeof FieldBlockSchema>
+
+/**
+ */
+export type ISportCenter_Schedule = z.infer<typeof SportCenterScheduleSchema>

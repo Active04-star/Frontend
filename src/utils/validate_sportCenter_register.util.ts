@@ -1,4 +1,6 @@
-import { z } from 'zod';
+/* eslint-disable @typescript-eslint/no-explicit-any*/
+
+import { z } from "zod";
 
 export const validateField = <T extends Record<string, unknown>>(
   schema: z.ZodObject<any>,
@@ -14,6 +16,6 @@ export const validateField = <T extends Record<string, unknown>>(
       const fieldErrors = error.flatten().fieldErrors;
       return { success: false, error: fieldErrors[name as string]?.[0] };
     }
-    return { success: false, error: 'Error de validación' };
+    return { success: false, error: "Error de validación" };
   }
 };

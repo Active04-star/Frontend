@@ -5,7 +5,6 @@
 import { SportCenterStatus } from '@/enum/sportCenterStatus';
 import { UserRole } from '@/enum/userRole';
 import { SubscriptionStatus } from '@/enum/SubscriptionStatus';
-import FieldCard from '@/components/fieldCard/fieldCard';
 import { ISportCenter } from '@/interfaces/sport_center.interface';
 
 
@@ -14,58 +13,17 @@ const SportCenterView = () => {
   const sportCenters: ISportCenter[] = [
 
     {
-      id: '1',
-      name: 'SportCenter 1',
-      address: 'Calle Ficticia 123',
-      averageRating: "4.5",
-      status: SportCenterStatus.PUBLISHED,
-      // reviews: [],
-      photos: [
-        'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp'
-      ],
-      // payments: [],
-      // paymentsHistory: [],
-      // schedules: [],
-      // fields: [],
-      // managers_list: [],
-      // main_manager: {
-      // id: '1',
-      // name: 'Juan Pérez',
-      // email: 'juan@ejemplo.com',
-      // profile_image: 'https://via.placeholder.com/50',
-      // subscription_status : SubscriptionStatus.AUTHORIZED ,
-      // role: UserRole.USER ,
-      // was_banned:  false
-      // },
-      // sport_categories: []
-      isDeleted: false
-    },
-    {
-      id: '2',
-      name: 'SportCenter 1',
-      address: 'Calle Ficticia 123',
-      averageRating: "4.5",
-      status: SportCenterStatus.PUBLISHED,
-      // reviews: [],
-      photos: [
-        'https://res.cloudinary.com/duuzdompe/image/upload/v1733936638/ActiveProject/jqcfllas1ud2id4msoqg.webp'
-      ],
-      // payments: [],
-      // paymentsHistory: [],
-      // schedules: [],
-      // fields: [],
-      // managers_list: [],
-      // main_manager: {
-      // id: '1',
-      // name: 'Juan Pérez',
-      // email: 'juan@ejemplo.com',
-      // profile_image: 'https://via.placeholder.com/50',
-      // subscription_status : SubscriptionStatus.AUTHORIZED ,
-      // role: UserRole.USER ,
-      // was_banned:  false
-      // },
-      // sport_categories: []
-      isDeleted: false
+      id: "string",
+    name: "string",
+    address: "string",
+    averageRating: 10,  // Valoración promedio puede ser nulo o no proporcionado
+    isDeleted: false,
+    status: SportCenterStatus.PUBLISHED,
+    photos: [],  // Relación con las fotos, opcional
+    schedules:[],  // Relación con los horarios, opcional
+    fields: [],  // Relación con los campos de deportes, opcional
+    mainManager: {name:"user",id:'udhweuo',email:'email.com',subscription_status:SubscriptionStatus.ACTIVE,role:UserRole.MAIN_MANAGER,was_banned:false},  
+    sportCategories: []// Relación con las categorías deportivas, opcional
     },
 
   ];

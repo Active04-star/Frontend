@@ -1,18 +1,21 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Navbar from "@/components/navbar/navbar";  // Barra de navegación
-import MSidebar from "@/components/managerSidebar/managerSidebar";  // Sidebar del administrador
-import NotificacionesView from "@/views/Notificaciones/NotificacionesView";  // Vista de Notificaciones
-import PanelView from "@/views/Panel/PanelView";  // Vista del Panel Principal
-import CanchasView from "@/views/Canchas/CanchasViews";  // Vista de las canchas
-import ReservacionesViews from "@/views/reservaciones/reservacionesViews";  // Vista de Reservaciones
-import PerfilView from "@/views/configuracionViews/configuracionViews";  // Vista de Configuración
+import Navbar from "@/components/navbar/navbar"; // Barra de navegación
+import MSidebar from "@/components/managerSidebar/managerSidebar"; // Sidebar del administrador
+import NotificacionesView from "@/views/Notificaciones/NotificacionesView"; // Vista de Notificaciones
+import PanelView from "@/views/Panel/PanelView"; // Vista del Panel Principal
+import CanchasView from "@/views/Canchas/CanchasViews"; // Vista de las canchas
+import ReservacionesViews from "@/views/reservaciones/reservacionesViews"; // Vista de Reservaciones
+import PerfilView from "@/views/configuracionViews/configuracionViews"; // Vista de Configuración
 import SettingsView from "@/views/SettingsView/SettingsView";
 import PremiumCard from "@/views/PremiumCard/PremiumCard";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 
 const ManagerPage = () => {
+  
+
   // Estado para manejar la vista actual
-  const [currentView, setCurrentView] = useState<string>("");
+  const [currentView, setCurrentView] = useState<string>("panel");
 
   // Estado para manejar el ancho del sidebar
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); // Ancho inicial en píxeles
@@ -22,7 +25,7 @@ const ManagerPage = () => {
 
   // Función para manejar el clic en los elementos del menú del sidebar
   const handleMenuClick = (viewName: string) => {
-    setCurrentView(viewName);  // Cambia la vista activa al hacer clic en un elemento del menú
+    setCurrentView(viewName); // Cambia la vista activa al hacer clic en un elemento del menú
   };
 
   // Ajustar automáticamente el ancho y la altura del sidebar en función del tamaño de la ventana
@@ -69,33 +72,19 @@ const ManagerPage = () => {
 
       {/* Contenido principal que cambia según la vista seleccionada */}
       <div className="w-full h-full overflow-auto">
-        {currentView === "panel" && (
-          <PanelView />
-        )}
+        {currentView === "panel" && <PanelView />}
 
-        {currentView === "Notificaciones" && (
-          <NotificacionesView />
-        )}
+        {currentView === "Notificaciones" && <NotificacionesView />}
 
-        {currentView === "canchas" && (
-          <CanchasView />
-        )}
+        {currentView === "canchas" && <CanchasView />}
 
-        {currentView === "reservaciones" && (
-          <ReservacionesViews />
-        )}
+        {currentView === "reservaciones" && <ReservacionesViews />}
 
-        {currentView === "settings" && (
-          <SettingsView />
-        )}
+        {currentView === "settings" && <SettingsView />}
 
-        {currentView === "perfil" && (
-          <PerfilView />
-        )}
+        {currentView === "perfil" && <PerfilView />}
 
-        {currentView==='premiumCard' && (
-          <PremiumCard/>
-        )}
+        {currentView === "premiumCard" && <PremiumCard />}
       </div>
     </div>
   );
