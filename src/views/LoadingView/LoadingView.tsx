@@ -12,6 +12,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
 import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
 import { IUser } from "@/types/zTypes";
+import { ApiError } from "next/dist/server/api-utils";
 
 const LoadingView: React.FC = () => {
     const { user, isLoading, error: e } = useUser();
@@ -56,17 +57,32 @@ const LoadingView: React.FC = () => {
                                 if (validate.success) {
 
                                     setSession({ token: (response as IUser).token, user: (response as IUser).user });
-                                    getCenterIfManager(response as IUser);
+                                    await getCenterIfManager(response as IUser);
 
-                                    if (user.role === UserRole.USER) {
-                                        window.location.href = "/user";
-                                        return;
-                                    }
+                                    // if (user.role === UserRole.USER) {
+                                    //     window.location.href = "/user";
+                                    //     return;
+                                    // }
+
+                                          const roleRoutes = {
+                                            [UserRole.USER]: "/user",
+                                            [UserRole.MAIN_MANAGER]: "/manager",
+                                            [UserRole.ADMIN]: "/admin",
+                                            [UserRole.MANAGER]: "/manager",
+                                          };
+                                    
+                                          const route = roleRoutes[(response as IUser).user.role];
+                                          if (route) {
+                                            window.location.href = route;
+                                            return;
+                                          }
+                                    
 
                                     window.location.href = "/"
                                 } else {
                                     console.log("invalid Response From Backend:");
                                     console.log(validate.errors);
+                                    throw new ApiError(500, "invalid response");
 
                                 }
 
@@ -74,6 +90,10 @@ const LoadingView: React.FC = () => {
 
                                 setError(true);
                                 console.log(error);
+
+                                if(error instanceof ApiError) {
+                                    await swalCustomError(error.message)
+                                }
 
                                 await swalCustomError("No se pudo iniciar sesion intentalo mas tarde",).then((result) => {
 

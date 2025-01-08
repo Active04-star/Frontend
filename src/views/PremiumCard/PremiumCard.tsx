@@ -5,8 +5,8 @@ import { Crown } from "lucide-react";
 import { PremiumButton } from "@/components/premiumButton/premiumButton";
 import { PremiumFeature } from "@/components/premiumFeature/premiumFeature";
 import { API_URL } from "@/config/config";
-import { IUser } from "@/interfaces/user_Interface";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { IUser } from "@/types/zTypes";
 
 const features = [
   "Gestiona ilimitadas canchas y deportes",
@@ -17,22 +17,22 @@ const features = [
 ];
 
 function PremiumCard() {
-  const [userLocalStorage] = useLocalStorage("userSession", null);
-  const { token, user } = userLocalStorage || { token: null, user: null };
+  const [user] = useLocalStorage<IUser | null>("userSession", null);
+  // const { token, user } = userLocalStorage || { token: null, user: null };
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
 
 
   const fetchUserData = useCallback(async () => {
-    if (!user?.id) {
+    if (user === null) {
       setIsPageLoading(false);
       return;
     }
 
     try {
       const response = await fetch(
-        `${API_URL}/user/solo-para-testing/${user.id}`,
+        `${API_URL}/user/solo-para-testing/${user.user.id}`,
         {
           method: "GET",
           headers: {
@@ -54,7 +54,7 @@ function PremiumCard() {
     }finally {
     setIsPageLoading(false); // Set loading to false when done
   }
-  }, [user?.id]);
+  }, [user]);
 
   useEffect(() => {
     fetchUserData();
@@ -77,7 +77,7 @@ function PremiumCard() {
           },
           body: JSON.stringify({
             priceId: "price_1QXReu04KY20KAgUd0axPjmu",
-            userId: user.id,
+            userId: user.user.id,
           }),
         }
       );
@@ -134,7 +134,7 @@ function PremiumCard() {
           </ul>
 
           <div className="mt-8">
-            {userData?.stripeCustomerId ? (
+            {userData?.user.stripeCustomerId ? (
               <p className="text-center text-green-600 font-bold">
                 ¡Ya tienes Premium!
               </p>
