@@ -65,7 +65,6 @@ export default function RegisterSportcenter() {
 
     try {
       const validatedData = CenterRegisterSchema.parse(sportCenter);
-      console.log("Form data is valid:", validatedData);
       const new_sportcenter = { ...sportCenter, manager: user.id };
       await fetchWithAuth(`${API_URL}/sportcenter/create`, {
         method: "POST",

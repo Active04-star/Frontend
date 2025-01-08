@@ -43,8 +43,7 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps>=({
         name={sportCenter?.name}
         address={sportCenter?.address}
         averageRating={sportCenter?.averageRating || 0}
-        fieldsCount={sportCenter?.fields?.length || 0}
-        sportCategories={sportCenter?.sportCategories || []}
+        schedules={sportCenter?.schedules   || []}
       />
     </div>
   );

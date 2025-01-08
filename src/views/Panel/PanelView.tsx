@@ -14,8 +14,7 @@ const PanelView: React.FC = () => {
 
   const fetchSportCenter = useCallback(async () => {
     if (!user?.id || !token) return;
-    console.log("token", token, "user", user);
-
+    console.log("token", token, "user", user)
     try {
       const response = await fetchWithAuth(
         `${API_URL}/manager/center/${user.id}`,
@@ -26,6 +25,7 @@ const PanelView: React.FC = () => {
           },
         }
       );
+console.log('sportcenter',response);
 
       setSportCenter(response);
     } catch (error) {
@@ -60,7 +60,7 @@ const PanelView: React.FC = () => {
       <h1 className="text-4xl font-semibold text-center text-indigo-700 mb-6">
         Bienvenido al Panel
       </h1>
-      <div className="max-w-2xl mx-auto pt-5">
+      <div className="w-full max-w-4xl mx-auto">
         {sportCenter ? (
           <ManagerSportCenterCard
             sportCenter={sportCenter}
