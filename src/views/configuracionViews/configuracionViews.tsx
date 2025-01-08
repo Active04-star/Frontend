@@ -1,114 +1,89 @@
 "use client";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { IPasswordUpdate, IUser, IUserUpdate } from "@/types/zTypes";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { zodValidate } from "@/helpers/validate-zod";
+import { UserUpdateSchema } from "@/types/userUpdate-schema";
+import { updateUser } from "@/helpers/user_update_helper";
+import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
+import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
+import { ErrorHelper } from "@/helpers/errors/error-helper";
 
-const PerfilView: React.FC = () => {
-  // Estado para almacenar la información del usuario
-  const [user, setUser] = useState({
-    nombre: "Juan Pérez",
-    email: "juan.perez@example.com",
-    idioma: "Español",
-  });
+export default function ProfileView() {
+  const [user,]: Array<IUser> = useLocalStorage("userSession", null);
+  const [name, setName] = useState<IUserUpdate>({ name: "" });
+  const [password] = useState<IPasswordUpdate>({ password: "", confirm_password: "" });
 
-  // Estado para controlar si estamos en modo de edición
-  const [isEditing, setIsEditing] = useState(false);
 
-  // Función para manejar los cambios en los campos de entrada (input o select)
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    if (user) {
+      setName({
+        name: user.user.name,
+      });
+    }
+  }, [user]);
 
-  // Función para alternar entre el modo de edición y visualización
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+
+    if (Object.values(name).every((data) => data === "") && Object.values(password).every((data) => data === "")) {
+      swalCustomError("Error", "No hubo ningun cambio");
+      return;
+    }
+
+    const nameUpdate = zodValidate(name, UserUpdateSchema);
+
+    if (!nameUpdate.success) {
+      swalCustomError("Error", "Por favor corrige los errores antes de continuar.");
+      return;
+    }
+
+    try {
+      const response = await updateUser(user.user.id, { name: "Pedro Gonzales", password: password.password, confirm_password: password.confirm_password });
+
+      localStorage.setItem("userSession", JSON.stringify({ token: user.token, user: { ...user.user, name: response?.user.name } }));
+
+      window.location.reload();
+    } catch (error: any) {
+      if (error instanceof ErrorHelper) {
+        swalNotifyError(error);
+      } else {
+        swalNotifyUnknownError(error);
+      }
+    }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-gray-100">
-      <h1 className="text-4xl font-semibold text-center text-red-600 mb-6">Perfil de Usuario</h1>
-
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Información Personal
-        </h2>
-
-        <div className="space-y-4">
-          {/* Campo para el nombre */}
-          <div>
-            <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
-              Nombre
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                value={user.nombre}
-                onChange={handleInputChange}
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg"
-              />
-            ) : (
-              <p className="text-gray-700">{user.nombre}</p>
-            )}
+    <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
+      <div className="bg-black p-6 rounded-lg shadow-md w-full max-w-md mt-48">
+        <h1 className="text-2xl font-bold text-white mb-4 text-center">
+          Este es tu perfil
+        </h1>
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative w-32 h-32 mb-4">
+            <Image
+              src={user?.user !== null ? user?.user?.profile_image : "/images/default-profile.jpg"}
+              alt="Foto de perfil del usuario"
+              className="rounded-full object-cover bg-white border-2 border-gray-300"
+              layout="fill" // Ajusta la imagen al contenedor
+              objectFit="cover" // Corta la imagen para que ocupe el espacio disponible
+            />
           </div>
-
-          {/* Campo para el correo electrónico */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Correo Electrónico
-            </label>
-            {isEditing ? (
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={user.email}
-                onChange={handleInputChange}
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg"
-              />
-            ) : (
-              <p className="text-gray-700">{user.email}</p>
-            )}
-          </div>
-
-          {/* Campo para seleccionar el idioma */}
-          <div>
-            <label htmlFor="idioma" className="block text-sm font-medium text-gray-700">
-              Idioma
-            </label>
-            {isEditing ? (
-              <select
-                id="idioma"
-                name="idioma"
-                value={user.idioma}
-                onChange={handleInputChange}
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg"
-              >
-                <option value="Español">Español</option>
-                <option value="Inglés">Inglés</option>
-                <option value="Francés">Francés</option>
-              </select>
-            ) : (
-              <p className="text-gray-700">{user.idioma}</p>
-            )}
-          </div>
+          <h2 className="text-xl font-semibold text-white">{user?.user?.email}</h2>
         </div>
 
-        {/* Botón para alternar entre modo de edición y visualización */}
-        <div className="mt-6 text-right">
-          <button
-            onClick={toggleEdit}
-            className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-          >
-            {isEditing ? "Guardar" : "Editar"}
-          </button>
+        <div className="mb-4">
+          <label className="block text-white mb-2">Nombre:</label>
+          <p className="text-white">{user?.user?.name}</p>
+        </div>
+        
+        <div className="mb-4">
+          <label className="block text-white mb-2">Correo electrónico:</label>
+          <p className="text-white">{user?.user?.email}</p>
         </div>
       </div>
     </div>
   );
-};
-
-export default PerfilView;
+}

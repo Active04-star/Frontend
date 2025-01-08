@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const ProfileView: React.FC = () => {
-  // Información del usuario (esto podría venir de una API o estado global)
+  // Estado del usuario con datos iniciales
   const [user, setUser] = useState({
-    nombre: "Juan Pérez",
+    nombre: "Juan z",
     email: "juan.perez@example.com",
     telefono: "+1 234 567 890",
     reservas: [
@@ -28,6 +28,13 @@ const ProfileView: React.FC = () => {
   // Función para cambiar entre modo de edición y vista
   const toggleEditMode = () => {
     setIsEditing((prev) => !prev);
+  };
+
+  // Función para manejar la simulación de guardado de cambios
+  const handleSaveChanges = () => {
+    // Aquí podrías hacer un `fetch` o `POST` para guardar los cambios en un backend
+    console.log("Guardando cambios:", user);
+    setIsEditing(false); // Después de guardar, regresamos a vista
   };
 
   return (
@@ -82,12 +89,46 @@ const ProfileView: React.FC = () => {
           </div>
         </div>
         {/* Botón para cambiar entre editar y ver */}
-        <button
-          onClick={toggleEditMode}
-          className="mt-4 px-6 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
-        >
-          {isEditing ? "Guardar cambios" : "Editar perfil"}
-        </button>
+        <div className="mt-4">
+          {isEditing ? (
+            <button
+              onClick={handleSaveChanges}
+              className="px-6 py-2 text-white bg-green-500 hover:bg-green-600 rounded-lg"
+            >
+              Guardar cambios
+            </button>
+          ) : (
+            <button
+              onClick={toggleEditMode}
+              className="px-6 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
+            >
+              Editar perfil
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Información de reservas (solo se muestra en vista) */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Mis Reservas</h2>
+        <table className="w-full table-auto border-collapse">
+          <thead>
+            <tr>
+              <th className="px-4 py-2 text-left border-b">Cancha</th>
+              <th className="px-4 py-2 text-left border-b">Hora</th>
+              <th className="px-4 py-2 text-left border-b">Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {user.reservas.map((reserva) => (
+              <tr key={reserva.id}>
+                <td className="px-4 py-2 border-b">{reserva.cancha}</td>
+                <td className="px-4 py-2 border-b">{reserva.hora}</td>
+                <td className="px-4 py-2 border-b">{reserva.fecha}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

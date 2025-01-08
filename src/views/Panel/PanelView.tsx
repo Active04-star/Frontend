@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import ManagerSportCenterCard from "@/components/SportCenterCard/sportCenterCard.managerVIew";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { ISportCenter } from "@/interfaces/sport_center.interface";
