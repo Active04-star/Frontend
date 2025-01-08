@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer/footer";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import ChatButton from "@/components/chatbox";
+import ChatButton from "@/components/chatbot/chatbox";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
