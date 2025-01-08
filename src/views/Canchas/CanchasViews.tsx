@@ -112,8 +112,8 @@ const CanchasPanelView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20">
-      <h1 className="text-4xl font-semibold text-center text-indigo-700 mb-6">Bienvenido al Panel</h1>
+    <div className="mt-16 max-w-6xl mx-auto p-6 bg-gray-100">
+
 
       {showCreateForm ? (
         <div className="create-form-container">

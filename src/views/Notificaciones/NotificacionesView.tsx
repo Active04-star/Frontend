@@ -184,72 +184,20 @@ const NotificacionesView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 pt-20 bg-gray-100">
-      {/* Filtros de ordenación */}
-      <div className="flex space-x-4 mb-6">
-        <div>
-          <label className="text-sm font-semibold text-teal-600">Ordenar por:</label>
-          <select
-            value={sortOrder}
-            onChange={handleSortChange}
-            className="px-4 py-2 border border-gray-300 rounded-lg"
-          >
-            <option value="name">Nombre de la Cancha</option>
-            <option value="rating">Calificación</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="text-sm font-semibold text-teal-600">Dirección:</label>
-          <select
-            value={sortDirection}
-            onChange={handleDirectionChange}
-            className="px-4 py-2 border border-gray-300 rounded-lg"
-          >
-            <option value="asc">Ascendente</option>
-            <option value="desc">Descendente</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Sección de notificaciones */}
+    <div className="mt-16 max-w-4xl mx-auto p-6 pt-20 ">
+      {/* Notificaciones */}
       <div className="bg-white p-6 shadow-lg rounded-lg mb-8">
-        <h2 className="text-xl font-semibold text-teal-600 mb-4">Notificaciones</h2>
-
-        {loading ? (
-          <p className="text-gray-600">Cargando notificaciones...</p>
-        ) : error ? (
-          <p className="text-red-600">{error}</p>
-        ) : calificaciones.length > 0 ? (
-          <ul className="space-y-4">
-            {calificaciones.map((calificacion) => (
-              <li key={calificacion.id} className="p-4 bg-gray-50 rounded-lg shadow-sm">
-                <div className="flex items-center mb-4">
-                  <img
-                    src={calificacion.user.profile_image}
-                    alt={calificacion.user.name}
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <p className="text-sm font-semibold text-black">{calificacion.user.name}</p> {/* Nombre en negro */}
-                    <p className="text-xs text-gray-500">{new Date(calificacion.createdAt).toLocaleString()}</p>
-                  </div>
-                </div>
-                <h4 className="font-semibold text-teal-600">{calificacion.mensaje}</h4>
-                <p className="text-sm text-gray-600">{calificacion.detalle}</p>
-                <div className="mt-3 text-sm text-gray-500">
-                  <strong>Cancha:</strong> {calificacion.sportcenter.name}
-                  <br />
-                  <strong>Dirección:</strong> {calificacion.sportcenter.address}
-                  <br />
-                  <div className="mt-2 flex">{renderStars(calificacion.sportcenter.averageRating)}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-600">No hay notificaciones disponibles.</p>
-        )}
+        <h2 className="text-xl font-semibold text-black mb-4">Notificaciones</h2>
+        <ul>
+          <li className="p-3 mb-2 rounded-lg bg-blue-100">
+            <h3 className="font-semibold text-black ">Nueva reserva de cancha</h3>
+            <p className="text-sm text-gray-600">Calificacion de cancha</p>
+          </li>
+          <li className="p-3 mb-2 rounded-lg bg-yellow-100">
+            <h3 className="font-semibold text-black">Mantenimiento programado</h3>
+            <p className="text-sm text-gray-600">Calificacion de cancha</p>
+          </li>
+        </ul>
       </div>
     </div>
   );
