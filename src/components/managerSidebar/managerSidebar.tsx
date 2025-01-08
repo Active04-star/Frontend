@@ -116,6 +116,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({ onM
     
     <span className="ml-2 text-sm tracking-wide truncate">Pásate a premium</span>
   </button>
+
 </li>
 
             {/* Menu Item "Configuración" */}
@@ -149,6 +150,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({ onM
             </li>
           </ul>
         </div>
+        
       </div>
     </div>
   );

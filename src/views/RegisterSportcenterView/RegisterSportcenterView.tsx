@@ -1,14 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ICenterRegister } from "@/types/zTypes";
-import { IUser } from "@/interfaces/user_Interface";
+import { ICenterRegister, IUser } from "@/types/zTypes";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-import { ErrorHelper, verifyError } from "@/helpers/errors/error-helper";
+import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { API_URL } from "@/config/config";
 import { CenterRegisterSchema } from "@/types/centerRegister-schema";
 import { z } from "zod";
-import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
@@ -21,8 +19,8 @@ type FormErrors<T> = { [K in keyof T]?: string[] };
 export default function RegisterSportcenter() {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const router = useRouter(); // Hook para redirigir
-  const [iuser, setUser] = useLocalStorage("userSession", "");
-  const user: Partial<IUser> = iuser ? iuser.user : null;
+  const [user, ] = useLocalStorage<IUser | null>("userSession", null);
+  // const user: Partial<IUser> = iuser ? iuser.user : null;
   const [hide, setHide] = useState(true);
 
   const [sportCenter, setSportCenter] = useState<ICenterRegister>({
@@ -64,20 +62,25 @@ export default function RegisterSportcenter() {
     }
 
     try {
-      const validatedData = CenterRegisterSchema.parse(sportCenter);
-      console.log("Form data is valid:", validatedData);
-      const new_sportcenter = { ...sportCenter, manager: user.id };
-      await fetchWithAuth(`${API_URL}/sportcenter/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(new_sportcenter),
-      });
+      if(user !== null) {
+
+        const validatedData = CenterRegisterSchema.parse(sportCenter);
+        console.log("Form data is valid:", validatedData);
+        const new_sportcenter = { ...sportCenter, manager: user.user.id };
+        await fetchWithAuth(`${API_URL}/sportcenter/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(new_sportcenter),
+        });
+        
+      }
 
       localStorage.removeItem("userSession");
       swalNotifySuccess("Creacion exitosa", "seras redirigido a login");
       router.push("/login");
+
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
@@ -95,14 +98,14 @@ export default function RegisterSportcenter() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      if (!iuser) {
+      if (!user) {
         setHide(true);
         window.location.href = "/login?from=business";
       } else {
         setHide(false);
       }
     }
-  }, [iuser]);
+  }, [user]);
 
   return (
     <>

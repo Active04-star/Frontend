@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect, Dispatch } from "react";
 
-export function useLocalStorage(key: string, initialValue: any) {
+export function useLocalStorage<S>(key: string, initialValue: any): [S, Dispatch<any>] {
   // Initialize state with a function to only run once
   const [storedValue, setStoredValue] = useState(() => {
     if (typeof window === "undefined") {

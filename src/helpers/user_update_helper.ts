@@ -16,10 +16,9 @@ export async function updateUser(
       },
       body: JSON.stringify({ name: body.name }),
     });
-  } else if (
-    body.password !== undefined &&
-    body.confirm_password !== undefined
-  ) {
+  }
+
+  if (body.password !== undefined && body.confirm_password !== undefined) {
     response = await fetchWithAuth(`${API_URL}/auth/update-password/${id}`, {
       method: "PUT",
       headers: {
