@@ -2,7 +2,7 @@
 
 import { API_URL } from "@/config/config";
 import FieldCard from "@/components/fieldCard/fieldCard";
-import NavbarUser from "@/components/navbarUser/navbarUser";
+import NavbarUser from "@/components/navbarUser/navbarUser"
 import { ISportCenter } from "@/interfaces/sport_center.interface";
 
 // ✅ Función para generar las rutas dinámicas
