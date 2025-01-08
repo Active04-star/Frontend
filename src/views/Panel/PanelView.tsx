@@ -5,7 +5,7 @@ import { ISportCenter } from "@/interfaces/sport_center.interface";
 import { API_URL } from "@/config/config";
 import React, { useState, useEffect, useCallback } from "react";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
-import { IUser } from "@/interfaces/user_Interface";
+import { IUser } from "@/types/zTypes";
 
 
 const PanelView: React.FC = () => {
@@ -16,10 +16,10 @@ const PanelView: React.FC = () => {
   const fetchSportCenter = useCallback(async () => {
     console.log('user',userLocalStorage);
     
-    if (!userLocalStorage?.id ) return;
+    if (!userLocalStorage?.user?.id ) return;
     try {
       const response = await fetchWithAuth(
-        `${API_URL}/manager/center/${userLocalStorage.id}`,
+        `${API_URL}/manager/center/${userLocalStorage.user.id}`,
         {
           method: "GET",
           headers: {
@@ -35,7 +35,7 @@ console.log('sportcenter',response);
     } finally {
       setIsLoading(false);
     }
-  }, [userLocalStorage?.id]);
+  }, [userLocalStorage?.user?.id]);
 
   useEffect(() => {
     fetchSportCenter();
