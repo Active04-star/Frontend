@@ -5,19 +5,21 @@ import { ISportCenter } from "@/interfaces/sport_center.interface";
 import { API_URL } from "@/config/config";
 import React, { useState, useEffect, useCallback } from "react";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
+import { IUser } from "@/interfaces/user_Interface";
+
 
 const PanelView: React.FC = () => {
-  const [userLocalStorage] = useLocalStorage("userSession", null);
-  const { token, user } = userLocalStorage || { token: null, user: null };
+  const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
   const [sportCenter, setSportCenter] = useState<ISportCenter | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchSportCenter = useCallback(async () => {
-    if (!user?.id || !token) return;
-    console.log("token", token, "user", user)
+    console.log('user',userLocalStorage);
+    
+    if (!userLocalStorage?.id ) return;
     try {
       const response = await fetchWithAuth(
-        `${API_URL}/manager/center/${user.id}`,
+        `${API_URL}/manager/center/${userLocalStorage.id}`,
         {
           method: "GET",
           headers: {
@@ -33,7 +35,7 @@ console.log('sportcenter',response);
     } finally {
       setIsLoading(false);
     }
-  }, [user?.id]);
+  }, [userLocalStorage?.id]);
 
   useEffect(() => {
     fetchSportCenter();
