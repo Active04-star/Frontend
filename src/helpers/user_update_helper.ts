@@ -27,5 +27,4 @@ export async function updateUser(id: string, body: Partial<IUserUpdate & IPasswo
   }
 
   return { user: response };
-
 }
