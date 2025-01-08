@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       "i.pinimg.com",
       "images.unsplash.com",
       "res.cloudinary.com",
+      "s.gravatar.com",
     ], // Aquí defines el dominio permitido
   },
 };

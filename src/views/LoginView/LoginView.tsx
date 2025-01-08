@@ -75,15 +75,21 @@ const LoginView: React.FC = () => {
 
     const validation = zodValidate(userData, UserLoginSchema);
 
-    if (
-      validation.errors === undefined ||
-      validation.errors.email === undefined
-    ) {
-      const response = await getUserType(userData.email);
+    if (validation.errors === undefined || validation.errors.email === undefined) {
 
-      if (response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
-        redirectToAuth(userData.email.toLowerCase());
-        return;
+      try {
+
+        const response = await getUserType(userData.email);
+
+        if (response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
+          redirectToAuth(userData.email.toLowerCase());
+          return;
+        }
+
+      } catch (error) {
+        console.error(error);
+        window.location.href = "/";
+
       }
     }
 
@@ -94,13 +100,9 @@ const LoginView: React.FC = () => {
       return;
     }
 
-    // const data = zodValidate(userData, UserLoginSchema);
 
     if (!validation.success) {
-      swalCustomError(
-        "Error en Logueo",
-        "Por favor corrige los errores antes de continuar."
-      );
+      swalCustomError("Error en Logueo", "Por favor corrige los errores antes de continuar.");
 
       setIsSubmitting(false);
       return;
@@ -117,7 +119,7 @@ const LoginView: React.FC = () => {
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
 
       setUserData(initialState);
-      getCenterIfManager(response);
+      await getCenterIfManager(response);
 
       const roleRoutes = {
         [UserRole.USER]: "/user",

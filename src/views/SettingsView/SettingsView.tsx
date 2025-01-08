@@ -12,9 +12,10 @@ import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { ApiError } from "next/dist/server/api-utils";
 
 export default function SettingsView() {
-  const [user]: Array<IUser> = useLocalStorage("userSession", null);
+  const [user] = useLocalStorage<IUser | null>("userSession", null);
   const [name, setName] = useState<IUserUpdate>({ name: "" });
   const [password, setPassword] = useState<IPasswordUpdate>({
     password: "",
@@ -25,10 +26,8 @@ export default function SettingsView() {
   const [errors, setErrors] = useState<Pick<RegisterErrors, "name" | "password" | "confirm_password"> | null>(null);
 
   useEffect(() => {
-    if (user) {
-      setName({
-        name: user.user.name,
-      });
+    if (user !== null) {
+      setName({        name: user.user.name     });
     }
   }, [user]);
 
@@ -55,21 +54,29 @@ export default function SettingsView() {
     }
 
     try {
-      const response = await updateUser(user.user.id, {
-        name: name.name,
-        password: password.password,
-        confirm_password: password.confirm_password,
-      });
+      if(user !== null) {
+
+        const response = await updateUser(user.user.id, {
+          name: name.name,
+          password: password.password,
+          confirm_password: password.confirm_password,
+        });
+      
+        localStorage.setItem(
+          "userSession",
+          JSON.stringify({
+            token: user.token,
+            user: { ...user.user, name: response?.user.name },
+          })
+        );
+
+        window.location.reload();
+
+      } else {
+        throw new ApiError(500, "user LocalStorage is invalid");
+        
+      }
     
-      localStorage.setItem(
-        "userSession",
-        JSON.stringify({
-          token: user.token,
-          user: { ...user.user, name: response?.user.name },
-        })
-      );
-    
-      window.location.reload();
     } catch (error: unknown) {
       if (error instanceof ErrorHelper) {
         swalNotifyError(error);
@@ -82,8 +89,8 @@ export default function SettingsView() {
   }
     
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
-      <div className="bg-black p-6 rounded-lg shadow-md w-full max-w-md mt-48">
+    <div className=" p-6 flex flex-col items-center">
+      <div className="bg-black p-6 rounded-lg shadow-md w-full max-w-md mt-16">
         <h1 className="text-2xl font-bold text-white mb-4 text-center">Configuración</h1>
         <div className="flex flex-col items-center mb-6">
           <div className="relative w-32 h-32 mb-4">
