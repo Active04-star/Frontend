@@ -68,20 +68,24 @@ const DropDownButton: React.FC = () => {
     };
   }, []);
 
+
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       setUserData(user);
     }
   }, [user]);
 
+
   const handleLogout = async () => {
     logout(true);
   };
+
 
   const toggleDropdown = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsDropdownOpen(!isDropdownOpen);
   };
+
 
   return (
     <div ref={divRef} className="relative">
@@ -123,7 +127,7 @@ const DropDownButton: React.FC = () => {
               )}
             </span>
           </button>
-        </div>
+        </div >
       ) : actualPage === "loading" || actualPage === "/login" || actualPage === "/register" ? null : (
         <Link href="/login">
           <button
@@ -135,60 +139,62 @@ const DropDownButton: React.FC = () => {
         </Link>
       )}
 
-      {isDropdownOpen ? (
-        <div className="absolute right-0 max-w-fit max-h-fit">
-          <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
-            <ul className="py-2">
-              {userData?.user.role === UserRole.MAIN_MANAGER && (
-                <li>
-                  <Link
-                    href="/manager"
-                    className={actualPage === "/manager" ? offStyle : onStyle}
-                  >
-                    <AiOutlineKey className="mr-2" /> Panel de Manager
-                  </Link>
-                </li>
-              )}
-              {userData?.user.role === UserRole.ADMIN && (
-                <li>
-                  <Link
-                    href="/admin"
-                    className={actualPage === "/admin" ? offStyle : onStyle}
-                  >
-                    <AiOutlineKey className="mr-2" /> Panel de Admin
-                  </Link>
-                </li>
-              )}
-              {userData?.user.role === UserRole.USER && (
-                <>
+      {
+        isDropdownOpen ? (
+          <div className="absolute right-0 max-w-fit max-h-fit">
+            <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
+              <ul className="py-2">
+                {userData?.user.role === UserRole.MAIN_MANAGER && (
                   <li>
                     <Link
-                      href="/reservar"
-                      className={actualPage === "/reservar" ? offStyle : onStyle}
+                      href="/manager"
+                      className={actualPage === "/manager" || actualPage === "" ? offStyle : onStyle}
                     >
-                      <AiOutlineCalendar className="mr-2" /> Reservar
+                      <AiOutlineKey className="mr-2" /> Panel de Manager
                     </Link>
                   </li>
+                )}
+                {userData?.user.role === UserRole.ADMIN && (
                   <li>
                     <Link
-                      href="/settings"
-                      className={actualPage === "/settings" ? offStyle : onStyle}
+                      href="/admin"
+                      className={actualPage === "/admin" || actualPage === "" ? offStyle : onStyle}
                     >
-                      <AiOutlineSetting className="mr-2" /> Configuración
+                      <AiOutlineKey className="mr-2" /> Panel de Admin
                     </Link>
                   </li>
-                </>
-              )}
-              <li>
-                <button onClick={handleLogout} className={onStyle}>
-                  <AiOutlineLogout className="mr-2" /> Cerrar Sesión
-                </button>
-              </li>
-            </ul>
+                )}
+                {userData?.user.role === UserRole.USER && (
+                  <>
+                    <li>
+                      <Link
+                        href="/user"
+                        className={actualPage === "/user" || actualPage === "" ? offStyle : onStyle}
+                      >
+                        <AiOutlineCalendar className="mr-2" /> Reservar
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/settings"
+                        className={actualPage === "/settings" || actualPage === "" ? offStyle : onStyle}
+                      >
+                        <AiOutlineSetting className="mr-2" /> Configuración
+                      </Link>
+                    </li>
+                  </>
+                )}
+                <li>
+                  <button onClick={handleLogout} className={onStyle}>
+                    <AiOutlineLogout className="mr-2" /> Cerrar Sesión
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      ) : null}
-    </div>
+        ) : null
+      }
+    </div >
   );
 };
 

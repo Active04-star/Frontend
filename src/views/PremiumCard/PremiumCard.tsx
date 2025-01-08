@@ -18,12 +18,15 @@ const features = [
 
 function PremiumCard() {
   const [userLocalStorage] = useLocalStorage("userSession", null);
-  const { token, user } = userLocalStorage;
+  const { token, user } = userLocalStorage || { token: null, user: null };
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
 
   const fetchUserData = useCallback(async () => {
     if (!user?.id) {
+      setIsPageLoading(false);
       return;
     }
 
@@ -44,9 +47,13 @@ function PremiumCard() {
 
       const data: IUser = await response.json();
       setUserData(data);
+      console.log('data',data);
+      
     } catch (error) {
       console.error("Error al obtener los datos del usuario:", error);
-    }
+    }finally {
+    setIsPageLoading(false); // Set loading to false when done
+  }
   }, [user?.id]);
 
   useEffect(() => {
@@ -95,6 +102,13 @@ function PremiumCard() {
     }
   };
 
+  if (isPageLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 pt-20">
+        <div className="text-white">Cargando...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 pt-20">
@@ -127,7 +141,7 @@ function PremiumCard() {
             ) : (
               <PremiumButton
                 isLoading={isLoading}
-                user={user}
+                user={userData}
                 onSubscribe={createCheckout}
               />
             )}

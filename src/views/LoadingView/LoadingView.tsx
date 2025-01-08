@@ -11,6 +11,7 @@ import { UserSchemaWToken } from "@/types/user-schema";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
 import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
+import { IUser } from "@/types/zTypes";
 
 const LoadingView: React.FC = () => {
     const { user, isLoading, error: e } = useUser();
@@ -36,7 +37,7 @@ const LoadingView: React.FC = () => {
                             try {
                                 const { email, name, sub, picture: profile_image } = user;
 
-                                const response: Response = await fetch(`${API_URL}/auth/authenticate`, {
+                                const response = await fetchAndCatch(`${API_URL}/auth/authenticate`, {
                                     method: "POST",
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -50,32 +51,17 @@ const LoadingView: React.FC = () => {
                                     })
                                 });
 
-                                const data = await response.json();
-                                const validate = zodValidate(data, UserSchemaWToken);
+                                const validate = zodValidate(response, UserSchemaWToken);
 
                                 if (validate.success) {
 
-                                    setSession({ token: data.token, user: data.user });
-                                    getCenterIfManager(data.user);
+                                    setSession({ token: (response as IUser).token, user: (response as IUser).user });
+                                    getCenterIfManager(response as IUser);
 
                                     if (user.role === UserRole.USER) {
                                         window.location.href = "/user";
                                         return;
                                     }
-
-                                    // if (user.role === UserRole.MANAGER || data.user.role === UserRole.MAIN_MANAGER) {
-                                    //     const data = await fetchAndCatch(`${API_URL}/user/center/${user.id}`, {
-                                    //         method: "GET"
-                                    //     });
-
-                                    //     localStorage.setItem("sportCenter", JSON.stringify(data.id));
-                                    // } else if (user.role === UserRole.USER) {
-                                    //     router.push("/user");
-                                    //     return;
-
-                                    // }
-
-
 
                                     window.location.href = "/"
                                 } else {
@@ -95,6 +81,7 @@ const LoadingView: React.FC = () => {
                                         window.location.href = "/";
                                     }
                                 });
+                                window.location.href = "/api/auth/logout";
 
                             }
                         }
@@ -105,18 +92,17 @@ const LoadingView: React.FC = () => {
                     setShow(false);
                 }
 
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    if (error.message === "Cookie not found") {
-                        window.location.href = "/";
-                        setShow(false);
-                    } else {
-                        console.error("Unhandled Error:", error.message);
-                    }
+            } catch (error: any) {
+                
+                if (error.message === "Cookie not found") {
+                    setShow(true);
+                    window.location.href = "/";
                 } else {
-                    console.error("Unexpected error:", error);
+                    setShow(false);
+                    console.log(error);
                 }
-        }
+            }
+
         }
 
         handle();
