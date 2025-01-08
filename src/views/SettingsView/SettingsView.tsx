@@ -82,8 +82,8 @@ export default function SettingsView() {
   }
     
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
-      <div className="bg-black p-6 rounded-lg shadow-md w-full max-w-md mt-48">
+    <div className=" p-6 flex flex-col items-center">
+      <div className="bg-black p-6 rounded-lg shadow-md w-full max-w-md mt-16">
         <h1 className="text-2xl font-bold text-white mb-4 text-center">Configuración</h1>
         <div className="flex flex-col items-center mb-6">
           <div className="relative w-32 h-32 mb-4">

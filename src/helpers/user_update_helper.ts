@@ -20,7 +20,7 @@ export async function updateUser(
     body.password !== undefined &&
     body.confirm_password !== undefined
   ) {
-    response = await fetchWithAuth(`${API_URL}/NO_EXISTE_ESTA_RUTA_AUN/${id}`, {
+    response = await fetchWithAuth(`${API_URL}/auth/update-password/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -32,17 +32,5 @@ export async function updateUser(
     });
   }
 
-    }
-
-    if (body.password !== undefined && body.confirm_password !== undefined) {
-        response = await fetchWithAuth(`${API_URL}/auth/update-password/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password: body.password, confirm_password: body.confirm_password }),
-        });
-    }
-
-    return { user: response };
+  return { user: response };
 }

@@ -49,16 +49,17 @@ const SportCenterPage = async ({ params }: { params: { centerId: string } }) => 
     const fieldsData = await fieldsResponse.json()
 
     return (
-      <div>
-        <NavbarUser/>
-        <h1 className="text-2xl font-bold mb-6">{centerData.name}</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="pt-8">
+        <NavbarUser />
+        <h1 className="text-2xl font-bold mb-6 mt-16 text-center">{centerData.name}</h1>
+        <div className="mt-8 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {fieldsData.map((field: any) => (
             <FieldCard key={field.id} {...field} />
           ))}
         </div>
       </div>
     );
+    
   } catch (error) {
     console.error("Error loading sport center data:", error);
     return <h1>Error loading sport center</h1>;

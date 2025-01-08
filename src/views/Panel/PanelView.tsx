@@ -49,17 +49,15 @@ const PanelView: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20 text-white text-center">
+      <div className="min-h-screen pt-20 text-white text-center">
         Cargando...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20">
-      <h1 className="text-4xl font-semibold text-center text-indigo-700 mb-6">
-        Bienvenido al Panel
-      </h1>
+    <div className="min-h-screen  pt-20">
+      
       <div className="max-w-2xl mx-auto pt-5">
         {sportCenter ? (
           <ManagerSportCenterCard

@@ -104,14 +104,14 @@ function PremiumCard() {
 
   if (isPageLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 pt-20">
+      <div className="flex items-center justify-center min-h-screen p-6 pt-20">
         <div className="text-white">Cargando...</div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6 pt-20">
+    <div className="flex items-center justify-center min-h-screen  p-6 pt-20">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 p-10 text-white">
           <div className="absolute top-0 right-0 p-4">
