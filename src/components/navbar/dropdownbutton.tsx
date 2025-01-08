@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   AiOutlineCalendar,
-  AiOutlineDollar,
   AiOutlineKey,
   AiOutlineLogout,
   AiOutlineSetting,
@@ -17,7 +16,7 @@ import {
 const DropDownButton: React.FC = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
   const [actualPage, setActualPage] = useState("loading");
-  const [user] = useLocalStorage("userSession", "");
+  const [user] = useLocalStorage<IUser | null>("userSession", "");
   const divRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -70,7 +69,7 @@ const DropDownButton: React.FC = () => {
 
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage) {
+    if (typeof window !== "undefined" && window.localStorage && user !== null) {
       setUserData(user);
     }
   }, [user]);
