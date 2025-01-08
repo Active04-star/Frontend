@@ -26,7 +26,7 @@ export const UserSchema = z.object({
      */
     was_banned: z.boolean(),
 
-    stripeCustomerId: z.string().optional()
+    stripeCustomerId: z.string().optional().nullable()
 })
 
 export const UserSchemaWToken = z.object({
