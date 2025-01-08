@@ -62,6 +62,7 @@ export default function RegisterSportcenter() {
     }
 
     try {
+
       if(user !== null) {
 
         const validatedData = CenterRegisterSchema.parse(sportCenter);

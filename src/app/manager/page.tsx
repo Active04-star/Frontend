@@ -9,6 +9,7 @@ import ReservacionesViews from "@/views/reservaciones/reservacionesViews";
 import PerfilView from "@/views/configuracionViews/configuracionViews";
 import SettingsView from "@/views/SettingsView/SettingsView";
 import PremiumCard from "@/views/PremiumCard/PremiumCard";
+import SportCenterSchedulesPage from "../horarios/page";
 
 // Define view types for better type safety
 export type ViewName =
@@ -18,7 +19,7 @@ export type ViewName =
   | "reservaciones"
   | "settings"
   | "perfil"
-  | "premiumCard";
+  | "premiumCard"
 
 const VIEWS: Record<ViewName, React.ComponentType> = {
   panel: PanelView,
