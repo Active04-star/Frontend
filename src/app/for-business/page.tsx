@@ -7,7 +7,6 @@ const Business = () => {
         <>
             <Navbar />
             <RegisterSportcenter/>
-
         </>
     );
 };

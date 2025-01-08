@@ -142,12 +142,7 @@ const DropDownButton: React.FC = () => {
                   Reservas
                 </Link>
               </li>
-              <li>
-                <Link href="/reviews" className={onStyle}>
-                  <FaStar className="mr-2" />
-                  Reviews
-                </Link>
-              </li>
+              
               <li>
                 <Link href="/settings" className={onStyle}>
                   <FaCog className="mr-2" />

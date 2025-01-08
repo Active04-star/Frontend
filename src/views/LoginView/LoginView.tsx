@@ -18,7 +18,6 @@ import Image from "next/image";
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
 import { getUserType } from "@/helpers/auth/getUserType";
-import { AUTH0_CLIENT_ID, AUTH0_ISSUER_BASE_URL } from "@/config/config";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -47,12 +46,26 @@ const LoginView: React.FC = () => {
     }
   }, [userData]);
 
+
+  useEffect(() => {
+    const queryString = new URLSearchParams(window.location.search);
+    const queryParams = Object.fromEntries(queryString.entries()) as { from: string };
+
+    if (queryParams.from === "business") {
+      swalCustomError("Necesitas una cuenta", "Debes estar registrado para poder acceder a esta funcion", [, 6000]);
+
+    } else if (queryParams.from === "out_session") {
+      swalCustomError("La sesion ha expirado!", "Debes iniciar sesion nuevamente");
+
+    }
+
+  }, []);
+
+
   const redirectToAuth = (email: string) => {
-    // window.location.href = `${AUTH0_ISSUER_BASE_URL}/authorize?client_id=${AUTH0_CLIENT_ID}&response_type=code&scope=openid%20profile%20email&login_hint=${encodeURIComponent(email)}`
-    window.location.href = `api/auth/login?login_hint=${encodeURIComponent(
-      email
-    )}`;
+    window.location.href = `api/auth/login?login_hint=${encodeURIComponent(email)}`
   };
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -62,15 +75,21 @@ const LoginView: React.FC = () => {
 
     const validation = zodValidate(userData, UserLoginSchema);
 
-    if (
-      validation.errors === undefined ||
-      validation.errors.email === undefined
-    ) {
-      const response = await getUserType(userData.email);
+    if (validation.errors === undefined || validation.errors.email === undefined) {
 
-      if (response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
-        redirectToAuth(userData.email.toLowerCase());
-        return;
+      try {
+
+        const response = await getUserType(userData.email);
+
+        if (response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
+          redirectToAuth(userData.email.toLowerCase());
+          return;
+        }
+
+      } catch (error) {
+        console.error(error);
+        window.location.href = "/";
+
       }
     }
 
@@ -81,13 +100,9 @@ const LoginView: React.FC = () => {
       return;
     }
 
-    // const data = zodValidate(userData, UserLoginSchema);
 
     if (!validation.success) {
-      swalCustomError(
-        "Error en Logueo",
-        "Por favor corrige los errores antes de continuar."
-      );
+      swalCustomError("Error en Logueo", "Por favor corrige los errores antes de continuar.");
 
       setIsSubmitting(false);
       return;
@@ -104,9 +119,7 @@ const LoginView: React.FC = () => {
       swalNotifySuccess("¡Bienvenido de nuevo!", "");
 
       setUserData(initialState);
-      if (user.role === UserRole.MAIN_MANAGER) {
-        getCenterIfManager(response);
-      }
+      await getCenterIfManager(response);
 
       const roleRoutes = {
         [UserRole.USER]: "/user",
@@ -135,6 +148,7 @@ const LoginView: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
@@ -170,9 +184,9 @@ const LoginView: React.FC = () => {
                 className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
               />
               {userData.email &&
-              errors !== null &&
-              errors.email !== undefined &&
-              errors?.email._errors !== undefined ? (
+                errors !== null &&
+                errors.email !== undefined &&
+                errors?.email._errors !== undefined ? (
                 <span
                   className="text-sm text-red-600"
                   style={{ fontSize: "12px" }}
@@ -210,9 +224,9 @@ const LoginView: React.FC = () => {
                 </div>
               </div>
               {userData.password &&
-              errors !== null &&
-              errors.password !== undefined &&
-              errors?.password._errors !== undefined ? (
+                errors !== null &&
+                errors.password !== undefined &&
+                errors?.password._errors !== undefined ? (
                 <>
                   <span
                     className="text-sm text-red-600"
@@ -227,7 +241,7 @@ const LoginView: React.FC = () => {
                       style={{ fontSize: "12px" }}
                     >
                       {errors.password._errors[1] !== undefined &&
-                      errors.password._errors[1].length > 0
+                        errors.password._errors[1].length > 0
                         ? errors.password._errors[1]
                         : null}
                     </span>
@@ -262,7 +276,7 @@ const LoginView: React.FC = () => {
               <Link
                 type="submit"
                 className="mt-5 bg-primary text-dark px-6 py-2 rounded bg-orange-100 text-black flex justify-between"
-                href="api/auth/login"
+                href="api/auth/login/"
               >
                 <Image
                   src="https://auth.openai.com/assets/google-logo-NePEveMl.svg"

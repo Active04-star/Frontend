@@ -10,9 +10,10 @@ import { updateUser } from "@/helpers/user_update_helper";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
+import { ApiError } from "next/dist/server/api-utils";
 
 export default function ProfileView() {
-  const [user,]: Array<IUser> = useLocalStorage("userSession", null);
+  const [user,] = useLocalStorage<IUser | null>("userSession", null);
   const [name, setName] = useState<IUserUpdate>({ name: "" });
   const [password] = useState<IPasswordUpdate>({ password: "", confirm_password: "" });
 
@@ -41,11 +42,18 @@ export default function ProfileView() {
     }
 
     try {
-      const response = await updateUser(user.user.id, { name: "Pedro Gonzales", password: password.password, confirm_password: password.confirm_password });
+      if(user !== null) {
+        const response = await updateUser(user.user.id, { name: "Pedro Gonzales", password: password.password, confirm_password: password.confirm_password });
+        
+        localStorage.setItem("userSession", JSON.stringify({ token: user.token, user: { ...user.user, name: response?.user.name } }));
+        
+        window.location.reload();
 
-      localStorage.setItem("userSession", JSON.stringify({ token: user.token, user: { ...user.user, name: response?.user.name } }));
+      } else {
+        throw new ApiError(500, "user LocalStorage is not valid");
 
-      window.location.reload();
+      }
+
     } catch (error: any) {
       if (error instanceof ErrorHelper) {
         swalNotifyError(error);
@@ -64,7 +72,7 @@ export default function ProfileView() {
         <div className="flex flex-col items-center mb-6">
           <div className="relative w-32 h-32 mb-4">
             <Image
-              src={user?.user !== null ? user?.user?.profile_image : "/images/default-profile.jpg"}
+              src={user !== null && user?.user !== undefined ? user?.user?.profile_image : "/images/default-profile.jpg"}
               alt="Foto de perfil del usuario"
               className="rounded-full object-cover bg-white border-2 border-gray-300"
               layout="fill" // Ajusta la imagen al contenedor

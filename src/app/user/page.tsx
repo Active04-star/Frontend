@@ -5,7 +5,7 @@ import React from "react";
 const user = () => {
   return (
     <>
-      <NavbarUser />;
+      <NavbarUser/>;
       <UserView />
     </>
   )

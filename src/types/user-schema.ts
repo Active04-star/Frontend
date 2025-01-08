@@ -25,6 +25,8 @@ export const UserSchema = z.object({
     /**Debe ser solo visible por admins si está baneado.
      */
     was_banned: z.boolean(),
+
+    stripeCustomerId: z.string().optional().nullable()
 })
 
 export const UserSchemaWToken = z.object({

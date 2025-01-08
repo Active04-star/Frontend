@@ -1,10 +1,15 @@
 import { handleLogout } from "@auth0/nextjs-auth0";
-import { NextApiResponse } from "next";
-import { NextRequest } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function logout(req: NextRequest, res: NextApiResponse) {
+export default async function logout(req: NextApiRequest, res: NextApiResponse) {
   try {
-    await handleLogout(req, res);
+    const { from } = req.query;
+    console.log("out_session:")
+    console.log(from)
+    await handleLogout(req, res, {
+      returnTo: typeof from === "string" ? `/login?from=${from}` : "/",
+    });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
