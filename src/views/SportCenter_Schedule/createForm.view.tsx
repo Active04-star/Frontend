@@ -6,9 +6,7 @@ import { useLocalStorage } from '@/helpers/auth/useLocalStorage';
 import { useRouter } from 'next/navigation';
 import { API_URL } from '@/config/config';
 import { fetchWithAuth } from '@/helpers/errors/fetch-with-token-interceptor';
-
-import { IuserWithoutToken } from '@/types/zTypes';
-
+import { IUser } from '@/types/zTypes';
 
 export enum DayOfWeek {
   Monday = 'Monday',
@@ -35,10 +33,8 @@ const initialSchedules: Schedule[] = Object.values(DayOfWeek).map((day) => ({
 }));
 
 export default function ScheduleForm() {
-
-  const [userLocalStorage] = useLocalStorage<IuserWithoutToken|null>("userSession", null);
-  const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
-
+  const [user] = useLocalStorage<IUser | null>("userSession", null); 
+   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -47,13 +43,12 @@ export default function ScheduleForm() {
 
   useEffect(() => {
     
-    if (!userLocalStorage) 
+    if (!user) {
       router.push("/login");
     } else {
       setIsLoading(false);
     }
-  }, [userLocalStorage, router]);
-
+  }, [user, router]);
 
 
   const handleScheduleChange = (
@@ -96,7 +91,7 @@ console.log('shcuedles',schedules);
       
       console.log('shceudlesto sumb',JSON.stringify(schedulesToSubmit));
 
-      await fetchWithAuth(`${API_URL}/schedules/create/${userLocalStorage?.id}`, {
+      await fetchWithAuth(`${API_URL}/schedules/create/${user?.user?.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,10 +112,9 @@ console.log('shcuedles',schedules);
     }
   };
 
-
   if (isLoading) {
     return (
-      <div className="min-h-screen  pt-20 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20 flex items-center justify-center">
         <div className="text-white flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin" />
           <p className="text-lg">Cargando informacion del usuario</p>
@@ -130,7 +124,7 @@ console.log('shcuedles',schedules);
   }
 
   return (
-    <div className="min-h-screen  py-8 px-4">
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
       <BotonVolver/>
       <div className="max-w-3xl mx-auto">
         {error && (
@@ -184,7 +178,7 @@ console.log('shcuedles',schedules);
                           type="time"
                           value={schedule.opening_time || ''}
                           onChange={(e) => handleScheduleChange(index, 'opening_time', e.target.value)}
-                          className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-400"
+                          className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                           required={schedule.isOpen}
                         />
                       </div>
@@ -199,7 +193,7 @@ console.log('shcuedles',schedules);
                           type="time"
                           value={schedule.closing_time || ''}
                           onChange={(e) => handleScheduleChange(index, 'closing_time', e.target.value)}
-                          className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-400"
+                          className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                           required={schedule.isOpen}
                         />
                       </div>
