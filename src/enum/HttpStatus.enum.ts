@@ -44,6 +44,9 @@ export enum ApiStatusEnum {
   CENTER_UPDATE_STATUS = 'Estado del centro modificado',
   CENTER_WRONG_OWNER = 'La cuenta asociada con este centro deportivo no coincide',
   CENTER_HAS_NO_FIELDS = 'Este centro deportivo no tiene canchas',
+  CENTER_ALREADY_HAS_SCHEDULES = "El centro ya tiene horarios asignados",
+  CENTER_SCHEDULES_CREATION_FAILED = "Fallo la creacion de horarios para el centro",
+  CENTER_IS_NOT_COMPLETED='El centro no se puede publicar porque no tiene asignado horarios o no tiene canchas',
 
   // Reviews
   REVIEW_CREATION_FAILED = 'No se pudo crear una nueva reseña',
@@ -56,6 +59,7 @@ export enum ApiStatusEnum {
   RESERVATION_NOT_FOUND = 'No se encontró ninguna reserva',
   RESERVATION_ALREADY_CANCELED = 'Esta reserva ya fue cancelada',
   INVALID_RESERVATION_STATUS = 'Estado de la reserva invalido',
+  RESERVATION_NOT_COMPLETED = "Se va a poder crear una reseña luego de la reserva haya sido completada",
 
   // Field
   FIELD_DELETED_SUCCESSFULLY = 'Cancha eliminada correctamente',
@@ -86,6 +90,12 @@ export enum ApiStatusEnum {
   IMAGE_DELETION_SUCCESS = 'Imagen eliminada correctamente',
   MAX_IMAGES_REACHED = 'Maximo de imagenes alcanzado, elimina una imagen antes de subir otra!',
 
+  // Categories
+  CATEGORY_ALREADY_EXISTS = "Ya hay una categoria con ese nombre!",
+  CATEGORY_CREATION_FAILED = "No se pudo crear esta categoria",
+  CATEGORY_NOT_FOUND = "No se encontró ninguna categoria",
+  USER_ALREADY_HAS_A_CENTER = "Este usuario ya posee un centro deportivo registrado!",
+
   // General
   RANKING_UP_FAIL = 'Error al mejorar el rango del usuario',
   RANKING_UP_SUCCESS = 'El rol de este usuario ha cambiado',
@@ -96,4 +106,5 @@ export enum ApiStatusEnum {
   INSUFFICIENT_PERMISSIONS = 'No tienes permisos para hacer eso',
   NOT_ALLOWED_HERE = 'No estás permitido aqui!',
   TEST_ERROR = 'Error de prueba, debe ser eliminado en modo produccion!',
+  RATING_OUT_OF_BOUNDS = "La calificacion debe estar entre 1 y 5",
 }
