@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { UserRegisterSchema } from "./userRegister-schema";
-import { UserSchemaWToken } from "./user-schema";
+import { UserSchema, UserSchemaWToken } from "./user-schema";
 import { CenterRegisterSchema } from "./centerRegister-schema";
 import { SportCenterSchema } from "./center-schema";
 import { UserLoginSchema } from "./userLogin-schema";
@@ -16,6 +16,8 @@ export type IUserRegister = z.infer<typeof UserRegisterSchema>;
 /**Usuario proveniente del back (despues de un registro o logueo), se valida con `UserSchemaWToken`
  */
 export type IUser = z.infer<typeof UserSchemaWToken>;
+
+export type IuserWithoutToken=z.infer<typeof UserSchema>
 
 /**Centro deportivo de formulario, se valida con `CenterRegisterSchema`
  */
