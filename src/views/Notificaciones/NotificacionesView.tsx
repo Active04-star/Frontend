@@ -115,11 +115,14 @@ const NotificacionesView: React.FC = () => {
 
         // Asignar las calificaciones de ejemplo al estado
         setCalificaciones(calificacionesEjemplo);
-      } catch (error: any) {
-        setError(error.message || "Hubo un error al obtener las calificaciones");
-      } finally {
-        setLoading(false); // Finalizar la carga
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message || "Hubo un error al obtener las calificaciones");
+        } else {
+          setError("Hubo un error desconocido");
+        }
       }
+      
     };
 
     obtenerCalificaciones();

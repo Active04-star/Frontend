@@ -4,7 +4,7 @@ import SportCenterCard from "@/components/SportCenterCard/SportCenterCard";
 import { fetchSearchCenters } from "@/helpers/sport_center_helpers";
 import { IQueryParams } from "@/interfaces/query_params.interface";
 import { ISportCenterList } from "@/interfaces/sport_center_list.interface";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Search, Star } from "lucide-react";
 import debounce from "lodash/debounce";
 
@@ -16,7 +16,8 @@ const UserView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [rating, setRating] = useState<number | undefined>();
 
-  const fetchData = async (search?: string, rating?: number) => {
+  const fetchData = useCallback(async (search?: string, rating?: number) => {
+    const default_params: IQueryParams = { page: 1, limit: 8 };
     setIsLoading(true);
     setError(null); // Limpia el error antes de realizar la nueva solicitud
     try {
@@ -26,17 +27,24 @@ const UserView: React.FC = () => {
         rating,
       });
       setCenterList(response);
-    } catch (error: any) {
-      // Check if it's the "no results" error
-      if (error.status === 404) {
-        setError("No sport centers found matching your search criteria");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if ("status" in error) {
+          if ((error as { status: number }).status === 404) {
+            setError("No sport centers found matching your search criteria");
+          } else {
+            setError("An error occurred while fetching sport centers");
+          }
+        }
       } else {
-        setError("An error occurred while fetching sport centers");
+        setError("An unknown error occurred");
       }
       setCenterList(null);
     }
+    
     setIsLoading(false);
-  };
+  }, []);
+  
 
   // Debounce search to avoid too many API calls
   const debouncedSearch = debounce((term: string) => {
@@ -45,7 +53,7 @@ const UserView: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
