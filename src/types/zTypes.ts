@@ -17,7 +17,7 @@ export type IUserRegister = z.infer<typeof UserRegisterSchema>;
  */
 export type IUser = z.infer<typeof UserSchemaWToken>;
 
-export type IuserWithoutToken=z.infer<typeof UserSchema>
+export type IuserWithoutToken=z.infer<typeof UserSchema>;
 
 /**Centro deportivo de formulario, se valida con `CenterRegisterSchema`
  */

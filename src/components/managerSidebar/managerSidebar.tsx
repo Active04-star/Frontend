@@ -175,11 +175,6 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                 Cuenta
               </span>
             </li>
-
-            {/* Menu Item "Perfil" */}
-            <li>
-              
-            </li>
             <li>
               <button
                 onClick={() => onMenuClick("premiumCard")}
