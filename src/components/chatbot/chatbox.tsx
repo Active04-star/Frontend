@@ -107,10 +107,10 @@ const ChatButton = () => {
     <div className="fixed bottom-4 right-4">
       <button
         onClick={toggleChat}
-        className="bg-yellow-500 text-white p-4 rounded-full shadow-lg focus:outline-none"
+        className="bg-yellow-600 text-white p-4 rounded-full shadow-lg focus:outline-none"
       >
         <FontAwesomeIcon icon={faComment} size="2x" />
-        <span className="ml-2">¿En qué puedo ayudarte?</span>
+        
       </button>
 
       {isChatOpen && (

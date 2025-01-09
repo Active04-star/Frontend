@@ -14,14 +14,15 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
 
   return (
     <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-black text-gray-800">
-      <div className="sticky flex flex-col top-0 left-0  w-64 bg-white h-full border-r">
+      <div className="sticky flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
         <div className="flex items-center justify-center h-14 border-b"></div>
         <div className="overflow-y-auto overflow-x-hidden flex-grow">
-          <ul className="flex flex-col py-4 space-y-1">
+          <ul className="flex flex-col py-4 space-y-0.5">
             {/* Menu Item "Panel" */}
             <li>
               <span className="inline-flex justify-center items-center ml-4"></span>
-              <span className="ml-2 text-sm tracking-wide truncate">Menu</span>
+              <span className="ml-2 text-sm tracking-wide truncate underline decoration-yellow-400">
+              Menu</span>
             </li>
             <li>
               <button
@@ -48,6 +49,33 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                   Panel
                 </span>
               </button>
+            </li>
+            <li>
+              <Link href='/horarios'>
+              <button
+                className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400 pr-6"
+              >
+                <span className="inline-flex justify-center items-center ml-4">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8v4l3 3m6-6a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </span>
+                <span className="ml-2 text-sm tracking-wide truncate">
+                  Horarios
+                </span>
+              </button>
+              </Link>
             </li>
 
             {/* Menu Item "Notificaciones" */}
@@ -80,7 +108,11 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
 
             <li>
               <span className="inline-flex justify-center items-center ml-4"></span>
+<<<<<<< HEAD
               <span className="ml-2 text-sm tracking-wide truncate">
+=======
+              <span className="ml-2 text-sm tracking-wide truncate underline decoration-yellow-400">
+>>>>>>> 68085317099d68d7184d4673f34ee48d8c82d269
                 Mis Canchas
               </span>
             </li>
@@ -143,11 +175,14 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
 
             <li>
               <span className="inline-flex justify-center items-center ml-4"></span>
+<<<<<<< HEAD
               <span className="ml-2 text-sm tracking-wide truncate">
+=======
+              <span className="ml-2 text-sm tracking-wide truncate underline decoration-yellow-400">
+>>>>>>> 68085317099d68d7184d4673f34ee48d8c82d269
                 Cuenta
               </span>
             </li>
-
             <li>
               <button
                 onClick={() => onMenuClick("premiumCard")}

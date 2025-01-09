@@ -6,7 +6,8 @@ import { PremiumButton } from "@/components/premiumButton/premiumButton";
 import { PremiumFeature } from "@/components/premiumFeature/premiumFeature";
 import { API_URL } from "@/config/config";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-import { IUser } from "@/types/zTypes";
+import { IUser, IuserWithoutToken } from "@/types/zTypes";
+import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 
 const features = [
   "Gestiona ilimitadas canchas y deportes",
@@ -19,10 +20,9 @@ const features = [
 function PremiumCard() {
   const [user] = useLocalStorage<IUser | null>("userSession", null);
   // const { token, user } = userLocalStorage || { token: null, user: null };
-  const [userData, setUserData] = useState<IUser | null>(null);
+  const [userData, setUserData] = useState<IuserWithoutToken | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
-
 
   const fetchUserData = useCallback(async () => {
     if (user === null) {
@@ -31,7 +31,7 @@ function PremiumCard() {
     }
 
     try {
-      const response = await fetch(
+      const data = await fetchWithAuth(
         `${API_URL}/user/solo-para-testing/${user.user.id}`,
         {
           method: "GET",
@@ -41,19 +41,13 @@ function PremiumCard() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al obtener los datos del usuario");
-      }
-
-      const data: IUser = await response.json();
       setUserData(data);
-      console.log('data',data);
-      
+      console.log("data", data);
     } catch (error) {
       console.error("Error al obtener los datos del usuario:", error);
-    }finally {
-    setIsPageLoading(false); // Set loading to false when done
-  }
+    } finally {
+      setIsPageLoading(false); // Set loading to false when done
+    }
   }, [user]);
 
   useEffect(() => {
@@ -134,7 +128,7 @@ function PremiumCard() {
           </ul>
 
           <div className="mt-8">
-            {userData?.user.stripeCustomerId ? (
+            {userData?.stripeCustomerId ? (
               <p className="text-center text-green-600 font-bold">
                 ¡Ya tienes Premium!
               </p>
