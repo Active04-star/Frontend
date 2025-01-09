@@ -9,7 +9,6 @@ interface StoredImage {
   fileSize: number;
 }
 
-
 interface ImageCarouselProps {
   images: string[];
   onImageUpload: (file: File) => void;
@@ -25,14 +24,14 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
     setLocalImages(storedImages);
   }, []);
 
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log('file', file);
-    
+
     if (file) {
       const storedImages = JSON.parse(localStorage.getItem('pendingImages') || '[]');
-      if (storedImages.length >= 3) {
+      
+      // Limit to 3 images in total: server images + local images
+      if (images.length + storedImages.length >= 3) {
         alert('Máximo 3 imágenes permitidas');
         return;
       }
@@ -46,7 +45,7 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
           fileType: file.type,
           fileSize: file.size
         };
-        
+
         const updatedImages = [...storedImages, newImage];
         localStorage.setItem('pendingImages', JSON.stringify(updatedImages));
         setLocalImages(updatedImages);
@@ -68,9 +67,9 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
             alt={`Sport center image ${currentIndex + 1}`}
             className="w-full h-full object-cover rounded-t-lg"
           />
-          
+
           {/* Upload button for additional images */}
-          {localImages.length < 3 && (
+          {localImages.length + images.length < 3 && (
             <label className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white rounded-full cursor-pointer transition-colors">
               <Upload className="w-4 h-4" />
               <span className="text-sm">Agregar Imagen</span>
