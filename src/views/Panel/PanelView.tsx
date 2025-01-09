@@ -13,6 +13,7 @@ const PanelView: React.FC = () => {
   const [sportCenter, setSportCenter] = useState<ISportCenter | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+
   const fetchSportCenter = useCallback(async () => {
     console.log('user',userLocalStorage);
     
@@ -36,6 +37,9 @@ console.log('sportcenter',response);
       setIsLoading(false);
     }
   }, [userLocalStorage?.user?.id]);
+
+
+
 
   useEffect(() => {
     fetchSportCenter();
@@ -68,6 +72,8 @@ console.log('sportcenter',response);
             sportCenter={sportCenter}
             onPublish={handlePublish}
             onImageUpload={handleImageUpload}
+            onUpdateSuccess={fetchSportCenter}
+
           />
         ) : (
           <div className="text-center text-white text-lg">

@@ -13,7 +13,10 @@ export interface ISportCenter {
     averageRating?: number | null;  // Valoración promedio puede ser nulo o no proporcionado
     isDeleted: boolean;
     status: SportCenterStatus;
-    photos?: string[];  // Relación con las fotos, opcional
+    photos: Array<{
+        id: string;
+        image_url: string; // Asegúrate de que `image_url` es una propiedad de tipo string
+      }>; // Relación con las fotos, opcional
     schedules: ISportCenterSchedule[];  // Relación con los horarios, opcional
     fields: IField[];  // Relación con los campos de deportes, opcional
     mainManager: IUser;  
