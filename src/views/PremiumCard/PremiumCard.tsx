@@ -24,7 +24,6 @@ function PremiumCard() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
 
-
   const fetchUserData = useCallback(async () => {
     if (user === null) {
       setIsPageLoading(false);
@@ -32,7 +31,7 @@ function PremiumCard() {
     }
 
     try {
-      const data=await fetchWithAuth(
+      const data = await fetchWithAuth(
         `${API_URL}/user/solo-para-testing/${user.user.id}`,
         {
           method: "GET",
@@ -42,15 +41,13 @@ function PremiumCard() {
         }
       );
 
-
       setUserData(data);
-      console.log('data',data);
-      
+      console.log("data", data);
     } catch (error) {
       console.error("Error al obtener los datos del usuario:", error);
-    }finally {
-    setIsPageLoading(false); // Set loading to false when done
-  }
+    } finally {
+      setIsPageLoading(false); // Set loading to false when done
+    }
   }, [user]);
 
   useEffect(() => {
