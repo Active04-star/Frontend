@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import {
@@ -6,7 +7,6 @@ import {
   IUserUpdate,
   IuserWithoutToken,
 } from "@/types/zTypes";
-import { RegisterErrors } from "@/types/Errortypes";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserUpdateSchema } from "@/types/userUpdate-schema";
