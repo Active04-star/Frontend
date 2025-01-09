@@ -112,17 +112,19 @@ const LoadingView: React.FC = () => {
                     setShow(false);
                 }
 
-            } catch (error: any) {
-                
-                if (error.message === "Cookie not found") {
-                    setShow(true);
-                    window.location.href = "/";
-                } else {
-                    setShow(false);
+            } catch (error: unknown) {
+                if (error instanceof ApiError) {
+                    setError(true);
                     console.log(error);
+            
+                    await swalCustomError(error.message);
+                } else if (error instanceof Error) {
+                    console.log(error.message);
+                } else {
+                    console.log("Unknown error:", error);
                 }
             }
-
+            
         }
 
         handle();

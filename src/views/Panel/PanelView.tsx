@@ -47,7 +47,7 @@ const PanelView: React.FC = () => {
       }
     }
 
-  }, [user]);
+  }, [user,sportCenter]);
 
   useEffect(() => {
     fetchSportCenter();

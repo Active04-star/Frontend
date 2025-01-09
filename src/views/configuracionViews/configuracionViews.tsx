@@ -54,7 +54,7 @@ export default function ProfileView() {
 
       }
 
-    } catch (error: any) {
+    } catch (error:  unknown) {
       if (error instanceof ErrorHelper) {
         swalNotifyError(error);
       } else {
