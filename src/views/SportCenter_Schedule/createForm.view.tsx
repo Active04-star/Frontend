@@ -111,10 +111,9 @@ console.log('shcuedles',schedules);
       setIsSubmitting(false);
     }
   };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20 flex items-center justify-center">
+      <div className="min-h-screen pt-20 flex items-center justify-center">
         <div className="text-white flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin" />
           <p className="text-lg">Cargando informacion del usuario</p>
@@ -122,7 +121,6 @@ console.log('shcuedles',schedules);
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <BotonVolver/>
@@ -224,4 +222,5 @@ console.log('shcuedles',schedules);
       </div>
     </div>
   );
+
 }
