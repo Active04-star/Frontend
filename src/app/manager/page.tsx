@@ -18,7 +18,6 @@ export type ViewName =
   | "canchas"
   | "reservaciones"
   | "settings"
-  | "perfil"
   | "premiumCard"
 
 const VIEWS: Record<ViewName, React.ComponentType> = {
@@ -27,7 +26,6 @@ const VIEWS: Record<ViewName, React.ComponentType> = {
   canchas: CanchasView,
   reservaciones: ReservacionesViews,
   settings: SettingsView,
-  perfil: PerfilView,
   premiumCard: PremiumCard,
 };
 

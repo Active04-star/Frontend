@@ -6,6 +6,7 @@ import { useLocalStorage } from '@/helpers/auth/useLocalStorage';
 import { useRouter } from 'next/navigation';
 import { API_URL } from '@/config/config';
 import { fetchWithAuth } from '@/helpers/errors/fetch-with-token-interceptor';
+import { IuserWithoutToken } from '@/types/zTypes';
 
 export enum DayOfWeek {
   Monday = 'Monday',
@@ -32,8 +33,7 @@ const initialSchedules: Schedule[] = Object.values(DayOfWeek).map((day) => ({
 }));
 
 export default function ScheduleForm() {
-  const [userLocalStorage] = useLocalStorage("userSession", null);
-  const { token, user } = userLocalStorage || { token: null, user: null };
+  const [userLocalStorage] = useLocalStorage<IuserWithoutToken|null>("userSession", null);
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,12 +43,12 @@ export default function ScheduleForm() {
 
   useEffect(() => {
     
-    if (!user || !token) {
+    if (!userLocalStorage) {
       router.push("/login");
     } else {
       setIsLoading(false);
     }
-  }, [user, token, router]);
+  }, [userLocalStorage, router]);
 
 
   const handleScheduleChange = (
@@ -91,7 +91,7 @@ console.log('shcuedles',schedules);
       
       console.log('shceudlesto sumb',JSON.stringify(schedulesToSubmit));
 
-      await fetchWithAuth(`${API_URL}/schedules/create/${user?.id}`, {
+      await fetchWithAuth(`${API_URL}/schedules/create/${userLocalStorage?.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
