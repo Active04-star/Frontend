@@ -20,7 +20,6 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
           <ul className="flex flex-col py-4 space-y-0.5">
             {/* Menu Item "Panel" */}
             <li>
-              <span className="inline-flex justify-center items-center ml-4"></span>
               <span className="ml-2 text-sm tracking-wide truncate underline decoration-yellow-400">
               Menu</span>
             </li>
@@ -107,12 +106,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
             </li>
 
             <li>
-              <span className="inline-flex justify-center items-center ml-4"></span>
-<<<<<<< HEAD
-              <span className="ml-2 text-sm tracking-wide truncate">
-=======
               <span className="ml-2 text-sm tracking-wide truncate underline decoration-yellow-400">
->>>>>>> 68085317099d68d7184d4673f34ee48d8c82d269
                 Mis Canchas
               </span>
             </li>
@@ -174,12 +168,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
             </li>
 
             <li>
-              <span className="inline-flex justify-center items-center ml-4"></span>
-<<<<<<< HEAD
-              <span className="ml-2 text-sm tracking-wide truncate">
-=======
               <span className="ml-2 text-sm tracking-wide truncate underline decoration-yellow-400">
->>>>>>> 68085317099d68d7184d4673f34ee48d8c82d269
                 Cuenta
               </span>
             </li>

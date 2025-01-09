@@ -4,7 +4,7 @@ import NavbarUser from "@/components/navbarUser/navbarUser";
 import { ISportCenter } from "@/interfaces/sport_center.interface";
 import { IField } from "@/interfaces/field_Interface";
 
-// ✅ Función para generar las rutas dinámicas
+// ✅ Generar rutas estáticas dinámicamente
 export async function generateStaticParams() {
   try {
     const response = await fetch(`${API_URL}/sportcenter/search`);
@@ -34,8 +34,10 @@ const SportCenterPage = async ({
   try {
     // Obtener datos del Sport Center
     const sportCenterResponse = await fetch(
-      `${API_URL}/sportcenter/${params.centerId}`
+      `${API_URL}/sportcenter/${params.centerId}`,
+      { cache: "no-store" } // Asegura que no use datos en caché
     );
+
     if (!sportCenterResponse.ok) {
       return <h1>Sport Center not found</h1>;
     }
@@ -44,8 +46,10 @@ const SportCenterPage = async ({
 
     // Obtener fields asociados al Sport Center
     const fieldsResponse = await fetch(
-      `${API_URL}/field/fields/${params.centerId}`
+      `${API_URL}/field/fields/${params.centerId}`,
+      { cache: "no-store" } // Asegura que no use datos en caché
     );
+
     if (!fieldsResponse.ok) {
       return <h1>No fields found</h1>;
     }
