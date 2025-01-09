@@ -112,7 +112,7 @@ const CanchasPanelView: React.FC = () => {
   }
 
   return (
-    <div className="mt-16 max-w-6xl mx-auto p-6 bg-gray-100">
+    <div className="mt-16 max-w-6xl mx-auto p-6 ">
 
 
       {showCreateForm ? (
