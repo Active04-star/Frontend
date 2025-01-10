@@ -75,7 +75,7 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps>=({
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="relative">
         <ImageCarousel
-          images={sportCenter?.photos?.map((photo) => photo.image_url) || []} // Usa las URL de las imágenes
+          images={sportCenter?.photos?.map((photo) => photo) || []} // Usa las URL de las imágenes
           onImageUpload={onImageUpload}
         />
           <div className="absolute top-4 right-4 flex gap-2">

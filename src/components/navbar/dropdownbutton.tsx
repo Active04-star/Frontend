@@ -6,6 +6,7 @@ import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
 import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image"; // ✅ Importación del componente Image
 import { useEffect, useRef, useState } from "react";
 import {
   AiOutlineCalendar,
@@ -21,8 +22,11 @@ const DropDownButton: React.FC = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const offStyle = "flex items-center block px-4 py-2 text-gray-400 hover:bg-gray-100 transition-colors duration-200 pointer-events-none";
-  const onStyle = "flex items-center block px-4 py-2 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400";
+
+  const offStyle =
+    "flex items-center block px-4 py-2 text-gray-400 hover:bg-gray-100 transition-colors duration-200 pointer-events-none";
+  const onStyle =
+    "flex items-center block px-4 py-2 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400";
 
   useEffect(() => {
     setActualPage(getSubPath(window.location.href));
@@ -68,25 +72,20 @@ const DropDownButton: React.FC = () => {
     };
   }, []);
 
-
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage && user !== null) {
-      
       setUserData(user);
     }
   }, [user]);
-
 
   const handleLogout = async () => {
     logout(true);
   };
 
-
   const toggleDropdown = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsDropdownOpen(!isDropdownOpen);
   };
-
 
   return (
     <div ref={divRef} className="relative">
@@ -98,15 +97,17 @@ const DropDownButton: React.FC = () => {
             className="flex items-center focus:outline-none"
           >
             <Image
-              src={userData?.user.profile_image || "/default-profile.png"} // Ruta de imagen predeterminada si no tiene foto
+              src={userData?.user.profile_image || "/default-profile.png"} // ✅ Imagen optimizada
               alt="Foto de perfil"
-              width={32}
-              height={32}
+              width={32} // Ajusta el ancho
+              height={32} // Ajusta la altura
               className="rounded-full border-2 border-yellow-600"
             />
           </button>
         </div>
-      ) : actualPage === "loading" || actualPage === "/login" || actualPage === "/register" ? null : (
+      ) : actualPage === "loading" ||
+        actualPage === "/login" ||
+        actualPage === "/register" ? null : (
         <Link href="/login">
           <button
             type="button"
@@ -125,7 +126,11 @@ const DropDownButton: React.FC = () => {
                 <li>
                   <Link
                     href="/manager"
-                    className={actualPage === "/manager" || actualPage === "" ? offStyle : onStyle}
+                    className={
+                      actualPage === "/manager" || actualPage === ""
+                        ? offStyle
+                        : onStyle
+                    }
                   >
                     <AiOutlineKey className="mr-2" /> Panel de Manager
                   </Link>
@@ -135,7 +140,11 @@ const DropDownButton: React.FC = () => {
                 <li>
                   <Link
                     href="/admin"
-                    className={actualPage === "/admin" || actualPage === "" ? offStyle : onStyle}
+                    className={
+                      actualPage === "/admin" || actualPage === ""
+                        ? offStyle
+                        : onStyle
+                    }
                   >
                     <AiOutlineKey className="mr-2" /> Panel de Admin
                   </Link>
@@ -146,7 +155,11 @@ const DropDownButton: React.FC = () => {
                   <li>
                     <Link
                       href="/user"
-                      className={actualPage === "/user" || actualPage === "" ? offStyle : onStyle}
+                      className={
+                        actualPage === "/user" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
                     >
                       <AiOutlineCalendar className="mr-2" /> Reservar
                     </Link>
@@ -154,7 +167,11 @@ const DropDownButton: React.FC = () => {
                   <li>
                     <Link
                       href="/settings"
-                      className={actualPage === "/settings" || actualPage === "" ? offStyle : onStyle}
+                      className={
+                        actualPage === "/settings" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
                     >
                       <AiOutlineSetting className="mr-2" /> Configuración
                     </Link>

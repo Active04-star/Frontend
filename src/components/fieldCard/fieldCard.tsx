@@ -9,7 +9,7 @@ const FieldCard: React.FC<IField> = ({ id, number, price, photos, sportCategory 
         {/* Imagen */}
         <div className="relative w-full h-32">
           <Image
-            src={photos || '/placeholder-image.jpg'} // Usa la primera foto si existe
+            src={photos !== undefined && photos?.length > 0 ? photos[0] : '/placeholder-image.jpg'} // Usa la primera foto si existe
             alt={`Imagen de la cancha ${number}`}
             layout="fill"
             objectFit="cover"

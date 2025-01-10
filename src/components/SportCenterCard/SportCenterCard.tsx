@@ -9,6 +9,7 @@ const SportCenterCard: React.FC<ISportCenter> = ({
   averageRating,
   photos,
 }) => {
+
   return (
     <Link href={`/sport-centers/${id}`} passHref>
       <div className="flex justify-center items-center p-2">
