@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
+import { AiOutlineWechat } from "react-icons/ai";
 
 const ChatButton = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -10,12 +11,26 @@ const ChatButton = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [userInput, setUserInput] = useState(""); // Input del usuario
   const [error, setError] = useState(""); // Mensaje de error si no se ingresa texto
-
+  const divRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const [showText, setShowText] = useState(false);
 
-  const toggleChat = () => {
-    setIsChatOpen(!isChatOpen);
+
+  useEffect(() => {
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (divRef.current && !divRef.current.contains(event.target as Node)) {
+      setIsChatOpen(false);
+    }
   };
+
 
   const handleOptionSelect = (option: string) => {
     let response = "";
@@ -82,6 +97,7 @@ const ChatButton = () => {
     setUserInput("");
   };
 
+
   const handleContact = (platform: string) => {
     if (platform === "email") {
       window.location.href = "mailto:support@canchas.com";
@@ -90,6 +106,7 @@ const ChatButton = () => {
     }
   };
 
+
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -97,20 +114,35 @@ const ChatButton = () => {
     }
   };
 
+
+  const toggleText = (flag: boolean) => {
+    setShowText(flag);
+  }
+
+
   useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [conversation]);
 
+
   return (
-    <div className="fixed bottom-4 right-4">
+    <div ref={divRef} className="fixed bottom-4 right-4">
       <button
-        onClick={toggleChat}
-        className="bg-yellow-600 text-white p-4 rounded-full shadow-lg focus:outline-none"
+        onMouseEnter={() => toggleText(true)}
+        onMouseLeave={() => toggleText(false)}
+        onClick={() => setIsChatOpen(true)}
+        className="flex items-center bg-yellow-600 text-white p-2 rounded-full transition-transform shadow-lg focus:outline-none"
       >
-        <FontAwesomeIcon icon={faComment} size="2x" />
-        
+        {/* <FontAwesomeIcon icon={faComment} size="2x" /> */}
+        <AiOutlineWechat className="w-12 h-12" />{" "}
+        <span
+          className={`ml-2 transition-all duration-300 ${showText ? "max-w-xs opacity-100" : "max-w-0 opacity-0"
+            } overflow-hidden whitespace-nowrap`}
+        >
+          ¿En qué puedo ayudarte?
+        </span>
       </button>
 
       {isChatOpen && (
@@ -119,9 +151,8 @@ const ChatButton = () => {
             {conversation.map((msg, index) => (
               <div key={index} className={msg.sender === "user" ? "text-right" : "text-left"}>
                 <p
-                  className={`inline-block p-3 rounded-lg ${
-                    msg.sender === "user" ? "bg-blue-100 text-black" : "bg-gray-100 text-black"
-                  }`}
+                  className={`inline-block p-3 rounded-lg ${msg.sender === "user" ? "bg-blue-100 text-black" : "bg-gray-100 text-black"
+                    }`}
                 >
                   {msg.text}
                 </p>

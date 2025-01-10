@@ -8,24 +8,44 @@ import { API_URL } from "@/config/config";
 
 import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
+import Swal from "sweetalert2";
 
 const banSportCenter = async (id: string) => {
   try {
     await fetchWithAuth(`${API_URL}/admin/ban-unban/sportcenter/${id}`, {
       method: "PUT",
+      body: JSON.stringify({ status: "banned" }),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    alert("Centro deportivo baneado con éxito.");
+    // Alerta de éxito
+    Swal.fire({
+      icon: "success",
+      title: "Centro Deportivo Baneado",
+      text: "El centro deportivo ha sido baneado correctamente.",
+      confirmButtonText: "Aceptar",
+    });
   } catch (error) {
     console.error(error);
 
     if (error instanceof ErrorHelper) {
-      alert(`Error: ${error.message}`);
+      // Alerta de error personalizada
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `Error: ${error.message}`,
+        confirmButtonText: "Aceptar",
+      });
     } else {
-      alert("Ocurrió un error al banear el centro deportivo.");
+      // Alerta de error genérica
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error al banear el centro deportivo.",
+        confirmButtonText: "Aceptar",
+      });
     }
   }
 };
