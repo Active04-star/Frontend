@@ -10,7 +10,7 @@ export function logout(fire_swal: boolean): void {
     swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
   }
 
-  // Construye la URL de logout basada en la variable de entorno
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
-  window.location.href = `${baseUrl}/api/auth/logout`;
+  // Usa window.location.origin para mantener al usuario en el frontend
+  const frontendUrl = window.location.origin;
+  window.location.href = `${frontendUrl}/api/auth/logout`;
 }
