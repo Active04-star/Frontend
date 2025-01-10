@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Upload } from 'lucide-react';
 
 interface StoredImage {
@@ -19,23 +20,19 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
   const [localImages, setLocalImages] = useState<StoredImage[]>([]);
 
   useEffect(() => {
-    // Load pending images from localStorage
     const storedImages = JSON.parse(localStorage.getItem('pendingImages') || '[]');
     setLocalImages(storedImages);
   }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
     if (file) {
       const storedImages = JSON.parse(localStorage.getItem('pendingImages') || '[]');
-      
-      // Limit to 3 images in total: server images + local images
       if (images.length + storedImages.length >= 3) {
         alert('Máximo 3 imágenes permitidas');
         return;
       }
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const newImage: StoredImage = {
@@ -43,7 +40,7 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
           dataUrl: reader.result as string,
           fileName: file.name,
           fileType: file.type,
-          fileSize: file.size
+          fileSize: file.size,
         };
 
         const updatedImages = [...storedImages, newImage];
@@ -55,20 +52,20 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
     }
   };
 
-  // Combine server images and local pending images
-  const allImages = [...images, ...localImages.map(img => img.dataUrl)];
+  const allImages = [...images, ...localImages.map((img) => img.dataUrl)];
 
   return (
     <div className="relative w-full h-64">
       {allImages.length > 0 ? (
         <>
-          <img
+          <Image
             src={allImages[currentIndex]}
             alt={`Sport center image ${currentIndex + 1}`}
-            className="w-full h-full object-cover rounded-t-lg"
+            fill
+            className="object-cover rounded-t-lg"
+            priority
           />
 
-          {/* Upload button for additional images */}
           {localImages.length + images.length < 3 && (
             <label className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white rounded-full cursor-pointer transition-colors">
               <Upload className="w-4 h-4" />
