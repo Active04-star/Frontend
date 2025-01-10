@@ -15,9 +15,9 @@ const PanelView: React.FC = () => {
 
 
   const fetchSportCenter = useCallback(async () => {
-    console.log('user',userLocalStorage);
-    
-    if (!userLocalStorage?.user?.id ) return;
+    console.log('user', userLocalStorage);
+  
+    if (!userLocalStorage?.user?.id) return;
     try {
       const response = await fetchWithAuth(
         `${API_URL}/manager/center/${userLocalStorage.user.id}`,
@@ -28,15 +28,16 @@ const PanelView: React.FC = () => {
           },
         }
       );
-console.log('sportcenter',response);
-
+      console.log('sportcenter', response);
+  
       setSportCenter(response);
     } catch (error) {
       console.error("Error fetching sport center:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [userLocalStorage?.user?.id]);
+  }, [userLocalStorage]);
+  
 
 
 

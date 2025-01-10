@@ -19,6 +19,7 @@ import { ApiError } from "next/dist/server/api-utils";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { API_URL } from "@/config/config";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
+import Image  from "next/image";
 
 interface IPhotoUpdateResponse {
   message: string;
@@ -211,15 +212,17 @@ export default function SettingsView() {
         <div className="flex flex-col items-center mb-6">
           <div className="relative w-32 h-32 mb-4">
             <div className="w-full h-full rounded-full overflow-hidden bg-white border-2 border-gray-300">
-              <img
-                src={
-                  previewImage ||
-                  userData?.profile_image ||
-                  "/images/default-profile.jpg"
-                }
-                alt="Foto de perfil"
-                className="w-full h-full object-cover"
-              />
+            <Image
+                  src={
+                    previewImage ||
+                    userData?.profile_image ||
+                    "/images/default-profile.jpg"
+                  }
+                  alt="Foto de perfil"
+                  width={128}
+                  height={128}
+                  className="w-full h-full object-cover"
+                />
             </div>
             <label
               htmlFor="photo-upload"
