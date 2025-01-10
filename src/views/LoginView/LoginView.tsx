@@ -55,7 +55,10 @@ const LoginView: React.FC = () => {
       swalCustomError("Necesitas una cuenta", "Debes estar registrado para poder acceder a esta funcion", [, 6000]);
 
     } else if (queryParams.from === "out_session") {
-      swalCustomError("La sesion ha expirado!", "Debes iniciar sesion nuevamente");
+      swalCustomError("La sesion ha expirado!", "Debes iniciar sesion nuevamente", [, 6000]);
+
+    } else if (queryParams.from === "user_blocked") {
+      swalCustomError("No se pudo iniciar sesion", "Este usuario fue baneado!", [, 6000]);
 
     }
 
@@ -87,9 +90,19 @@ const LoginView: React.FC = () => {
         }
 
       } catch (error) {
-        console.error(error);
-        window.location.href = "/";
 
+        if (error instanceof ErrorHelper && error.message === ApiStatusEnum.USER_DELETED) {
+          swalCustomError(ApiStatusEnum.USER_DELETED, "No se pudo logear");
+          setIsSubmitting(false);
+          setUserData(initialState);
+          
+          return;
+
+        } else {
+          console.error(error);
+          window.location.href = "/";
+
+        }
       }
     }
 

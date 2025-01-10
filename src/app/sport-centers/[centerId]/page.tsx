@@ -1,7 +1,9 @@
+// src/app/sport-centers/[centerId]/page.tsx
 import { API_URL } from "@/config/config";
 import FieldCard from "@/components/fieldCard/fieldCard";
-import NavbarUser from "@/components/navbarUser/navbarUser";
 import { ISportCenter } from "@/interfaces/sport_center.interface";
+import Navbar from "@/components/navbar/navbar";
+import BotonVolver from "@/components/back-button/back-button";
 import { IField } from "@/interfaces/field_Interface";
 
 // ✅ Generar rutas estáticas dinámicamente
@@ -24,17 +26,15 @@ export async function generateStaticParams() {
     return [];
   }
 }
+//Promise<{centerId: string;}[]>
 
 // ✅ Página dinámica
-const SportCenterPage = async ({
-  params,
-}: {
-  params: { centerId: string };
-}) => {
+const SportCenterPage = async ({ params }: { params: Promise<{ centerId: string }> }) => {
   try {
     // Obtener datos del Sport Center
+    const id = (await params).centerId;
     const sportCenterResponse = await fetch(
-      `${API_URL}/sportcenter/${params.centerId}`,
+      `${API_URL}/sportcenter/${id}`,
       { cache: "no-store" } // Asegura que no use datos en caché
     );
 
@@ -45,8 +45,7 @@ const SportCenterPage = async ({
     const centerData: ISportCenter = await sportCenterResponse.json();
 
     // Obtener fields asociados al Sport Center
-    const fieldsResponse = await fetch(
-      `${API_URL}/field/fields/${params.centerId}`,
+    const fieldsResponse = await fetch(`${API_URL}/field/fields/${id}`,
       { cache: "no-store" } // Asegura que no use datos en caché
     );
 
@@ -58,10 +57,9 @@ const SportCenterPage = async ({
 
     return (
       <div className="pt-8">
-        <NavbarUser />
-        <h1 className="text-2xl font-bold mb-6 mt-16 text-center">
-          {centerData.name}
-        </h1>
+        <Navbar />
+        <BotonVolver />
+        <h1 className="text-2xl font-bold mb-6 mt-16 text-center">{centerData.name}</h1>
         <div className="mt-8 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {fieldsData.map((field) => (
             <FieldCard key={field.id} {...field} />
@@ -69,6 +67,7 @@ const SportCenterPage = async ({
         </div>
       </div>
     );
+
   } catch (error) {
     console.error("Error loading sport center data:", error);
     return <h1>Error loading sport center</h1>;
