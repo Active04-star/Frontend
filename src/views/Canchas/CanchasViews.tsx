@@ -68,9 +68,10 @@ const CanchasPanelView: React.FC = () => {
         try {
           const zodError = JSON.parse(error.message);
           const fieldErrors: Record<string, string> = {};
-          zodError.forEach((err: any) => {
+          zodError.forEach((err: { path: string[]; message: string }) => {
             fieldErrors[err.path[0]] = err.message;
           });
+          
           setErrors(prev => ({
             ...prev,
             [name]: fieldErrors[name]
@@ -107,7 +108,7 @@ const CanchasPanelView: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [userLocalStorage?.user?.id]);
+  }, [userLocalStorage?.user?.id, sportCenter?.id]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -135,22 +136,24 @@ const CanchasPanelView: React.FC = () => {
         try {
           const zodError = JSON.parse(error.message);
           const fieldErrors: Record<string, string> = {};
-          zodError.forEach((err: any) => {
+          zodError.forEach((err: { path: string[]; message: string }) => {
             fieldErrors[err.path[0]] = err.message;
           });
           setErrors(fieldErrors);
         } catch {
           setErrors({
-            form: 'Error validating form data'
+            form: 'Error validating form data',
           });
         }
+        
       }
     }
   };
 
   useEffect(() => {
     fetchFields();
-  }, [fetchFields]);
+  }, [fetchFields]); // This will trigger fetchFields whenever dependencies change
+  ;
 
   if (isLoading) {
     return (
