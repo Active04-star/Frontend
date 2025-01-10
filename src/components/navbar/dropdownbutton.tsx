@@ -4,6 +4,7 @@ import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -90,19 +91,21 @@ const DropDownButton: React.FC = () => {
   return (
     <div ref={divRef} className="relative">
       {userData ? (
-       <div>
-       <button
-         onClick={toggleDropdown}
-         type="button"
-         className="flex items-center focus:outline-none"
-       >
-         <img
-           src={userData?.user.profile_image || "/default-profile.png"} // Ruta de imagen predeterminada si no tiene foto
-           alt="Foto de perfil"
-           className="w-8 h-8 rounded-full border-2 border-yellow-600"
-         />
-       </button>
-     </div>
+        <div>
+          <button
+            onClick={toggleDropdown}
+            type="button"
+            className="flex items-center focus:outline-none"
+          >
+            <Image
+              src={userData?.user.profile_image || "/default-profile.png"} // Ruta de imagen predeterminada si no tiene foto
+              alt="Foto de perfil"
+              width={32}
+              height={32}
+              className="rounded-full border-2 border-yellow-600"
+            />
+          </button>
+        </div>
       ) : actualPage === "loading" || actualPage === "/login" || actualPage === "/register" ? null : (
         <Link href="/login">
           <button
@@ -114,62 +117,60 @@ const DropDownButton: React.FC = () => {
         </Link>
       )}
 
-      {
-        isDropdownOpen ? (
-          <div className="absolute right-0 max-w-fit max-h-fit">
-            <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
-              <ul className="py-2">
-                {userData?.user.role === UserRole.MAIN_MANAGER && (
-                  <li>
-                    <Link
-                      href="/manager"
-                      className={actualPage === "/manager" || actualPage === "" ? offStyle : onStyle}
-                    >
-                      <AiOutlineKey className="mr-2" /> Panel de Manager
-                    </Link>
-                  </li>
-                )}
-                {userData?.user.role === UserRole.ADMIN && (
-                  <li>
-                    <Link
-                      href="/admin"
-                      className={actualPage === "/admin" || actualPage === "" ? offStyle : onStyle}
-                    >
-                      <AiOutlineKey className="mr-2" /> Panel de Admin
-                    </Link>
-                  </li>
-                )}
-                {userData?.user.role === UserRole.USER && (
-                  <>
-                    <li>
-                      <Link
-                        href="/user"
-                        className={actualPage === "/user" || actualPage === "" ? offStyle : onStyle}
-                      >
-                        <AiOutlineCalendar className="mr-2" /> Reservar
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/settings"
-                        className={actualPage === "/settings" || actualPage === "" ? offStyle : onStyle}
-                      >
-                        <AiOutlineSetting className="mr-2" /> Configuración
-                      </Link>
-                    </li>
-                  </>
-                )}
+      {isDropdownOpen ? (
+        <div className="absolute right-0 max-w-fit max-h-fit">
+          <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
+            <ul className="py-2">
+              {userData?.user.role === UserRole.MAIN_MANAGER && (
                 <li>
-                  <button onClick={handleLogout} className={onStyle}>
-                    <AiOutlineLogout className="mr-2" /> Cerrar Sesión
-                  </button>
+                  <Link
+                    href="/manager"
+                    className={actualPage === "/manager" || actualPage === "" ? offStyle : onStyle}
+                  >
+                    <AiOutlineKey className="mr-2" /> Panel de Manager
+                  </Link>
                 </li>
-              </ul>
-            </div>
+              )}
+              {userData?.user.role === UserRole.ADMIN && (
+                <li>
+                  <Link
+                    href="/admin"
+                    className={actualPage === "/admin" || actualPage === "" ? offStyle : onStyle}
+                  >
+                    <AiOutlineKey className="mr-2" /> Panel de Admin
+                  </Link>
+                </li>
+              )}
+              {userData?.user.role === UserRole.USER && (
+                <>
+                  <li>
+                    <Link
+                      href="/user"
+                      className={actualPage === "/user" || actualPage === "" ? offStyle : onStyle}
+                    >
+                      <AiOutlineCalendar className="mr-2" /> Reservar
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/settings"
+                      className={actualPage === "/settings" || actualPage === "" ? offStyle : onStyle}
+                    >
+                      <AiOutlineSetting className="mr-2" /> Configuración
+                    </Link>
+                  </li>
+                </>
+              )}
+              <li>
+                <button onClick={handleLogout} className={onStyle}>
+                  <AiOutlineLogout className="mr-2" /> Cerrar Sesión
+                </button>
+              </li>
+            </ul>
           </div>
-        ) : null
-      }
-    </div >
+        </div>
+      ) : null}
+    </div>
   );
 };
 
