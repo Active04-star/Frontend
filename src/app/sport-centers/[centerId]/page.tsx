@@ -1,15 +1,15 @@
 // src/app/sport-centers/[centerId]/page.tsx
-
 import { API_URL } from "@/config/config";
 import FieldCard from "@/components/fieldCard/fieldCard";
-import NavbarUser from "@/components/navbarUser/navbarUser"
 import { ISportCenter } from "@/interfaces/sport_center.interface";
+import Navbar from "@/components/navbar/navbar";
+import BotonVolver from "@/components/back-button/back-button";
 
 // ✅ Función para generar las rutas dinámicas
 export async function generateStaticParams() {
   try {
     const response = await fetch(`${API_URL}/sportcenter/search`);
-    
+
     if (!response.ok) {
       throw new Error("Failed to fetch sport centers");
     }
@@ -50,7 +50,8 @@ const SportCenterPage = async ({ params }: { params: { centerId: string } }) => 
 
     return (
       <div className="pt-8">
-        <NavbarUser />
+        <Navbar />
+        <BotonVolver />
         <h1 className="text-2xl font-bold mb-6 mt-16 text-center">{centerData.name}</h1>
         <div className="mt-8 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {fieldsData.map((field: any) => (
@@ -59,7 +60,7 @@ const SportCenterPage = async ({ params }: { params: { centerId: string } }) => 
         </div>
       </div>
     );
-    
+
   } catch (error) {
     console.error("Error loading sport center data:", error);
     return <h1>Error loading sport center</h1>;

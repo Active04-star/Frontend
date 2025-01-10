@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
   const [userRole, setUserRole] = useState<UserRole | null>(null);
 
   useEffect(() => {
-    console.log("re mounted")
+
     if (typeof window !== "undefined") {
       if (user === "") {
         setShouldShow(true);
