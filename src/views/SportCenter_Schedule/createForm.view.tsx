@@ -6,6 +6,7 @@ import { useLocalStorage } from '@/helpers/auth/useLocalStorage';
 import { useRouter } from 'next/navigation';
 import { API_URL } from '@/config/config';
 import { fetchWithAuth } from '@/helpers/errors/fetch-with-token-interceptor';
+import { IUser } from '@/types/zTypes';
 
 export enum DayOfWeek {
   Monday = 'Monday',
@@ -32,9 +33,8 @@ const initialSchedules: Schedule[] = Object.values(DayOfWeek).map((day) => ({
 }));
 
 export default function ScheduleForm() {
-  const [userLocalStorage] = useLocalStorage("userSession", null);
-  const { token, user } = userLocalStorage || { token: null, user: null };
-  const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
+  const [user] = useLocalStorage<IUser | null>("userSession", null); 
+   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -43,12 +43,12 @@ export default function ScheduleForm() {
 
   useEffect(() => {
     
-    if (!user || !token) {
+    if (!user) {
       router.push("/login");
     } else {
       setIsLoading(false);
     }
-  }, [user, token, router]);
+  }, [user, router]);
 
 
   const handleScheduleChange = (
@@ -91,7 +91,7 @@ console.log('shcuedles',schedules);
       
       console.log('shceudlesto sumb',JSON.stringify(schedulesToSubmit));
 
-      await fetchWithAuth(`${API_URL}/schedules/create/${user?.id}`, {
+      await fetchWithAuth(`${API_URL}/schedules/create/${user?.user?.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -111,10 +111,9 @@ console.log('shcuedles',schedules);
       setIsSubmitting(false);
     }
   };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-20 flex items-center justify-center">
+      <div className="min-h-screen pt-20 flex items-center justify-center">
         <div className="text-white flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin" />
           <p className="text-lg">Cargando informacion del usuario</p>
@@ -122,7 +121,6 @@ console.log('shcuedles',schedules);
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <BotonVolver/>
@@ -224,4 +222,5 @@ console.log('shcuedles',schedules);
       </div>
     </div>
   );
+
 }

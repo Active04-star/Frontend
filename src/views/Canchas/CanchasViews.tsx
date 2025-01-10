@@ -76,7 +76,7 @@ const CanchasPanelView: React.FC = () => {
         setShowCreateForm(false);
         setFormData({ name: "", address: "", status: "Activa" });
       });
-    } catch (error: any) {
+    } catch (error:  unknown) {
       console.error("Error al crear la cancha:", error);
 
       Swal.fire({
@@ -97,7 +97,7 @@ const CanchasPanelView: React.FC = () => {
         }
         const result = await response.json();
         setCanchas(result.sport_centers || []);
-      } catch (error: any) {
+      } catch (error:  unknown) {
         console.error("Error al cargar las canchas:", error);
       } finally {
         setLoading(false);
@@ -112,7 +112,7 @@ const CanchasPanelView: React.FC = () => {
   }
 
   return (
-    <div className="mt-16 max-w-6xl mx-auto p-6 bg-gray-100">
+    <div className="mt-16 max-w-6xl mx-auto p-6 ">
 
 
       {showCreateForm ? (

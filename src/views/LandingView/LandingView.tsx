@@ -24,22 +24,22 @@ const LandingView: React.FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
-
+  
     if (typeof window !== "undefined" && window.localStorage) {
-
       const validate = zodValidate(user, UserSchemaWToken);
-
+  
       if (!validate.success) {
         setShow(true);
       }
-
+  
       if (sportCenter !== null && sportCenter !== "") {
         setIsManager(true);
       }
-
+  
       setIsLoading(false);
     }
-  }, []);
+  }, [user, sportCenter]);
+  
 
   // if (isLoading) {
   //   return (
