@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/footer/footer";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
+import ChatButton from "@/components/chatbot/chatbox";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,6 +34,10 @@ export default function RootLayout({
         >
           {/* Contenido principal */}
           <main className="flex-grow">{children}</main>
+
+          {/* Botón de chat flotante */}
+          <ChatButton />  {/* Colocamos el chat flotante aquí */}
+
           {/* Footer siempre al final */}
           <Footer />
         </body>
@@ -40,5 +45,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-//

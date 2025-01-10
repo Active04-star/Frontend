@@ -1,13 +1,20 @@
-import { IUser } from '@/interfaces/user_Interface';
-import { Crown, AlertCircle } from 'lucide-react';
+import { IUser, IuserWithoutToken } from "@/types/zTypes";
+import { Crown, AlertCircle } from "lucide-react";
 
 interface PremiumButtonProps {
-  user: IUser | null;
+  user: IuserWithoutToken | null;
   isLoading: boolean;
   onSubscribe: () => void;
 }
 
-export const PremiumButton = ({ user, isLoading, onSubscribe }: PremiumButtonProps) => {
+
+
+
+export const PremiumButton = ({
+  user,
+  isLoading,
+  onSubscribe,
+}: PremiumButtonProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center space-x-2 text-gray-500">

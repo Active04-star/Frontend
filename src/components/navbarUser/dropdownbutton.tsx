@@ -65,10 +65,18 @@ const DropDownButton: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
-      setUserData(user);
+      try {
+        const storedUser = localStorage.getItem("userSession");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser) as IUser; // Asegura que sea del tipo correcto
+          setUserData(parsedUser);
+        }
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
     }
-  }, [user]);
-
+  }, []);
+  
   const handleLogout = () => {
     localStorage.clear();
     swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
@@ -142,12 +150,7 @@ const DropDownButton: React.FC = () => {
                   Reservas
                 </Link>
               </li>
-              <li>
-                <Link href="/reviews" className={onStyle}>
-                  <FaStar className="mr-2" />
-                  Reviews
-                </Link>
-              </li>
+              
               <li>
                 <Link href="/settings" className={onStyle}>
                   <FaCog className="mr-2" />

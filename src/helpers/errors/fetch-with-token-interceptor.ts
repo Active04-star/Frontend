@@ -18,19 +18,12 @@ export async function fetchWithAuth(url: string | URL | globalThis.Request, opti
     if (token!) {
         try {
             const data = await fetchAndCatch(url, { ...options, headers });
-            // const data = await response.json();
-
-            // if (response.status === 401) {
-            //     throw new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "401");
-            // } else if(!response.ok) {
-            //     throw new ErrorHelper(verifyError(data.message), data.status);
-            // }
 
             return data;
         } catch (error) {
 
             if(error instanceof ErrorHelper && error.message === ApiStatusEnum.TOKEN_EXPIRED) {
-                window.location.href = "/api/auth/logout";
+                window.location.href = "/api/auth/logout?from=out_session";
                 localStorage.clear();
             }
 

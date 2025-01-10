@@ -1,10 +1,23 @@
-import React from "react";
+"use client";
+import { getSubPath } from "@/utils/getSubPath";
+import React, { useEffect, useState } from "react";
 
 const Footer: React.FC = () => {
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && getSubPath(window.location.href) === "/auth/redirect") {
+      setShow(false);
+    } else {
+      setShow(true);
+    }
+  }, []);
+
+
   return (
     <footer className=" bg-transparent border-t border-white">
       <div className="mx-auto w-full max-w-screen-xl">
-        <div className="grid grid-cols-2 px-4  lg:py-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 px-4 lg:py-8 md:grid-cols-4">
           <div>
             <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
               Compañia
@@ -109,7 +122,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
         </div>
-        <div className="px-4 py-6   md:flex md:items-center md:justify-between">
+        <div className="px-4 py-6 md:flex md:items-center md:justify-between">
           <span className="text-sm text-gray-500 dark:text-gray-300 sm:text-center">
             © 2024 All Rights Reserved.
           </span>

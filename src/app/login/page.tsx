@@ -5,10 +5,10 @@ import React from 'react'
 const Login = () => {
   return (
     <>
-    <Navbar/>
-    <LoginView/>    
+      <Navbar />
+      <LoginView />
     </>
-)
+  )
 }
 
 export default Login;

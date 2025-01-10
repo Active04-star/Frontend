@@ -1,21 +1,38 @@
-import { IField} from '@/interfaces/field_Interface';
+import { IField } from '@/interfaces/field_Interface';
 import Image from 'next/image';
 import React from 'react';
 
-const FieldCard: React.FC<IField> = ({ id, number , price  }) => {
+const FieldCard: React.FC<IField> = ({ id, number, price, photos, sportCategory }) => {
   return (
-    <div className="flex flex-row items-center rounded-lg gap-4 justify-center border p-2 w-[240px] h-[200px] transform transition duration-300 hover:scale-105 hover:shadow-lg">
-      <Image
-        className="max-w-[120px] w-full h-auto"
-        src="/default-image.jpg"
-        alt={`Imagen del complejo ${id}`}
-        width={120} // Ajusta según el tamaño que necesites
-        height={120} // Ajusta según el tamaño que necesites
-      />
-      <div>
-        <h2 className="font-semibold text-xs">ID: {id}</h2>
-        <p className="text-xs">Number: {number}</p>
-        <p className="text-xs">Price: {price}</p>
+    <div className="flex justify-center items-center p-8">
+      <div className="flex flex-col bg-white shadow-md rounded-lg overflow-hidden transform transition hover:scale-105 hover:shadow-lg w-60">
+        {/* Imagen */}
+        <div className="relative w-full h-32">
+          <Image
+            src={photos !== undefined && photos?.length > 0 ? photos[0] : '/placeholder-image.jpg'} // Usa la primera foto si existe
+            alt={`Imagen de la cancha ${number}`}
+            layout="fill"
+            objectFit="cover"
+            className="rounded-t-lg"
+          />
+        </div>
+
+        {/* Contenido */}
+        <div className="flex flex-col p-3">
+          <h2 className="text-sm font-semibold text-gray-800 truncate">
+            Cancha #{number} - {sportCategory?.name || 'Sin categoría'}
+          </h2>
+          <p className="text-xs text-gray-500 truncate mt-1">
+            Precio: ${price} por hora
+          </p>
+
+          {/* Botón Reservar */}
+          <div className="mt-3">
+            <button className="w-full bg-yellow-600 text-white text-xs font-medium py-1 rounded transition duration-300">
+              Reservar
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

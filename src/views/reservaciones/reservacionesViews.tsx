@@ -49,9 +49,9 @@ const ReservacionesViews: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-100">
+    <div className="mt-16 max-w-6xl mx-auto p-6 bg-gray-100">
       {/* Encabezado general de la vista */}
-      <h1 className="text-4xl font-semibold text-center text-red-600 mb-6">
+      <h1 className="text-4xl font-semibold text-center text-black">
         Tus Reservaciones en tus canchas
       </h1>
 

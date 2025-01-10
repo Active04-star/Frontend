@@ -5,10 +5,10 @@ import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
 import Link from "next/link";
+import Image from "next/image"; // ✅ Importación del componente Image
 import { useEffect, useRef, useState } from "react";
 import {
   AiOutlineCalendar,
-  AiOutlineDollar,
   AiOutlineKey,
   AiOutlineLogout,
   AiOutlineSetting,
@@ -17,12 +17,15 @@ import {
 const DropDownButton: React.FC = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
   const [actualPage, setActualPage] = useState("loading");
-  const [user] = useLocalStorage("userSession", "");
+  const [user] = useLocalStorage<IUser | null>("userSession", "");
   const divRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const offStyle = "flex items-center block px-4 py-2 text-gray-400 hover:bg-gray-100 transition-colors duration-200 pointer-events-none";
-  const onStyle = "flex items-center block px-4 py-2 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400";
+
+  const offStyle =
+    "flex items-center block px-4 py-2 text-gray-400 hover:bg-gray-100 transition-colors duration-200 pointer-events-none";
+  const onStyle =
+    "flex items-center block px-4 py-2 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-yellow-400";
 
   useEffect(() => {
     setActualPage(getSubPath(window.location.href));
@@ -69,7 +72,7 @@ const DropDownButton: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage) {
+    if (typeof window !== "undefined" && window.localStorage && user !== null) {
       setUserData(user);
     }
   }, [user]);
@@ -90,41 +93,20 @@ const DropDownButton: React.FC = () => {
           <button
             onClick={toggleDropdown}
             type="button"
-            className="flex items-center text-white bg-yellow-600 focus:outline-none font-bold rounded-lg text-sm px-4 py-2 text-center"
+            className="flex items-center focus:outline-none"
           >
-            Mi perfil
-            <span className="ml-2">
-              {isDropdownOpen ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 9.707a1 1 0 001.414 0L10 6.414l3.293 3.293a1 1 0 001.414-1.414l-4-4a1 1 0 00-1.414 0l-4 4a1 1 0 000 1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M14.707 10.293a1 1 0 00-1.414 0L10 13.586 6.707 10.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 000-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-            </span>
+            <Image
+              src={userData?.user.profile_image || "/default-profile.png"} // ✅ Imagen optimizada
+              alt="Foto de perfil"
+              width={32} // Ajusta el ancho
+              height={32} // Ajusta la altura
+              className="rounded-full border-2 border-yellow-600"
+            />
           </button>
         </div>
-      ) : actualPage === "loading" || actualPage === "/login" || actualPage === "/register" ? null : (
+      ) : actualPage === "loading" ||
+        actualPage === "/login" ||
+        actualPage === "/register" ? null : (
         <Link href="/login">
           <button
             type="button"
@@ -143,7 +125,11 @@ const DropDownButton: React.FC = () => {
                 <li>
                   <Link
                     href="/manager"
-                    className={actualPage === "/manager" ? offStyle : onStyle}
+                    className={
+                      actualPage === "/manager" || actualPage === ""
+                        ? offStyle
+                        : onStyle
+                    }
                   >
                     <AiOutlineKey className="mr-2" /> Panel de Manager
                   </Link>
@@ -153,7 +139,11 @@ const DropDownButton: React.FC = () => {
                 <li>
                   <Link
                     href="/admin"
-                    className={actualPage === "/admin" ? offStyle : onStyle}
+                    className={
+                      actualPage === "/admin" || actualPage === ""
+                        ? offStyle
+                        : onStyle
+                    }
                   >
                     <AiOutlineKey className="mr-2" /> Panel de Admin
                   </Link>
@@ -163,8 +153,12 @@ const DropDownButton: React.FC = () => {
                 <>
                   <li>
                     <Link
-                      href="/reservar"
-                      className={actualPage === "/reservar" ? offStyle : onStyle}
+                      href="/user"
+                      className={
+                        actualPage === "/user" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
                     >
                       <AiOutlineCalendar className="mr-2" /> Reservar
                     </Link>
@@ -172,7 +166,11 @@ const DropDownButton: React.FC = () => {
                   <li>
                     <Link
                       href="/settings"
-                      className={actualPage === "/settings" ? offStyle : onStyle}
+                      className={
+                        actualPage === "/settings" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
                     >
                       <AiOutlineSetting className="mr-2" /> Configuración
                     </Link>

@@ -1,35 +1,49 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Navbar from "@/components/navbar/navbar"; // Barra de navegación
-import MSidebar from "@/components/managerSidebar/managerSidebar"; // Sidebar del administrador
-import NotificacionesView from "@/views/Notificaciones/NotificacionesView"; // Vista de Notificaciones
-import PanelView from "@/views/Panel/PanelView"; // Vista del Panel Principal
-import CanchasView from "@/views/Canchas/CanchasViews"; // Vista de las canchas
-import ReservacionesViews from "@/views/reservaciones/reservacionesViews"; // Vista de Reservaciones
-import PerfilView from "@/views/configuracionViews/configuracionViews"; // Vista de Configuración
+import Navbar from "@/components/navbar/navbar";
+import MSidebar from "@/components/managerSidebar/managerSidebar";
+import NotificacionesView from "@/views/Notificaciones/NotificacionesView";
+import PanelView from "@/views/Panel/PanelView";
+import CanchasView from "@/views/Canchas/CanchasViews";
+import ReservacionesViews from "@/views/reservaciones/reservacionesViews";
+import PerfilView from "@/views/configuracionViews/configuracionViews";
 import SettingsView from "@/views/SettingsView/SettingsView";
 import PremiumCard from "@/views/PremiumCard/PremiumCard";
-import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import SportCenterSchedulesPage from "../horarios/page";
+
+// Define view types for better type safety
+export type ViewName =
+  | "panel"
+  | "Notificaciones"
+  | "canchas"
+  | "reservaciones"
+  | "settings"
+  | "premiumCard"
+
+const VIEWS: Record<ViewName, React.ComponentType> = {
+  panel: PanelView,
+  Notificaciones: NotificacionesView,
+  canchas: CanchasView,
+  reservaciones: ReservacionesViews,
+  settings: SettingsView,
+  premiumCard: PremiumCard,
+};
 
 const ManagerPage = () => {
-  
-
-  // Estado para manejar la vista actual
-  const [currentView, setCurrentView] = useState<string>("panel");
-
-  // Estado para manejar el ancho del sidebar
+  const [currentView, setCurrentView] = useState<ViewName>("panel");
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); // Ancho inicial en píxeles
 
   // Estado para manejar la altura del sidebar
   const [sidebarHeight, setSidebarHeight] = useState<number>(0); // Altura inicial igual al alto de la ventana
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Función para manejar el clic en los elementos del menú del sidebar
-  const handleMenuClick = (viewName: string) => {
-    setCurrentView(viewName); // Cambia la vista activa al hacer clic en un elemento del menú
+  const handleMenuClick = (viewName: ViewName) => {
+    setCurrentView(viewName);
   };
 
-  // Ajustar automáticamente el ancho y la altura del sidebar en función del tamaño de la ventana
   const updateSidebarDimensions = () => {
+    if (typeof window === "undefined") return;
+
     const width = window.innerWidth; // Obtener el ancho de la ventana
     const height = window.innerHeight; // Obtener la altura de la ventana
     if (width < 768) {
@@ -43,48 +57,42 @@ const ManagerPage = () => {
     setSidebarHeight(height); // Ajustar la altura del sidebar igual al alto de la ventana
   };
 
-  // Efecto para actualizar el tamaño del sidebar (ancho y alto) al cambiar el tamaño de la ventana
   useEffect(() => {
-    // Llamamos a la función para establecer el tamaño inicial del sidebar
-    updateSidebarDimensions();
+    setIsMounted(true);
 
-    // Agregar evento para escuchar cambios en el tamaño de la ventana
-    window.addEventListener("resize", updateSidebarDimensions);
-
-    // Limpiar el evento cuando el componente se desmonta
-    return () => {
-      window.removeEventListener("resize", updateSidebarDimensions);
+    const handleResize = () => {
+      window.requestAnimationFrame(updateSidebarDimensions);
     };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  const CurrentViewComponent = VIEWS[currentView];
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar con los links del menú */}
       <div
-        className="bg-gray-800"
-        style={{ width: sidebarWidth, height: sidebarHeight }} // El ancho y la altura se ajustan dinámicamente
+        className="bg-gray-800 transition-all duration-300"
+        style={{ width: sidebarWidth, height: sidebarHeight }}
       >
         <MSidebar onMenuClick={handleMenuClick} />
       </div>
 
-      {/* Navbar */}
-      <Navbar />
+      <div className="flex-1 flex flex-col">
+        <Navbar />
 
-      {/* Contenido principal que cambia según la vista seleccionada */}
-      <div className="w-full h-full overflow-auto">
-        {currentView === "panel" && <PanelView />}
-
-        {currentView === "Notificaciones" && <NotificacionesView />}
-
-        {currentView === "canchas" && <CanchasView />}
-
-        {currentView === "reservaciones" && <ReservacionesViews />}
-
-        {currentView === "settings" && <SettingsView />}
-
-        {currentView === "perfil" && <PerfilView />}
-
-        {currentView === "premiumCard" && <PremiumCard />}
+        <main className="flex-1 overflow-auto p-6">
+          <CurrentViewComponent />
+        </main>
       </div>
     </div>
   );
