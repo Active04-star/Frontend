@@ -133,7 +133,7 @@ const ChatButton = () => {
         onMouseEnter={() => toggleText(true)}
         onMouseLeave={() => toggleText(false)}
         onClick={() => setIsChatOpen(true)}
-        className="flex items-center bg-yellow-600 text-white p-4 rounded-full transition-transform shadow-lg focus:outline-none"
+        className="flex items-center bg-yellow-600 text-white p-2 rounded-full transition-transform shadow-lg focus:outline-none"
       >
         {/* <FontAwesomeIcon icon={faComment} size="2x" /> */}
         <AiOutlineWechat className="w-12 h-12" />{" "}

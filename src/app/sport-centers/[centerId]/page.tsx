@@ -26,17 +26,15 @@ export async function generateStaticParams() {
     return [];
   }
 }
+//Promise<{centerId: string;}[]>
 
 // ✅ Página dinámica
-const SportCenterPage = async ({
-  params,
-}: {
-  params: { centerId: string };
-}) => {
+const SportCenterPage = async ({ params }: { params: Promise<{ centerId: string }> }) => {
   try {
     // Obtener datos del Sport Center
+    const id = (await params).centerId;
     const sportCenterResponse = await fetch(
-      `${API_URL}/sportcenter/${params.centerId}`,
+      `${API_URL}/sportcenter/${id}`,
       { cache: "no-store" } // Asegura que no use datos en caché
     );
 
@@ -47,8 +45,7 @@ const SportCenterPage = async ({
     const centerData: ISportCenter = await sportCenterResponse.json();
 
     // Obtener fields asociados al Sport Center
-    const fieldsResponse = await fetch(
-      `${API_URL}/field/fields/${params.centerId}`,
+    const fieldsResponse = await fetch(`${API_URL}/field/fields/${id}`,
       { cache: "no-store" } // Asegura que no use datos en caché
     );
 
@@ -70,7 +67,7 @@ const SportCenterPage = async ({
         </div>
       </div>
     );
-    
+
   } catch (error) {
     console.error("Error loading sport center data:", error);
     return <h1>Error loading sport center</h1>;
