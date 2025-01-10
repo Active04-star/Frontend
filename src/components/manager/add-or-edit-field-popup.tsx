@@ -6,7 +6,7 @@ const AddOrEditField: React.FC<
     { originalData?: IField, showPopup: (visible: boolean) => void }
 > = ({ showPopup, onSubmit, originalData }) => {
 
-    const initialState: Partial<IField> = { number: 0, price: "", photos: "" };
+    const initialState: Partial<IField> = { number: 0, price: "", photos: [] };
     const [fieldData, setFieldData] = useState<Partial<IField>>(initialState);
     const [errorMessage, setErrorMessage] = useState<Partial<IField>>(initialState);
 
@@ -17,7 +17,6 @@ const AddOrEditField: React.FC<
             }
         }
     };
-
     useEffect(() => {
         if (originalData?.number !== undefined && originalData?.price !== undefined) {
             setFieldData(originalData);
@@ -123,3 +122,4 @@ const AddOrEditField: React.FC<
 };
 
 export default AddOrEditField;
+//

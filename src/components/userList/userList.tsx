@@ -3,16 +3,18 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../../config/config";
 import { IUser } from "@/interfaces/user_Interface";
+import Swal from "sweetalert2";
 
 const UserList = () => {
   const [users, setUsers] = useState<IUser[]>([]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const userSession = localStorage.getItem("userSession");
         const token = userSession ? JSON.parse(userSession).token : null;
 
-        const response = await fetch(`${API_URL}/admin/list/user`, {
+        const response = await fetch(`${API_URL}/admin/list/user?limit=100`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -42,11 +44,26 @@ const UserList = () => {
         method: "PUT",
       });
       if (!response.ok) {
-        throw new Error("Error al borrar el usuario");
+        throw new Error("Error al banear al usuario");
       }
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+
+      // Actualizar el estado de usuarios
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === id ? { ...user, was_banned: true } : user
+        )
+      );
+
+
+      // Mostrar alerta de éxito
+      Swal.fire({
+        icon: "success",
+        title: "Usuario Baneado",
+        text: "El usuario ha sido baneado correctamente.",
+        confirmButtonText: "Aceptar",
+      });
     } catch (error) {
-      console.error("Error al borrar el usuario:", error);
+      console.error("Error al banear el usuario:", error);
     }
   };
 
@@ -62,22 +79,24 @@ const UserList = () => {
           </p>
         ) : (
           Array.isArray(users) &&
-          users.map((user) => (
-            <li
-              key={user.id}
-              className="flex justify-between items-center p-4 border-b text-white "
-            >
-              <span>
-                {user.name} - {user.email}
-              </span>
-              <button
-                onClick={() => handleDeleteUser(user.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+          users
+          .filter((user) => !user.was_banned)  // Filtrar usuarios no baneados
+            .map((user) => (
+              <li
+                key={user.id}
+                className="flex justify-between items-center p-4 border-b text-white "
               >
-                Borrar
-              </button>
-            </li>
-          ))
+                <span>
+                  {user.name} - {user.email}
+                </span>
+                <button
+                  onClick={() => handleDeleteUser(user.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Borrar
+                </button>
+              </li>
+            ))
         )}
       </ul>
     </div>
