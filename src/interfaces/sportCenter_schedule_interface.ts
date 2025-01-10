@@ -1,4 +1,3 @@
-import { IFieldSchedule } from "./field_schedule.Interface"; // Asumiendo que tienes una interfaz 'FieldSchedule' para el frontend
 import { DayOfWeek } from "../enum/DayOfWeek"; // Importando el tipo 'DayOfWeek'
 
 export interface ISportCenterSchedule {
