@@ -41,7 +41,7 @@ export type IPasswordUpdate = z.infer<typeof PasswordUpdateSchema>;
 
 /**Registro de Cancha de formulario, se valida con `FieldSchema`
  */
-export type IFieldCreation = z.infer<typeof FieldCreationSchema>;
+export type IFieldFormData = z.infer<typeof FieldCreationSchema>;
 
 /**
  */

@@ -177,23 +177,6 @@ export default function RegisterSportcenter() {
                     )}
                   </div>
 
-                  {/* <div className="mb-6">
-              <label
-                className="block text-white mb-2 text-center font-medium text-lg"
-                htmlFor="images"
-              >
-                Imágen (Opcional)
-              </label>
-              <input
-                type="text"
-                id="images"
-                name="images"
-                value={sportCenter.images}
-                onChange={handleChange}
-                placeholder="URL de la imagen principal"
-                className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-              />
-            </div> */}
 
                   <div className="w-auto flex justify-around">
                     <button

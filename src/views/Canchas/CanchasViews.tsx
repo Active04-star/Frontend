@@ -1,223 +1,264 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
+import React, { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { IFieldFormData, ISportCenter, IUser } from "@/types/zTypes";
+import { IField } from "@/interfaces/field_Interface";
+import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
+import { API_URL } from "@/config/config";
+import { FieldCard } from "@/components/managerFields/manager_field_card";
+import { AlertCircle } from "lucide-react";
+import { FieldCreationSchema } from "@/types/field-schema";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 
-interface Cancha {
-  id: string;
-  name: string;
-  address: string;
-  averageRating: number;
-  isDeleted: boolean;
-  status: string;
-  photos: string[];
-}
+
 
 const CanchasPanelView: React.FC = () => {
-  const [canchas, setCanchas] = useState<Cancha[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [canchas, setCanchas] = useState<IField[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    status: "Activa",
+  const [formData, setFormData] = useState<IFieldFormData>({
+    number: 1,
+    price: '100.00',
+    duration_minutes: 60,
+
   });
+  const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
+  const [sportCenter] = useLocalStorage<ISportCenter | null>(
+    "sportCenter",
+    null
+  );
+  const [fields, setFields] = useState<IField[] | []>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [user] = useLocalStorage("userSession", null);
-  const [center] = useLocalStorage("sportCenter", null);
 
-  const userUUID = "uuid-del-usuario-logueado"; // Este debería ser el UUID real del usuario.
-
-  const handleCreateCancha = () => {
-    setShowCreateForm(true);
+  const toggleView = () => {
+    setShowCreateForm((prevState) => !prevState);
   };
 
-  const handleBack = () => {
-    setShowCreateForm(false);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
+    let parsedValue: string | number = value;
+
+    // Parse numeric values
+    if (name === 'number' || name === 'duration_minutes') {
+      parsedValue = value === '' ? 0 : parseInt(value, 10);
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: parsedValue
     }));
+
+    // Validate the field
+    try {
+      FieldCreationSchema.parse({
+        ...formData,
+        [name]: parsedValue
+      });
+      // Clear error for this field if validation passes
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        try {
+          const zodError = JSON.parse(error.message);
+          const fieldErrors: Record<string, string> = {};
+          zodError.forEach((err: any) => {
+            fieldErrors[err.path[0]] = err.message;
+          });
+          setErrors(prev => ({
+            ...prev,
+            [name]: fieldErrors[name]
+          }));
+        } catch {
+          setErrors(prev => ({
+            ...prev,
+            [name]: error.message
+          }));
+        }
+      }
+    }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
 
-    const requestData = {
-      ...formData,
-      manager: userUUID,
-    };
-
+  const fetchFields = useCallback(async () => {
+    if (!userLocalStorage?.user?.id || !sportCenter?.id) return;
     try {
-      const response = await fetch("http://localhost:4000/sportcenter/create", {
+      const response: IField[] = await fetchWithAuth(
+        `${API_URL}/manager/fields/${sportCenter?.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log('resposne',response);
+      
+      setFields(response);
+    } catch (error) {
+      console.error("Error fetching fields:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userLocalStorage?.user?.id]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const validatedData = FieldCreationSchema.parse(formData);
+      console.log('Form data is valid:', validatedData);
+      const new_field = { ...formData, sportCenterId: sportCenter?.id };
+      await fetchWithAuth(`${API_URL}/field`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestData),
-      });
+        body: JSON.stringify(new_field),
+      });   
+   // Notificación exitosa
+   swalNotifySuccess("Cancha creada con éxito", "La nueva cancha ha sido agregada.");
 
-      if (!response.ok) {
-        throw new Error("Error al crear la cancha");
+   // Actualizar lista de canchas
+   fetchFields();
+
+   // Resetear formulario y cambiar la vista
+   setFormData({ number: 1, price: "100.00", duration_minutes: 60 });
+   setShowCreateForm(false);
+    } catch (error) {
+      if (error instanceof Error) {
+        try {
+          const zodError = JSON.parse(error.message);
+          const fieldErrors: Record<string, string> = {};
+          zodError.forEach((err: any) => {
+            fieldErrors[err.path[0]] = err.message;
+          });
+          setErrors(fieldErrors);
+        } catch {
+          setErrors({
+            form: 'Error validating form data'
+          });
+        }
       }
-
-      Swal.fire({
-        icon: "success",
-        title: "¡Éxito!",
-        text: "Tu cancha ha sido creada con éxito.",
-        confirmButtonText: "Aceptar",
-      }).then(() => {
-        setShowCreateForm(false);
-        setFormData({ name: "", address: "", status: "Activa" });
-      });
-    } catch (error:  unknown) {
-      console.error("Error al crear la cancha:", error);
-
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Hubo un error al crear la cancha. Inténtalo de nuevo.",
-        confirmButtonText: "Aceptar",
-      });
     }
   };
 
   useEffect(() => {
-    const fetchCanchas = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/sportcenter/search?page=1&limit=10");
-        if (!response.ok) {
-          throw new Error("Error al obtener las canchas");
-        }
-        const result = await response.json();
-        setCanchas(result.sport_centers || []);
-      } catch (error:  unknown) {
-        console.error("Error al cargar las canchas:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchFields();
+  }, [fetchFields]);
 
-    fetchCanchas();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="mt-16 max-w-6xl mx-auto p-6 ">
-
-
-      {showCreateForm ? (
-        <div className="create-form-container">
-          <h2>Crear Cancha</h2>
-          <form onSubmit={handleSubmit} className="create-form">
-            <div>
-              <label htmlFor="name">Nombre de la Cancha:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="address">Dirección:</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="status">Estado:</label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                required
-              >
-                <option value="Activa">Activa</option>
-                <option value="Inactiva">Inactiva</option>
-              </select>
-            </div>
-            <div>
-              <button type="submit">Crear Cancha</button>
-            </div>
-            <div>
-              <button type="button" onClick={handleBack}>Atrás</button>
-            </div>
-          </form>
-        </div>
-      ) : (
-        <div
-          className="card-container"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-around",
-            gap: "20px", // Añade espacio entre las tarjetas
-            padding: "20px",
-          }}
-        >
-          {canchas.map((cancha) => (
-            <div
-              key={cancha.id}
-              className="card"
-              style={{
-                maxWidth: "320px",
-                borderRadius: "12px",
-                overflow: "hidden",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                backgroundColor: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              <div
-                className="card-image"
-                style={{
-                  backgroundImage: cancha.photos.length > 0 ? `url(${cancha.photos[0]})` : "url('/default-image.jpg')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  height: "200px",
-                }}
-              >
-                <Image
-                  src={cancha.photos.length > 0 ? cancha.photos[0] : "/default-image.jpg"}
-                  alt={cancha.name}
-                  width={320}
-                  height={200}
-                  className="card-img"
-                  style={{ opacity: 0 }}
-                />
+    <div className="relative min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <div className="mx-auto max-w-7xl p-6 pt-15">
+      <button
+  onClick={toggleView}
+  className="relative  top-6 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow text-center w-40 h-12 flex items-center justify-center"
+>
+  {showCreateForm ? "Ver Canchas" : "Crear Canchas"}
+</button>
+        {showCreateForm ? (
+          <div className="rounded-lg border bg-card p-6 shadow-lg max-w-md mx-auto">
+            <h2 className="mb-6 text-2xl font-bold text-center">
+              Create Field
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Formulario aquí */}
+              <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Número de Cancha
+            </label>
+            <input
+              type="number"
+              name="number"
+              value={formData.number}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md ${
+                errors.number ? 'border-red-500' : 'border-gray-300'
+              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            />
+            {errors.number && (
+              <div className="mt-1 flex items-center text-sm text-red-500">
+                <AlertCircle className="w-4 h-4 mr-1" />
+                {errors.number}
               </div>
-              <div className="card-content" style={{ padding: "15px" }}>
-                <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "10px" }}>{cancha.name}</h3>
-                <section className="details" style={{ fontSize: "14px", color: "#555" }}>
-                  <p><strong>Dirección:</strong> {cancha.address}</p>
-                  <p><strong>Calificación promedio:</strong> {cancha.averageRating}</p>
-                  <p><strong>Estado:</strong> {cancha.isDeleted ? "Eliminada" : "Activa"}</p>
-                </section>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Precio por Hora
+            </label>
+            <input
+              type="text"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="100.00"
+              className={`w-full px-3 py-2 border rounded-md ${
+                errors.price ? 'border-red-500' : 'border-gray-300'
+              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            />
+            {errors.price && (
+              <div className="mt-1 flex items-center text-sm text-red-500">
+                <AlertCircle className="w-4 h-4 mr-1" />
+                {errors.price}
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            )}
+          </div>
 
-      <button className="create-button" onClick={handleCreateCancha}>Crear Cancha</button>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Duración (minutos)
+            </label>
+            <input
+              type="number"
+              name="duration_minutes"
+              value={formData.duration_minutes}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md ${
+                errors.duration_minutes ? 'border-red-500' : 'border-gray-300'
+              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            />
+            {errors.duration_minutes && (
+              <div className="mt-1 flex items-center text-sm text-red-500">
+                <AlertCircle className="w-4 h-4 mr-1" />
+                {errors.duration_minutes}
+              </div>
+            )}
+          </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              >
+                Guardar
+              </button>
+            </form>
+          </div>
+        ) : fields.length > 0 ? (
+          <div className="pt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {fields.map((field) => (
+              <FieldCard key={field.id} field={field} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center mt-12">
+            <p className="text-xl font-semibold">No hay canchas disponibles.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
