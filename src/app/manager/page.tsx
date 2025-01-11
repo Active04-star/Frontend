@@ -6,10 +6,11 @@ import NotificacionesView from "@/views/Notificaciones/NotificacionesView";
 import PanelView from "@/views/Panel/PanelView";
 import CanchasView from "@/views/Canchas/CanchasViews";
 import ReservacionesViews from "@/views/reservaciones/reservacionesViews";
-import PerfilView from "@/views/configuracionViews/configuracionViews";
 import SettingsView from "@/views/SettingsView/SettingsView";
 import PremiumCard from "@/views/PremiumCard/PremiumCard";
-import SportCenterSchedulesPage from "../horarios/page";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { IUser } from "@/types/zTypes";
+import { UserRole } from "@/enum/userRole";
 
 // Define view types for better type safety
 export type ViewName =
@@ -32,7 +33,7 @@ const VIEWS: Record<ViewName, React.ComponentType> = {
 const ManagerPage = () => {
   const [currentView, setCurrentView] = useState<ViewName>("panel");
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); // Ancho inicial en píxeles
-
+  const [user] = useLocalStorage<IUser | null>("userSession", null);
   // Estado para manejar la altura del sidebar
   const [sidebarHeight, setSidebarHeight] = useState<number>(0); // Altura inicial igual al alto de la ventana
   const [isMounted, setIsMounted] = useState(false);
@@ -58,6 +59,12 @@ const ManagerPage = () => {
   };
 
   useEffect(() => {
+    if (user?.token === null || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER) {
+      window.location.href = "/";
+      return;
+
+    }
+
     setIsMounted(true);
 
     const handleResize = () => {
