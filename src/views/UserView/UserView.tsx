@@ -14,6 +14,7 @@ import { IQueryParams } from "@/types/zTypes";
 import { QueryParamsSchema } from "@/types/queryParams-schema";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
+import verifyUser from "@/helpers/auth/illegalUserVerify";
 
 const UserView: React.FC = () => {
   const default_params: IQueryParams = {
@@ -50,6 +51,7 @@ const UserView: React.FC = () => {
 
   const fetchData = async (search?: string, rating?: number) => {
     setIsLoading(true);
+    await verifyUser();
 
     try {
       const queryString = new URLSearchParams(window.location.search);

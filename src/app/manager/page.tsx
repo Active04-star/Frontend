@@ -59,11 +59,11 @@ const ManagerPage = () => {
   };
 
   useEffect(() => {
-    if (user?.token === null || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER) {
-      window.location.href = "/";
-      return;
+    // if (user?.token === null || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER) {
+    //   window.location.href = "/";
+    //   return;
 
-    }
+    // }
 
     setIsMounted(true);
 
@@ -84,6 +84,12 @@ const ManagerPage = () => {
   }
 
   const CurrentViewComponent = VIEWS[currentView];
+
+  if (user?.user === undefined || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER) {
+    window.location.href = "/";
+    return (<div className="flex min-h-screen"></div>);
+
+  }
 
   return (
     <div className="flex min-h-screen">
