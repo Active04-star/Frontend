@@ -31,6 +31,7 @@ const LoginView: React.FC = () => {
   const [errors, setErrors] = useState<LoginErrors | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [navbarHeight, setNavbarHeight] = useState<number>(0);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -38,6 +39,7 @@ const LoginView: React.FC = () => {
   };
 
   useEffect(() => {
+    setIsSubmitting(false);
     const data = zodValidate(userData, UserLoginSchema);
 
     if (!data.success) {
@@ -49,6 +51,11 @@ const LoginView: React.FC = () => {
 
 
   useEffect(() => {
+    const navbar = document.querySelector("nav");
+    if (navbar) {
+      setNavbarHeight(navbar.getBoundingClientRect().height);
+    }
+
     const queryString = new URLSearchParams(window.location.search);
     const queryParams = Object.fromEntries(queryString.entries()) as { from: string };
 
@@ -98,6 +105,9 @@ const LoginView: React.FC = () => {
           setUserData(initialState);
           
           return;
+
+        } else if(error instanceof ErrorHelper && error.message === ApiStatusEnum.INVALID_CREDENTIALS) {
+          swalCustomError(ApiStatusEnum.INVALID_CREDENTIALS, "No se pudo logear");
 
         } else {
           console.error(error);
@@ -165,7 +175,7 @@ const LoginView: React.FC = () => {
 
 
   return (
-    <div className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
+    <div style={{ paddingTop: `${navbarHeight + 16}px` }} className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
       {isSubmitting ? (
         <>
           <h1 className="text-4xl font-bold mb-8 font-serif text-white">

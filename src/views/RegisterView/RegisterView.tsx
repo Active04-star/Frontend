@@ -325,7 +325,7 @@ const RegisterView: React.FC = () => {
                     <Link
                       type="submit"
                       className="mt-5 bg-primary text-dark px-6 py-2 rounded bg-orange-100 text-black flex justify-between"
-                      href={"api/auth/login"}>
+                      href={"api/auth/login?screen_hint=signup"}>
 
                       <Image
                         src="https://auth.openai.com/assets/google-logo-NePEveMl.svg"

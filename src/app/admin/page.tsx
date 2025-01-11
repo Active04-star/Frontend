@@ -5,20 +5,24 @@ import Sidebar from "@/components/adminSidebar/adminSidebar";
 import SettingsView from "@/views/SettingsView/SettingsView";
 import UserList from "@/components/userList/userList";
 import AdminSportCentersView from "@/views/AdminSportCentersView/AdminSportCentersView";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { IUser } from "@/types/zTypes";
+import { UserRole } from "@/enum/userRole";
 
 export type ViewName = "settings" | "centroDepotivos" | "clientes";
 
 const VIEWS: Record<ViewName, React.ComponentType> = {
   settings: SettingsView,
-  centroDepotivos: AdminSportCentersView,  
+  centroDepotivos: AdminSportCentersView,
   clientes: UserList,
 };
 
 const Admin = () => {
 
-  const [currentView, setCurrentView] = useState<ViewName>("settings"); 
-  const [sidebarWidth, setSidebarWidth] = useState<number>(250); 
-  const [sidebarHeight, setSidebarHeight] = useState<number>(0); 
+    const [user] = useLocalStorage<IUser | null>("userSession", null);
+  const [currentView, setCurrentView] = useState<ViewName>("settings");
+  const [sidebarWidth, setSidebarWidth] = useState<number>(250);
+  const [sidebarHeight, setSidebarHeight] = useState<number>(0);
   const [isMounted, setIsMounted] = useState(false);
 
   const handleMenuClick = (viewName: ViewName) => {
@@ -36,7 +40,7 @@ const Admin = () => {
         if (width < 768) setSidebarWidth(200);
         else if (width < 1024) setSidebarWidth(250);
         else setSidebarWidth(300);
-        
+
         setSidebarHeight(height);
       });
     };
@@ -53,6 +57,13 @@ const Admin = () => {
   }
 
   const CurrentViewComponent = VIEWS[currentView];
+
+
+  if (user?.user === undefined || user?.user.role !== UserRole.ADMIN) {
+    window.location.href = "/";
+    return (<div className="flex min-h-screen"></div>);
+
+  }
 
   return (
     <div className="flex min-h-screen bg-black">
