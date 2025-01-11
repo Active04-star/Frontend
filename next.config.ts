@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
       "images.unsplash.com",
       "res.cloudinary.com",
       "s.gravatar.com",
+      'static.vecteezy.com',
+   
     ], // Aquí defines el dominio permitido
   },
 };

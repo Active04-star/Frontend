@@ -5,18 +5,22 @@ import Sidebar from "@/components/adminSidebar/adminSidebar";
 import SettingsView from "@/views/SettingsView/SettingsView";
 import UserList from "@/components/userList/userList";
 import AdminSportCentersView from "@/views/AdminSportCentersView/AdminSportCentersView";
+import managerPremium from "@/components/managerPremium/managerPremium";
+import InicioView from "@/views/inicioView/inicioView";
 
-export type ViewName = "settings" | "centroDepotivos" | "clientes";
+export type ViewName = "settings" | "centroDepotivos" | "clientes" | "managers" | "inicio";
 
-const VIEWS: Record<ViewName, React.ComponentType> = {
+const VIEWS: Record<ViewName, React.ComponentType<{ onCardClick?: (viewName: ViewName) => void }>> = {
   settings: SettingsView,
-  centroDepotivos: AdminSportCentersView,  
+  centroDepotivos: AdminSportCentersView,
   clientes: UserList,
+  managers: managerPremium,
+  inicio: ({ onCardClick  }) => <InicioView onCardClick={onCardClick!} />,
 };
 
 const Admin = () => {
 
-  const [currentView, setCurrentView] = useState<ViewName>("settings"); 
+  const [currentView, setCurrentView] = useState<ViewName>("inicio"); 
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); 
   const [sidebarHeight, setSidebarHeight] = useState<number>(0); 
   const [isMounted, setIsMounted] = useState(false);
@@ -65,7 +69,7 @@ const Admin = () => {
       <div className="flex-1 flex flex-col">
         <Navbar />
         <main className="flex-1 overflow-auto p-6">
-          <CurrentViewComponent />
+          <CurrentViewComponent onCardClick={handleMenuClick}/>
         </main>
       </div>
     </div>

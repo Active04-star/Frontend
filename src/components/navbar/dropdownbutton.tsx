@@ -6,7 +6,6 @@ import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
 import Image from "next/image";
 import Link from "next/link";
-import Image from "next/image"; // ✅ Importación del componente Image
 import { useEffect, useRef, useState } from "react";
 import {
   AiOutlineCalendar,
