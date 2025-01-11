@@ -21,6 +21,7 @@ import { API_URL } from "@/config/config";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import Image from "next/image";
 import verifyUser from "@/helpers/auth/illegalUserVerify";
+import { UserRole } from "@/enum/userRole";
 
 interface IPhotoUpdateResponse {
   message: string;
@@ -38,6 +39,9 @@ export default function SettingsView() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingPhoto, setIsSavingPhoto] = useState(false);
+
+  // const [user] = useLocalStorage<IUser | null>("userSession", null);
+
 
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,6 +202,11 @@ export default function SettingsView() {
     fetchUser();
   }, [fetchUser]);
 
+  if (typeof window !== "undefined" && (user?.user === undefined || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER)) {
+    window.location.href = "/";
+    return (<div className="flex min-h-screen"></div>);
+
+  }
 
   if (isLoading) {
     return (
