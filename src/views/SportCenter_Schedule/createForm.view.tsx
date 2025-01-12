@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { API_URL } from '@/config/config';
 import { fetchWithAuth } from '@/helpers/errors/fetch-with-token-interceptor';
 import { IUser } from '@/types/zTypes';
+import { UserRole } from '@/enum/userRole';
 
 export enum DayOfWeek {
   Monday = 'Monday',
@@ -33,8 +34,8 @@ const initialSchedules: Schedule[] = Object.values(DayOfWeek).map((day) => ({
 }));
 
 export default function ScheduleForm() {
-  const [user] = useLocalStorage<IUser | null>("userSession", null); 
-   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
+  const [user] = useLocalStorage<IUser | null>("userSession", null);
+  const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -42,8 +43,8 @@ export default function ScheduleForm() {
   const router = useRouter();
 
   useEffect(() => {
-    
-    if (!user) {
+
+    if (!user || (user !== null && (user.user.role === UserRole.USER || user.user.role === UserRole.ADMIN))) {
       router.push("/login");
     } else {
       setIsLoading(false);
@@ -68,17 +69,17 @@ export default function ScheduleForm() {
     } else {
       newSchedules[index] = { ...newSchedules[index], [field]: value };
     }
-    setSchedules(newSchedules);    
+    setSchedules(newSchedules);
   };
   useEffect(() => {
     console.log('schedulestosendintochange', schedules);
-  }, [schedules]); 
+  }, [schedules]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-console.log('shcuedles',schedules);
+    console.log('shcuedles', schedules);
 
     try {
       const schedulesToSubmit = schedules.map(schedule => ({
@@ -87,9 +88,9 @@ console.log('shcuedles',schedules);
         opening_time: schedule.opening_time,
         closing_time: schedule.closing_time
       }));
-      console.log('shceudlesto sumb',schedulesToSubmit);
-      
-      console.log('shceudlesto sumb',JSON.stringify(schedulesToSubmit));
+      console.log('shceudlesto sumb', schedulesToSubmit);
+
+      console.log('shceudlesto sumb', JSON.stringify(schedulesToSubmit));
 
       await fetchWithAuth(`${API_URL}/schedules/create/${user?.user?.id}`, {
         method: 'POST',
@@ -101,7 +102,7 @@ console.log('shcuedles',schedules);
 
 
       setShowSuccess(true);
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
 
       await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -123,14 +124,14 @@ console.log('shcuedles',schedules);
   }
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <BotonVolver/>
+      <BotonVolver />
       <div className="max-w-3xl mx-auto">
         {error && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
             {error}
           </div>
         )}
-        
+
         {showSuccess && (
           <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5" />
@@ -140,7 +141,7 @@ console.log('shcuedles',schedules);
 
         <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Sport Center Schedule</h2>
-          
+
           <div className="space-y-6">
             {schedules.map((schedule, index) => (
               <div key={schedule.day} className="p-4 border rounded-lg bg-gray-50">

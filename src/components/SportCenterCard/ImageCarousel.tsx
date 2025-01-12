@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Upload } from "lucide-react";
-import Image from "next/image";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { ChevronLeft, ChevronRight, Upload } from 'lucide-react';
 
 interface StoredImage {
   id: string;

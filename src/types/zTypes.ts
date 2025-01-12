@@ -8,6 +8,7 @@ import { PasswordUpdateSchema, UserUpdateSchema } from "./userUpdate-schema";
 import { FieldCreationSchema } from "./field-schema";
 import { FieldBlockSchema } from "./fieldBlock.type";
 import { SportCenterScheduleSchema } from "./sportCenterSchedules.type";
+import { QueryParamsSchema } from "./queryParams-schema";
 
 /**Registro de Usuario de formulario, se valida con `UserRegisterSchema`
  */
@@ -17,7 +18,7 @@ export type IUserRegister = z.infer<typeof UserRegisterSchema>;
  */
 export type IUser = z.infer<typeof UserSchemaWToken>;
 
-export type IuserWithoutToken=z.infer<typeof UserSchema>;
+export type IuserWithoutToken = z.infer<typeof UserSchema>;
 
 /**Centro deportivo de formulario, se valida con `CenterRegisterSchema`
  */
@@ -41,7 +42,7 @@ export type IPasswordUpdate = z.infer<typeof PasswordUpdateSchema>;
 
 /**Registro de Cancha de formulario, se valida con `FieldSchema`
  */
-export type IFieldCreation = z.infer<typeof FieldCreationSchema>;
+export type IFieldFormData = z.infer<typeof FieldCreationSchema>;
 
 /**
  */
@@ -50,3 +51,7 @@ export type IField_Block = z.infer<typeof FieldBlockSchema>
 /**
  */
 export type ISportCenter_Schedule = z.infer<typeof SportCenterScheduleSchema>
+
+/**
+ */
+export type IQueryParams = z.infer<typeof QueryParamsSchema>

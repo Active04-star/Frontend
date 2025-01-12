@@ -1,13 +1,8 @@
-import { FieldStatus } from "../enum/FieldStatus"; // Enum previamente definido
-import { IField } from "./field_Interface"; // Relación con Field
-import { ISportCenterSchedule } from "./sportCenter_schedule_interface"; // Relación con SportCenterSchedule
+import { BlockStatus } from "../enum/blockStatus"; // Enum previamente definido
 
-export interface IFieldSchedule {
+export interface IField_Blocks {
   id: string;
-  startTime: string; // Representa 'start_time'
-  endTime: string; // Representa 'end_time'
-  durationMinutes: number; // Representa 'duration_minutes'
-  status: FieldStatus; // Enum con los posibles estados del campo
-  field: IField; // Relación con la interfaz IField
-  sportCenterSchedule: ISportCenterSchedule; // Relación con la interfaz ISportCenterSchedule
+  start_time: string; // Representa 'start_time'
+  end_time: string; // Representa 'end_time'
+  status: BlockStatus; // Enum con los posibles estados del campo
 }

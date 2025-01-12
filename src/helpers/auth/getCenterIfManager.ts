@@ -10,7 +10,7 @@ export async function getCenterIfManager(user: IUser): Promise<string | undefine
             const data = await fetchWithAuth(`${API_URL}/manager/center/${user.user.id}`, {
                 method: "GET"
             });
-            localStorage.setItem("sportCenter", JSON.stringify(data.id));
+            localStorage.setItem("sportCenter", JSON.stringify({id:data.id}));
 
             return data.id;
         }

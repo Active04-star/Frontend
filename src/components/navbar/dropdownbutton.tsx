@@ -4,7 +4,6 @@ import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
