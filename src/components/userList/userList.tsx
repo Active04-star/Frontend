@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 
 const UserList = () => {
   const [users, setUsers] = useState<IUser[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -54,7 +55,6 @@ const UserList = () => {
         )
       );
 
-
       // Mostrar alerta de éxito
       Swal.fire({
         icon: "success",
@@ -67,20 +67,37 @@ const UserList = () => {
     }
   };
 
+  // Filtrar usuarios según la letra
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="p-4">
-      <h2 className="text-4xl font-semibold mb-4 text-center p-5 text-black">
+      <h2 className="text-4xl font-semibold mb-4 text-center p-5 text-white mt-5">
         Lista de Usuarios
       </h2>
+      
+      {/* Campo de búsqueda */}
+      <div className="text-center mb-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Filtrar por letra (A-Z)"
+          className="bg-gray-700 text-white px-4 py-2 rounded"
+        />
+      </div>
+
       <ul className="bg-black rounded-lg shadow-lg overflow-hidden">
-        {Array.isArray(users) && users.length === 0 ? (
+        {Array.isArray(filteredUsers) && filteredUsers.length === 0 ? (
           <p className="text-center p-4 text-white">
             No hay usuarios para mostrar.
           </p>
         ) : (
-          Array.isArray(users) &&
-          users
-          .filter((user) => !user.was_banned)  // Filtrar usuarios no baneados
+          Array.isArray(filteredUsers) &&
+          filteredUsers
+            .filter((user) => !user.was_banned) // Filtrar usuarios no baneados
             .map((user) => (
               <li
                 key={user.id}

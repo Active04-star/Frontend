@@ -8,13 +8,17 @@ import AdminSportCentersView from "@/views/AdminSportCentersView/AdminSportCente
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { UserRole } from "@/enum/userRole";
+import ManagerPremium from "@/components/managerPremium/managerPremium";
+import InicioView from "@/views/inicioView/inicioView";
 
-export type ViewName = "settings" | "centroDepotivos" | "clientes";
+export type ViewName = "settings" | "centroDepotivos" | "clientes" | "managers" | "inicio";
 
-const VIEWS: Record<ViewName, React.ComponentType> = {
+const VIEWS: Record<ViewName, React.ComponentType<{ onCardClick?: (viewName: ViewName) => void }>> = {
   settings: SettingsView,
   centroDepotivos: AdminSportCentersView,
   clientes: UserList,
+  managers: ManagerPremium,
+  inicio: ({ onCardClick  }) => <InicioView onCardClick={onCardClick!} />,
 };
 
 const Admin = () => {
@@ -76,7 +80,7 @@ const Admin = () => {
       <div className="flex-1 flex flex-col">
         <Navbar />
         <main className="flex-1 overflow-auto p-6">
-          <CurrentViewComponent />
+          <CurrentViewComponent onCardClick={handleMenuClick}/>
         </main>
       </div>
     </div>

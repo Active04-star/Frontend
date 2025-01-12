@@ -15,21 +15,28 @@ interface ImageCarouselProps {
   onImageUpload: (file: File) => void;
 }
 
-export default function ImageCarousel({ images, onImageUpload }: ImageCarouselProps) {
+export default function ImageCarousel({
+  images,
+  onImageUpload,
+}: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [localImages, setLocalImages] = useState<StoredImage[]>([]);
 
   useEffect(() => {
-    const storedImages = JSON.parse(localStorage.getItem('pendingImages') || '[]');
+    const storedImages = JSON.parse(
+      localStorage.getItem("pendingImages") || "[]"
+    );
     setLocalImages(storedImages);
   }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const storedImages = JSON.parse(localStorage.getItem('pendingImages') || '[]');
+      const storedImages = JSON.parse(
+        localStorage.getItem("pendingImages") || "[]"
+      );
       if (images.length + storedImages.length >= 3) {
-        alert('Máximo 3 imágenes permitidas');
+        alert("Máximo 3 imágenes permitidas");
         return;
       }
 
@@ -44,7 +51,7 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
         };
 
         const updatedImages = [...storedImages, newImage];
-        localStorage.setItem('pendingImages', JSON.stringify(updatedImages));
+        localStorage.setItem("pendingImages", JSON.stringify(updatedImages));
         setLocalImages(updatedImages);
         onImageUpload(file);
       };
@@ -82,13 +89,21 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
           {allImages.length > 1 && (
             <>
               <button
-                onClick={() => setCurrentIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))}
+                onClick={() =>
+                  setCurrentIndex((prev) =>
+                    prev === 0 ? allImages.length - 1 : prev - 1
+                  )
+                }
                 className="absolute left-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <button
-                onClick={() => setCurrentIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))}
+                onClick={() =>
+                  setCurrentIndex((prev) =>
+                    prev === allImages.length - 1 ? 0 : prev + 1
+                  )
+                }
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white"
               >
                 <ChevronRight className="w-6 h-6" />
@@ -98,7 +113,7 @@ export default function ImageCarousel({ images, onImageUpload }: ImageCarouselPr
                   <div
                     key={idx}
                     className={`w-2 h-2 rounded-full ${
-                      idx === currentIndex ? 'bg-white' : 'bg-white/50'
+                      idx === currentIndex ? "bg-white" : "bg-white/50"
                     }`}
                   />
                 ))}
