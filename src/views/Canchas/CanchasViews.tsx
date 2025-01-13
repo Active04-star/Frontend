@@ -32,6 +32,26 @@ const CanchasPanelView: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
 
+
+  const deleteField = async (fieldId: string) => {
+    console.log('id',fieldId);
+    
+    try {
+      await fetchWithAuth(`${API_URL}/field/delete/${fieldId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      swalNotifySuccess("Campo eliminado", "El campo ha sido eliminado correctamente.");
+      setFields(fields.filter(field => field.id !== fieldId));
+    } catch (error:any) {
+      swalNotifyError(error);
+    }
+  };
+
+  
+
   const toggleView = () => {
     setShowCreateForm((prevState) => !prevState);
   };
@@ -266,7 +286,8 @@ const CanchasPanelView: React.FC = () => {
         ) : fields.length > 0 ? (
           <div className="pt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {fields.map((field) => (
-              <FieldCard key={field.id} field={field} />
+              <FieldCard key={field.id} field={field} onDelete={deleteField} />
+              
             ))}
           </div>
         ) : (

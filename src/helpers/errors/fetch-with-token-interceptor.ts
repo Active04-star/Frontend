@@ -18,6 +18,7 @@ export async function fetchWithAuth(url: string | URL | globalThis.Request, opti
     if (token!) {
         try {
             const data = await fetchAndCatch(url, { ...options, headers });
+console.log('data',data);
 
             return data;
         } catch (error) {
