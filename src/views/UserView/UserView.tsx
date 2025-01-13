@@ -5,7 +5,7 @@ import { ISportCenterList } from "@/interfaces/sport_center_list.interface";
 import React, { useCallback, useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import Navbar from "@/components/navbar/navbar";
-import { merge } from '@/utils/mergeObject';
+import { merge } from "@/utils/mergeObject";
 import { API_URL } from "@/config/config";
 import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
@@ -21,8 +21,8 @@ const UserView: React.FC = () => {
     page: 1,
     limit: 9,
     search: "",
-    rating: 0
-  }
+    rating: 0,
+  };
   const [params, setParams] = useState<IQueryParams>(default_params);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,9 +37,10 @@ const UserView: React.FC = () => {
   const [vrating, setVrating] = useState<number>(0);
   // const voidStar = "w-8 h-8 fill-transparent stroke-amber-500 cursor-pointer mx-1 p-1";
   // const fullStar = "w-8 h-8 fill-amber-500 stroke-amber-500 cursor-pointer mx-1 p-1";
-  const voidStar = "w-8 h-8 fill-transparent stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-black hover:bg-yellow-700";
-  const fullStar = "w-8 h-8 fill-white stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-yellow-600";
-
+  const voidStar =
+    "w-8 h-8 fill-transparent stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-black hover:bg-yellow-700";
+  const fullStar =
+    "w-8 h-8 fill-white stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-yellow-600";
 
   useEffect(() => {
     const navbar = document.querySelector("nav");
@@ -50,51 +51,72 @@ const UserView: React.FC = () => {
 
   const { page, limit, search, rating: defaultRating } = default_params;
 
+  const fetchData = useCallback(
+    async (search?: string, rating?: number) => {
+      setIsLoading(true);
+      await verifyUser();
 
-  const fetchData = useCallback(async (search?: string, rating?: number) => {
-    setIsLoading(true);
-    await verifyUser();
+      try {
+        const queryString = new URLSearchParams(window.location.search);
+        const queryParams: unknown = Object.fromEntries(queryString.entries());
+        let actual_params: IQueryParams;
+        const validate = zodValidate(queryParams, QueryParamsSchema);
 
-    try {
-      const queryString = new URLSearchParams(window.location.search);
-      const queryParams: unknown = Object.fromEntries(queryString.entries());
-      let actual_params: IQueryParams;
-      const validate = zodValidate(queryParams, QueryParamsSchema);
+        if (validate.success || queryString.size === 0) {
+          if (queryString.size > 0 && validate.success) {
+            setVrating(Number((queryParams as IQueryParams).rating) || 0);
+            setParams(queryParams as IQueryParams);
+          }
 
-      if (validate.success || queryString.size === 0) {
-        if (queryString.size > 0 && validate.success) {
-          setVrating(Number((queryParams as IQueryParams).rating) || 0);
-          setParams(queryParams as IQueryParams);
+          actual_params = queryParams as IQueryParams;
+
+          const url = new URL(`${API_URL}/sportcenter/search`);
+          url.searchParams.append(
+            "page",
+            `${actual_params.page || default_params.page}`
+          );
+          url.searchParams.append(
+            "limit",
+            `${actual_params.limit || default_params.limit}`
+          );
+          url.searchParams.append(
+            "search",
+            `${actual_params.search || default_params.search}`
+          );
+          url.searchParams.append(
+            "rating",
+            `${actual_params.rating || default_params.rating}`
+          );
+
+          const response = await fetchAndCatch(url.toString(), {
+            method: "GET",
+          });
+
+          console.log("centers", response);
+
+          setCenterList(response);
+        } else {
+          setError("Formato de búsqueda inválido!");
         }
+      } catch (error) {
+        setError("No se encontraron centros deportivos!");
 
-        actual_params = queryParams as IQueryParams;
-
-        const url = new URL(`${API_URL}/sportcenter/search`);
-        url.searchParams.append("page", `${actual_params.page || default_params.page}`);
-        url.searchParams.append("limit", `${actual_params.limit || default_params.limit}`);
-        url.searchParams.append("search", `${actual_params.search || default_params.search}`);
-        url.searchParams.append("rating", `${actual_params.rating || default_params.rating}`);
-
-        const response = await fetchAndCatch(url.toString(), {
-          method: "GET"
-        });
-
-        setCenterList(response);
-      } else {
-        setError("Formato de búsqueda inválido!");
+        if (error instanceof ErrorHelper) {
+          swalNotifyError(error);
+        } else {
+          swalNotifyUnknownError(error);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      setError("No se encontraron centros deportivos!");
-
-      if (error instanceof ErrorHelper) {
-        swalNotifyError(error);
-      } else {
-        swalNotifyUnknownError(error);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }, [ default_params.rating, default_params.search, default_params.limit, default_params.page]);
+    },
+    [
+      default_params.rating,
+      default_params.search,
+      default_params.limit,
+      default_params.page,
+    ]
+  );
 
   // useEffect que llama a fetchData
   useEffect(() => {
@@ -106,38 +128,30 @@ const UserView: React.FC = () => {
     fetchData(); // Se mantiene la llamada a fetchData
   }, [fetchData]);
 
-
   const changeParams = (params_: Partial<IQueryParams>) => {
-
     const merged: IQueryParams = merge(params, params_);
     console.log(merged);
     setParams(merged);
   };
 
-
   const moveStar = (_rating: number) => {
     setRating(_rating);
   };
 
-
   const sendStar = (_rating: number) => {
-    console.log(_rating)
-    console.log(vrating)
+    console.log(_rating);
+    console.log(vrating);
     if (_rating > vrating || _rating < vrating) {
       setVrating(_rating);
       setDisableRating(true);
       changeParams({ rating: _rating });
-
     } else if (_rating === vrating) {
       setVrating(0);
       changeParams({ rating: 0 });
       setDisableRating(false);
-
     }
-    console.log(vrating)
-
+    console.log(vrating);
   };
-
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -145,7 +159,6 @@ const UserView: React.FC = () => {
       handleSearch();
     }
   };
-
 
   const handleSearch = () => {
     const searchParams = new URLSearchParams({
@@ -157,7 +170,6 @@ const UserView: React.FC = () => {
     console.log(params);
     window.location.href = `/user?${searchParams.toString()}`;
   };
-
 
   return (
     <>
@@ -180,7 +192,8 @@ const UserView: React.FC = () => {
             <div className="">
               <button
                 className="flex bg-primary text-dark px-4 py-2 rounded hover:bg-yellow-700 bg-yellow-600 font-bold"
-                onClick={() => handleSearch()}>
+                onClick={() => handleSearch()}
+              >
                 {"Buscar"}
                 <Search className="ml-1 text-white h-5 w-5" />
               </button>
@@ -190,29 +203,26 @@ const UserView: React.FC = () => {
 
             <div
               onMouseLeave={() => {
-                 moveStar(0);
+                moveStar(0);
               }}
-              className="flex mt-1 w-fit">
-
-              {
-                [1, 2, 3, 4, 5].map((i) => (
-                  <svg
-                    key={i}
-                    onClick={() => sendStar(i)}
-                    onMouseEnter={() => moveStar(i)}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    className={i <= rating || i <= vrating ? fullStar : voidStar}
-                  >
-                    <path d="M12 17.27L18.18 21 16.54 14.81 22 10.24 15.81 9.63 12 3 8.19 9.63 2 10.24 7.46 14.81 5.82 21z" />
-                  </svg>
-                ))
-              }
+              className="flex mt-1 w-fit"
+            >
+              {[1, 2, 3, 4, 5].map((i) => (
+                <svg
+                  key={i}
+                  onClick={() => sendStar(i)}
+                  onMouseEnter={() => moveStar(i)}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  className={i <= rating || i <= vrating ? fullStar : voidStar}
+                >
+                  <path d="M12 17.27L18.18 21 16.54 14.81 22 10.24 15.81 9.63 12 3 8.19 9.63 2 10.24 7.46 14.81 5.82 21z" />
+                </svg>
+              ))}
             </div>
 
             <div className="w-1/12"></div>
-
           </div>
         </div>
 
@@ -234,7 +244,7 @@ const UserView: React.FC = () => {
               ))}
           </div>
         )}
-      </div >
+      </div>
     </>
   );
 };
