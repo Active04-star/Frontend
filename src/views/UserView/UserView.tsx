@@ -2,7 +2,7 @@
 import LoadingCircle from "@/components/general/loading-circle";
 import SportCenterCard from "@/components/SportCenterCard/SportCenterCard";
 import { ISportCenterList } from "@/interfaces/sport_center_list.interface";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import Navbar from "@/components/navbar/navbar";
 import { merge } from '@/utils/mergeObject';
@@ -48,8 +48,10 @@ const UserView: React.FC = () => {
     }
   }, []);
 
+  const { page, limit, search, rating: defaultRating } = default_params;
 
-  const fetchData = async (search?: string, rating?: number) => {
+
+  const fetchData = useCallback(async (search?: string, rating?: number) => {
     setIsLoading(true);
     await verifyUser();
 
@@ -61,10 +63,8 @@ const UserView: React.FC = () => {
 
       if (validate.success || queryString.size === 0) {
         if (queryString.size > 0 && validate.success) {
-          // setRating((queryParams as IQueryParams).rating || 0);
           setVrating(Number((queryParams as IQueryParams).rating) || 0);
           setParams(queryParams as IQueryParams);
-
         }
 
         actual_params = queryParams as IQueryParams;
@@ -81,35 +81,30 @@ const UserView: React.FC = () => {
 
         setCenterList(response);
       } else {
-        setError("Fromato de busqueda invalido!");
-
+        setError("Formato de búsqueda inválido!");
       }
-
     } catch (error) {
-
-      setError("No se encontraron centros deportivos!")
+      setError("No se encontraron centros deportivos!");
 
       if (error instanceof ErrorHelper) {
         swalNotifyError(error);
       } else {
         swalNotifyUnknownError(error);
       }
-
     } finally {
       setIsLoading(false);
-
     }
-  };
+  }, [ default_params.rating, default_params.search, default_params.limit, default_params.page]);
 
-
+  // useEffect que llama a fetchData
   useEffect(() => {
     const navbar = document.querySelector("nav");
     if (navbar) {
       setNavbarHeight(navbar.getBoundingClientRect().height);
     }
 
-    fetchData();
-  }, []);
+    fetchData(); // Se mantiene la llamada a fetchData
+  }, [fetchData]);
 
 
   const changeParams = (params_: Partial<IQueryParams>) => {
