@@ -79,6 +79,9 @@ const UserView: React.FC = () => {
           method: "GET"
         });
 
+        console.log('centers',response);
+        
+
         setCenterList(response);
       } else {
         setError("Formato de búsqueda inválido!");
