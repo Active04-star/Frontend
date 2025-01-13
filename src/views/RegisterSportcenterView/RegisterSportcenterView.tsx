@@ -106,11 +106,9 @@ export default function RegisterSportcenter() {
         );
 
         router.push("/manager");
-      }else{
-        swalCustomError('error,necesitar iniciar sesion')
+      } else {
+        swalCustomError("error,necesitar iniciar sesion");
       }
-
-   
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
