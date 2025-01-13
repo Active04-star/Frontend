@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="hover:underline">//
                   Whatsapp
                 </a>
               </li>
