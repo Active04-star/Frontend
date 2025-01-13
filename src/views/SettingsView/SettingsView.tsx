@@ -202,7 +202,7 @@ export default function SettingsView() {
     fetchUser();
   }, [fetchUser]);
 
-  if (typeof window !== "undefined" && (user?.user === undefined || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER)) {
+  if (typeof window !== "undefined" && (user?.user === undefined)) {
     window.location.href = "/";
     return (<div className="flex min-h-screen"></div>);
 
