@@ -133,10 +133,12 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps> = ({
       </div>
 
       <SportCenterDetails
+        id={sportCenter?.id}
         name={sportCenter?.name}
         address={sportCenter?.address}
         averageRating={sportCenter?.averageRating || 0}
         schedules={sportCenter?.schedules || []}
+        onUpdateSuccess={onUpdateSuccess}
       />
     </div>
   );
