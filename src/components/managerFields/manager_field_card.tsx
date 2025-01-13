@@ -1,7 +1,8 @@
 "use client";
 
+import { ReservationStatus } from "@/enum/ReservationStatus";
 import { IField } from "@/interfaces/field_Interface";
-import { CircleDollarSign, Clock, Hash, Activity, Loader } from "lucide-react";
+import { CircleDollarSign, Clock, Hash, Activity, Loader, Calendar, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
@@ -41,6 +42,8 @@ export const FieldCard: React.FC<FieldCardProps> = ({ field, onDelete }) => {
     high: "bg-gradient-to-br from-gray-300/90 to-gray-400/90 hover:from-gray-400 hover:to-gray-500",
     low: "bg-gradient-to-br from-gray-100/90 to-gray-200/90 hover:from-gray-200 hover:to-gray-300",
   };
+  const activeReservations = field.reservation ? field.reservation.filter(r => r.status===ReservationStatus.ACTIVE).length : 0;
+  const completedReservations = field.reservation ? field.reservation.filter(r => r.status===ReservationStatus.COMPLETED).length : 0;
 
   return (
     <div
@@ -86,10 +89,10 @@ export const FieldCard: React.FC<FieldCardProps> = ({ field, onDelete }) => {
           </button>
         )}
         <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <CircleDollarSign className="h-6 w-6 text-white" />
             <span className="text-3xl font-bold text-white">
-              ${Number(field.price).toFixed(2)}
+              {Number(field.price).toFixed(2)}
             </span>
           </div>
           <span className="flex items-center gap-1 text-white border border-white/20 px-2 py-1 rounded-full text-sm backdrop-blur-sm bg-white/5">
@@ -98,18 +101,26 @@ export const FieldCard: React.FC<FieldCardProps> = ({ field, onDelete }) => {
           </span>
         </div>
 
-        <div className="flex items-center justify-between">
-          <span
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm backdrop-blur-sm ${
-              field.isACtive
-                ? "bg-green-500/90 text-white"
-                : "bg-red-500/90 text-white"
-            }`}
-          >
-            <Activity className="h-4 w-4" />
-            {field.isACtive ? "Activa" : "Inactiva"}
-          </span>
-        </div>
+        <div className="flex items-center justify-between space-x-2 mt-4">
+        <span
+          className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs backdrop-blur-sm ${
+            field.isACtive
+              ? "bg-green-500/90 text-white"
+              : "bg-red-500/90 text-white"
+          }`}
+        >
+          <Activity className="h-3 w-3" />
+          {field.isACtive ? "Activa" : "Inactiva"}
+        </span>
+        <span className="flex items-center gap-1 px-2 py-1 rounded-full text-xs backdrop-blur-sm bg-blue-500/90 text-white">
+          <Calendar className="h-3 w-3" />
+          {activeReservations} activas
+        </span>
+        <span className="flex items-center gap-1 px-2 py-1 rounded-full text-xs backdrop-blur-sm bg-purple-500/90 text-white">
+          <CheckCircle className="h-3 w-3" />
+          {completedReservations} completadas
+        </span>
+      </div>
       </div>
     </div>
   );
