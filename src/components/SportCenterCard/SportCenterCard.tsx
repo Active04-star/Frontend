@@ -16,13 +16,14 @@ const SportCenterCard: React.FC<ISportCenter> = ({
         <div className="flex flex-col bg-white shadow-md rounded-lg overflow-hidden transform transition hover:scale-105 hover:shadow-lg w-60">
           {/* Imagen */}
           <div className="relative w-full h-32">
-            <Image
-              src={photos?.[0].image_url || '/placeholder-image.jpg'}
-              alt={name}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-t-lg"
-            />
+          <Image
+  src={(photos?.[0]?.image_url) || '/placeholder-image.jpg'}
+  alt={name || 'Sin nombre'}
+  layout="fill"
+  objectFit="cover"
+  className="rounded-t-lg"
+/>
+
           </div>
 
           {/* Contenido */}
