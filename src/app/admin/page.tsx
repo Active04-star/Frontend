@@ -24,7 +24,7 @@ const VIEWS: Record<ViewName, React.ComponentType<{ onCardClick?: (viewName: Vie
 const Admin = () => {
 
     const [user] = useLocalStorage<IUser | null>("userSession", null);
-  const [currentView, setCurrentView] = useState<ViewName>("settings");
+  const [currentView, setCurrentView] = useState<ViewName>("inicio");
   const [sidebarWidth, setSidebarWidth] = useState<number>(250);
   const [sidebarHeight, setSidebarHeight] = useState<number>(0);
   const [isMounted, setIsMounted] = useState(false);
