@@ -122,6 +122,7 @@ const DropDownButton: React.FC = () => {
           <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
             <ul className="py-2">
               {userData?.user.role === UserRole.MAIN_MANAGER && (
+                <>
                 <li>
                   <Link
                     href="/manager"
@@ -134,6 +135,19 @@ const DropDownButton: React.FC = () => {
                     <AiOutlineKey className="mr-2" /> Panel de Manager
                   </Link>
                 </li>
+                  <li>
+                  <Link
+                    href="/settings"
+                    className={
+                      actualPage === "/settings" || actualPage === ""
+                        ? offStyle
+                        : onStyle
+                    }
+                  >
+                    <AiOutlineSetting className="mr-2" /> Configuración
+                  </Link>
+                </li>
+                </>
               )}
               {userData?.user.role === UserRole.ADMIN && (
                 <li>
