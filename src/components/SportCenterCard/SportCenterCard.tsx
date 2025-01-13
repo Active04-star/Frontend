@@ -17,7 +17,7 @@ const SportCenterCard: React.FC<ISportCenter> = ({
           {/* Imagen */}
           <div className="relative w-full h-32">
             <Image
-              src={photos?.[0] || '/placeholder-image.jpg'}
+              src={photos?.[0].image_url || '/placeholder-image.jpg'}
               alt={name}
               layout="fill"
               objectFit="cover"
