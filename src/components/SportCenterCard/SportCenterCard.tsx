@@ -9,6 +9,9 @@ const SportCenterCard: React.FC<ISportCenter> = ({
   averageRating,
   photos,
 }) => {
+  console.log('photos',photos);
+  
+  const imageUrl = photos && photos.length > 0 ? photos[0].image_url : '/placeholder-image.jpg';
 
   return (
     <Link href={`/sport-centers/${id}`} passHref>
@@ -17,7 +20,7 @@ const SportCenterCard: React.FC<ISportCenter> = ({
           {/* Imagen */}
           <div className="relative w-full h-32">
             <Image
-              src={photos?.[0].image_url || '/placeholder-image.jpg'}
+              src={imageUrl}
               alt={name}
               layout="fill"
               objectFit="cover"
