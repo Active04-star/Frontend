@@ -109,7 +109,7 @@ const RegisterView: React.FC = () => {
 
   return (
     <>
-      <div className=" min-h-screen flex flex-col items-center justify-center bg-custom-dark text-center">
+      <div className="mt-24 min-h-screen flex flex-col items-center justify-center bg-custom-dark text-center">
         {
           isSubmitting ?
             (
