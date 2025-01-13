@@ -14,32 +14,38 @@ import {
   AiOutlineUserSwitch,
 } from "react-icons/ai";
 import { BsBarChart, BsMegaphone, BsShieldCheck } from "react-icons/bs";
+import { IUser } from "@/types/zTypes";
+import { UserRole } from "@/enum/userRole";
 
 const LandingView: React.FC = () => {
-  const [user] = useLocalStorage("userSession", "");
+  const [user] = useLocalStorage<IUser>("userSession", "");
   const [sportCenter,] = useLocalStorage("sportCenter", "");
   const [show, setShow] = useState<boolean>(false);
   const [isManager, setIsManager] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoading(true);
-  
+
     if (typeof window !== "undefined" && window.localStorage) {
       const validate = zodValidate(user, UserSchemaWToken);
-  
+
       if (!validate.success) {
         setShow(true);
       }
-  
+
       if (sportCenter !== null && sportCenter !== "") {
         setIsManager(true);
+      } else if (user.user !== undefined && user.user.role === UserRole.ADMIN) {
+        setIsAdmin(true);
+        setIsManager(false);
       }
-  
+
       setIsLoading(false);
     }
   }, [user, sportCenter]);
-  
+
 
   // if (isLoading) {
   //   return (
@@ -80,11 +86,18 @@ const LandingView: React.FC = () => {
                       </button>
                     </Link>)
                     :
-                    (<Link href="/for-business">
-                      <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
-                        INSCRIBE TU CENTRO DEPORTIVO
-                      </button>
-                    </Link>)
+                    isAdmin ?
+                      (<Link href="/admin">
+                        <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                          PANEL DE ADMINISTRACION
+                        </button>
+                      </Link>)
+                      :
+                      (<Link href="/for-business">
+                        <button className="border border-primary text-primary px-4 py-2 rounded hover:bg-primary hover:text-dark">
+                          INSCRIBE TU CENTRO DEPORTIVO
+                        </button>
+                      </Link>)
               }
             </div>
           </div>

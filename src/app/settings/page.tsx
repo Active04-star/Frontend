@@ -1,8 +1,12 @@
+
 import Navbar from '@/components/navbar/navbar'
+
 import SettingsView from '@/views/SettingsView/SettingsView'
 import React from 'react'
 
-const settings = () => {
+const Settings = () => {
+
+  
   return (
     <>
       <Navbar />
@@ -11,4 +15,4 @@ const settings = () => {
   )
 }
 
-export default settings;
+export default Settings;

@@ -10,7 +10,5 @@ export function logout(fire_swal: boolean): void {
     swalNotifySuccess("¡Adiós!", "Tu sesión ha finalizado.");
   }
 
-  // Usa window.location.origin para mantener al usuario en el frontend
-  const frontendUrl = window.location.origin;
-  window.location.href = `${frontendUrl}/api/auth/logout`;
+  window.location.href = "/api/auth/logout";
 }
