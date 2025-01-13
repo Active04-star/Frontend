@@ -14,7 +14,7 @@ const banSportCenter = async (id: string) => {
   try {
     await fetchWithAuth(`${API_URL}/admin/ban-unban/sportcenter/${id}`, {
       method: "PUT",
-      body: JSON.stringify({ status: "banned" }),
+      body: JSON.stringify({ status: "banned" }), // Cambiar el estado a "banned" para banear
       headers: {
         "Content-Type": "application/json",
       },
@@ -50,31 +50,82 @@ const banSportCenter = async (id: string) => {
   }
 };
 
+const unbanSportCenter = async (id: string) => {
+  try {
+    await fetchWithAuth(`${API_URL}/admin/ban-unban/sportcenter/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ status: "active" }), // Cambiar el estado a "active" para desbanear
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Alerta de éxito
+    Swal.fire({
+      icon: "success",
+      title: "Centro Deportivo Desbaneado",
+      text: "El centro deportivo ha sido desbaneado correctamente.",
+      confirmButtonText: "Aceptar",
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof ErrorHelper) {
+      // Alerta de error personalizada
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `Error: ${error.message}`,
+        confirmButtonText: "Aceptar",
+      });
+    } else {
+      // Alerta de error genérica
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error al desbanear el centro deportivo.",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  }
+};
+
 const AdminSportCentersView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [centerList, setCenterList] = useState<ISportCenterList | null>(null);
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetchAllCenters({ limit: 20 });
-      setCenterList(response);
-    } catch (error:  unknown) {
-      setError("An error occurred while fetching sport centers");
-      setCenterList(null);
-    }
-    setIsLoading(false);
-  };
+  useEffect(() => {
+  fetchData();
+}, []);
+
+const fetchData = async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await fetchAllCenters({ limit: 20 });
+    console.log("Fetched Sport Centers:", response); // Verificar la respuesta
+    setCenterList(response); // Establecer la respuesta directamente
+  } catch (error: unknown) {
+    setError("An error occurred while fetching sport centers");
+    setCenterList(null);
+  }
+  setIsLoading(false);
+};
+
 
   const handleBan = async (id: string) => {
-    await banSportCenter(id);
-    fetchData(); 
+    await banSportCenter(id); // Usamos la función banSportCenter para banear
+    fetchData(); // Actualizar la lista después de banear
+  };
+
+  const handleUnban = async (id: string) => {
+    await unbanSportCenter(id); // Usamos la función unbanSportCenter para desbanear
+    fetchData(); // Actualizar la lista después de desbanear
   };
 
   useEffect(() => {
-    fetchData(); 
+    fetchData();
   }, []);
 
   return (
@@ -93,7 +144,12 @@ const AdminSportCentersView: React.FC = () => {
         <div className="mt-8 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
           {centerList &&
             centerList.sport_centers.map((center) => (
-              <SportCenterCard key={center.id} {...center} onBan={handleBan} />
+              <SportCenterCard
+                key={center.id}
+                {...center}
+                onBan={handleBan} // Función para banear
+                onUnban={handleUnban} // Función para desbanear
+              />
             ))}
         </div>
       )}
