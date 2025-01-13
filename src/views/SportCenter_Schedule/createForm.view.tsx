@@ -92,7 +92,7 @@ export default function ScheduleForm() {
 
       console.log('shceudlesto sumb', JSON.stringify(schedulesToSubmit));
 
-      await fetchWithAuth(`${API_URL}/schedules/create/${user?.user?.id}`, {
+      await fetchWithAuth(`${API_URL}/schedules/create-or-update/${user?.user?.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
