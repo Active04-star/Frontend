@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useEffect } from "react";
 import { fetchAllCenters } from "@/helpers/sport_center_helpers";
@@ -9,6 +10,11 @@ import { API_URL } from "@/config/config";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import Swal from "sweetalert2";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
+import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
+import { SportCenterStatus } from "@/enum/sportCenterStatus";
 
 const banSportCenter = async (id: string) => {
   try {
@@ -27,25 +33,27 @@ const banSportCenter = async (id: string) => {
       text: "El centro deportivo ha sido baneado correctamente.",
       confirmButtonText: "Aceptar",
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
 
     if (error instanceof ErrorHelper) {
+      swalNotifyError(error);
       // Alerta de error personalizada
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: `Error: ${error.message}`,
-        confirmButtonText: "Aceptar",
-      });
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Error",
+      //   text: `Error: ${error.message}`,
+      //   confirmButtonText: "Aceptar",
+      // });
     } else {
+      console.error(error);
+      swalCustomError(error.message);
       // Alerta de error genérica
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Ocurrió un error al banear el centro deportivo.",
-        confirmButtonText: "Aceptar",
-      });
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Error",
+      //   text: "Ocurrió un error al banear el centro deportivo.",
+      //   confirmButtonText: "Aceptar",
+      // });
     }
   }
 };
@@ -54,38 +62,43 @@ const unbanSportCenter = async (id: string) => {
   try {
     await fetchWithAuth(`${API_URL}/admin/ban-unban/sportcenter/${id}`, {
       method: "PUT",
-      body: JSON.stringify({ status: "active" }), // Cambiar el estado a "active" para desbanear
+      body: JSON.stringify({ status: SportCenterStatus.PUBLISHED }),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
     // Alerta de éxito
-    Swal.fire({
-      icon: "success",
-      title: "Centro Deportivo Desbaneado",
-      text: "El centro deportivo ha sido desbaneado correctamente.",
-      confirmButtonText: "Aceptar",
-    });
-  } catch (error) {
-    console.error(error);
+    // Swal.fire({
+    //   icon: "success",
+    //   title: "Centro Deportivo Desbaneado",
+    //   text: "El centro deportivo ha sido desbaneado correctamente.",
+    //   confirmButtonText: "Aceptar",
+    // });
+    swalNotifySuccess("Centro Deportivo Desbaneado", "El centro deportivo ha sido desbaneado correctamente.");
+  } catch (error: any) {
 
     if (error instanceof ErrorHelper) {
       // Alerta de error personalizada
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: `Error: ${error.message}`,
-        confirmButtonText: "Aceptar",
-      });
+      swalNotifyError(error);
+
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Error",
+      //   text: `Error: ${error.message}`,
+      //   confirmButtonText: "Aceptar",
+      // });
     } else {
+      console.error(error);
+      swalCustomError(error.message);
+
       // Alerta de error genérica
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Ocurrió un error al desbanear el centro deportivo.",
-        confirmButtonText: "Aceptar",
-      });
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Error",
+      //   text: "Ocurrió un error al desbanear el centro deportivo.",
+      //   confirmButtonText: "Aceptar",
+      // });
     }
   }
 };
@@ -96,22 +109,36 @@ const AdminSportCentersView: React.FC = () => {
   const [centerList, setCenterList] = useState<ISportCenterList | null>(null);
 
   useEffect(() => {
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
-const fetchData = async () => {
-  setIsLoading(true);
-  setError(null);
-  try {
-    const response = await fetchAllCenters({ limit: 20 });
-    console.log("Fetched Sport Centers:", response); // Verificar la respuesta
-    setCenterList(response); // Establecer la respuesta directamente
-  } catch (error: unknown) {
-    setError("An error occurred while fetching sport centers");
-    setCenterList(null);
-  }
-  setIsLoading(false);
-};
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      console.log("WTFFFFFF")
+      const response = await fetchAllCenters({ limit: 20 });
+      console.log("Fetched Sport Centers:", response); // Verificar la respuesta
+      setCenterList(response); // Establecer la respuesta directamente
+
+    } catch (error: any) {
+
+      if (error instanceof ErrorHelper) {
+        swalNotifyError(error);
+
+      } else {
+        console.error(error);
+        swalCustomError(error.message);
+
+        setError("An error occurred while fetching sport centers");
+        setCenterList(null);
+
+      }
+
+    }
+
+    setIsLoading(false);
+  };
 
 
   const handleBan = async (id: string) => {

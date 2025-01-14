@@ -89,18 +89,20 @@ const LoadingView: React.FC = () => {
                             } catch (error) {
 
                                 setError(true);
-                                console.log(error);
-
+                                
                                 if (error instanceof ApiError) {
                                     await swalCustomError(error.message)
+                                } else {
+
+                                    console.log(error);
+                                    await swalCustomError("No se pudo iniciar sesion intentalo mas tarde",).then((result) => {
+    
+                                        if (result.isConfirmed) {
+                                            window.location.href = "/";
+                                        }
+                                    });
                                 }
-
-                                await swalCustomError("No se pudo iniciar sesion intentalo mas tarde",).then((result) => {
-
-                                    if (result.isConfirmed) {
-                                        window.location.href = "/";
-                                    }
-                                });
+                                
                                 window.location.href = "/api/auth/logout";
 
                             }
