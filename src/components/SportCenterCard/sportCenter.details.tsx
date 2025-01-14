@@ -211,13 +211,20 @@ export default function SportCenterDetails({
             <Clock className="w-4 h-4 mr-2" />
             Horarios
           </h3>
-          {schedules.length === 0 && (
+          {schedules.length === 0?(
             <Link
               href="/horarios"
               className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
             >
               Agregar horarios
             </Link>
+          ):(
+            <Link
+            href="/horarios"
+            className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Actualizar horarios
+          </Link>
           )}
         </div>
 

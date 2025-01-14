@@ -17,6 +17,7 @@
     "@types/lodash": "^4.17.14",
     "axios": "^1.7.9",
     "cookie": "^1.0.2",
+    "date-fns": "^4.1.0",
     "firebase": "^11.1.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.469.0",
