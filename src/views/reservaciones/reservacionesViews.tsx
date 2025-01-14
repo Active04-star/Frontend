@@ -1,112 +1,168 @@
-import React, { useState } from "react";
+"use client";
+import ReservationCard from "@/components/managerReservations/reservationCardd";
+import { API_URL } from "@/config/config";
+import { ReservationStatus } from "@/enum/ReservationStatus";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
+import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
+import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
+import { IReservation } from "@/interfaces/reservation_Interface";
+import { IUser } from "@/types/zTypes";
+import React, { useCallback, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const ReservacionesViews: React.FC = () => {
-  // Lista de canchas con sus datos (por ejemplo, nombre, tipo, disponibilidad)
-  const canchas = [
-    { id: 1, nombre: "Cancha 1", tipo: "Fútbol 11", disponible: true, reservas: [{ hora: "10:00 AM - 11:30 AM", participante: "Juan Pérez" }] },
-    { id: 2, nombre: "Cancha 2", tipo: "Fútbol 7", disponible: false, reservas: [{ hora: "11:00 AM - 12:30 PM", participante: "Carlos López" }] },
-    { id: 3, nombre: "Cancha 3", tipo: "Tenis", disponible: true, reservas: [] },
-    { id: 4, nombre: "Cancha 4", tipo: "Fútbol 5", disponible: true, reservas: [] },
-    { id: 5, nombre: "Cancha 5", tipo: "Paddle", disponible: false, reservas: [{ hora: "3:00 PM - 4:30 PM", participante: "Ana Gómez" }] },
-  ];
+  const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
+  const [reservations, setReservations] = useState<IReservation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [completingId, setCompletingId] = useState<string | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
 
-  // Días de la semana (por ejemplo, para mostrar la fecha)
-  //const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]; // a usarse en el futuro , comentado para hacer build 
+  const fetchReservations = useCallback(async () => {
+    if (!userLocalStorage?.user?.id) return;
+    try {
+      const response: IReservation[] = await fetchWithAuth(
+        `${API_URL}/manager/reservations/${userLocalStorage.user.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-  // Función para formatear la fecha en formato dd/mm/yyyy
-  const formatFecha = (fecha: Date) => {
-    const dia = fecha.getDate();
-    const mes = fecha.getMonth() + 1; // Mes en JS es 0-indexado
-    const año = fecha.getFullYear();
-    return `${dia < 10 ? `0${dia}` : dia}/${mes < 10 ? `0${mes}` : mes}/${año}`;
+      setReservations(response);
+    } catch (error: any) {
+      swalNotifyError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userLocalStorage?.user?.id]);
+
+  useEffect(() => {
+    fetchReservations();
+  }, [fetchReservations]);
+
+  const filterReservations = (status: string) => {
+    return reservations.filter((reservation) => reservation.status === status);
+  };
+  const handleComplete = async (id: string) => {
+    setCompletingId(id);
+
+    try {
+      await fetchWithAuth(`${API_URL}/reservation/complete/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      setReservations((prevReservations) =>
+        prevReservations.map((reservation) =>
+          reservation.id === id
+            ? { ...reservation, status: ReservationStatus.COMPLETED }
+            : reservation
+        )
+      );
+      swalConfirmation("Reservacion completada");
+    } catch (error: any) {
+      swalNotifyError(error);
+    } finally {
+      setCompletingId(null);
+    }
   };
 
-  // Estado para manejar los detalles de la reserva seleccionada
-  const [reservaSeleccionada, setReservaSeleccionada] = useState<{ hora: string; participante: string; canchaId: number } | null>(null);
+  const handleCancel = async (id: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, cancel it!",
+    });
 
-  // Función para manejar el clic en una reserva para mostrar sus detalles
-  //const handleReservaClick = (canchaId: number, hora: string) => {                 funcion comentada para realizar build
-  //  const cancha = canchas.find(c => c.id === canchaId);
-  //  if (cancha) {
-  //    const reserva = cancha.reservas.find(r => r.hora === hora);
-  //    if (reserva) {
-  //      setReservaSeleccionada({ ...reserva, canchaId }); // Mostrar detalles de la reserva
-  //    }
-  //  }
-  //};
+    if (result.isConfirmed) {
+      setCancellingId(id);
+      try {
+        await fetchWithAuth(`${API_URL}/reservation/cancel/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-  // Función para cancelar una reserva
-  const handleCancelarReserva = (canchaId: number, hora: string) => {
-    const canchaIndex = canchas.findIndex(c => c.id === canchaId);
-    if (canchaIndex !== -1) {
-      const cancha = canchas[canchaIndex];
-      const reservaIndex = cancha.reservas.findIndex(r => r.hora === hora);
-      if (reservaIndex !== -1) {
-        cancha.reservas.splice(reservaIndex, 1); // Eliminar la reserva
-        setReservaSeleccionada(null); // Limpiar los detalles de la reserva
+        setReservations((prevReservations) =>
+          prevReservations.map((reservation) =>
+            reservation.id === id
+              ? { ...reservation, status: ReservationStatus.CANCELLED }
+              : reservation
+          )
+        );
+        swalConfirmation("Reservacion Cancelada");
+      } catch (error: any) {
+        swalNotifyError(error);
+      } finally {
+        setCancellingId(null);
       }
     }
   };
 
-  return (
-    <div className="mt-16 max-w-6xl mx-auto p-6 bg-gray-100">
-      {/* Encabezado general de la vista */}
-      <h1 className="text-4xl font-semibold text-center text-black">
-        Tus Reservaciones en tus canchas
-      </h1>
-
-      {/* Lista de Canchas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {canchas.map((cancha) => (
-          <div
-            key={cancha.id}
-            className="bg-white shadow-lg rounded-lg p-6 cursor-pointer"
-          >
-            {/* Nombre de la Cancha */}
-            <div className="font-semibold text-lg text-black mb-4">{cancha.nombre}</div>
-
-            {/* Mostrar horarios y días disponibles o reservados */}
-            {cancha.reservas.length > 0 ? (
-              cancha.reservas.map((reserva, index) => {
-                const fechaReserva = new Date(); // Suponemos que la reserva es hoy, puedes ajustar esto según tu lógica
-                return (
-                  <div key={index} className="mb-4">
-                    <div className="text-black mb-2">
-                      <strong>Hora:</strong> {reserva.hora}
-                    </div>
-                    <div className="text-black mb-4">
-                      <strong>Dia:</strong> {formatFecha(fechaReserva)}
-                    </div>
-                    <button
-                      onClick={() => handleCancelarReserva(cancha.id, reserva.hora)}
-                      className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700"
-                    >
-                      Cancelar Turno
-                    </button>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="bg-green-200 p-2 rounded text-center text-black">
-                Disponible
-              </div>
-            )}
-          </div>
-        ))}
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600"></div>
       </div>
+    );
+  }
 
-      {/* Mostrar detalles de la reserva seleccionada */}
-      {reservaSeleccionada && (
-        <div className="mt-8 p-4 bg-yellow-100 rounded-lg">
-          <h4 className="text-xl font-semibold text-gray-800">Detalles de la reserva:</h4>
-          <p className="mt-2 text-gray-700">
-            <strong>Hora:</strong> {reservaSeleccionada.hora}
-          </p>
-          <p className="mt-2 text-gray-700">
-            <strong>Participante:</strong> {reservaSeleccionada.participante}
-          </p>
+  return (
+    <div className="mt-16 max-w-7xl mx-auto p-6 bg-gray-100">
+      <h1 className="text-3xl font-bold mb-8 text-center">
+        Reservations Management
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h2 className="text-xl font-semibold mb-4 text-green-600">Activas</h2>
+          {filterReservations("active").map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              reservation={reservation}
+              onCancel={handleCancel}
+              isCompleting={completingId === reservation.id}
+              isCancelling={cancellingId === reservation.id}
+            />
+          ))}
         </div>
-      )}
+        <div>
+          <h2 className="text-xl font-semibold mb-4 text-blue-600">
+            Completadas
+          </h2>
+          {filterReservations("completed").map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              reservation={reservation}
+              isCompleting={false}
+              isCancelling={false}
+            />
+          ))}
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold mb-4 text-red-600">
+            Canceladas
+          </h2>
+          {filterReservations("cancelled").map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              reservation={reservation}
+              isCompleting={false}
+              isCancelling={false}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
