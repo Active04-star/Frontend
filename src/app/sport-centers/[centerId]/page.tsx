@@ -5,6 +5,7 @@ import { ISportCenter } from "@/interfaces/sport_center.interface";
 import Navbar from "@/components/navbar/navbar";
 import BotonVolver from "@/components/back-button/back-button";
 import { IField } from "@/interfaces/field_Interface";
+import FieldList from "@/components/fieldList/field_list";
 
 // ✅ Generar rutas estáticas dinámicamente
 export async function generateStaticParams() {
@@ -59,12 +60,12 @@ const SportCenterPage = async ({ params }: { params: Promise<{ centerId: string 
       <div className="pt-8">
         <Navbar />
         <BotonVolver />
+        {centerData && (
         <h1 className="text-2xl font-bold mb-6 mt-16 text-center">{centerData.name}</h1>
-        <div className="mt-8 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {fieldsData.map((field) => (
-            <FieldCard key={field.id} {...field} />
-          ))}
-        </div>
+      )}
+      <div className="mt-8 mb-8">
+        <FieldList fields={fieldsData} />
+      </div>
       </div>
     );
 
