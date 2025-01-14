@@ -24,13 +24,13 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
           Cancha {reservation.field.number}
         </h3>
         <p className="text-sm text-gray-600 mb-1">
-          Date: {format(new Date(reservation.date), "PPP")}
+          Fecha: {format(new Date(reservation.date), "PPP")}
         </p>
         <p className="text-sm text-gray-600 mb-1">
-          Time: {format(new Date(reservation.date), "p")}
+          Hora: {format(new Date(reservation.date), "p")}
         </p>
         <p className="text-sm text-gray-600 mb-1">
-          Status:{" "}
+          Estado:{" "}
           <span
             className={`font-semibold ${getStatusColor(reservation.status)}`}
           >
@@ -38,7 +38,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
           </span>
         </p>
         <p className="text-sm text-gray-600 mb-2">
-          User: {reservation.user.name}
+          Usuario: {reservation.user.email}
         </p>
         {reservation.status === "active" && (
           <div className="flex justify-between mt-2">
@@ -47,14 +47,14 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
               disabled={isCompleting || isCancelling}
             >
-              {isCompleting ? 'Completing...' : 'Complete'}
+              {isCompleting ? 'Completando...' : 'Completar'}
             </button>
             <button
               onClick={() => onCancel && onCancel(reservation.id)}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
               disabled={isCompleting || isCancelling}
             >
-              {isCancelling ? 'Cancelling...' : 'Cancel'}
+              {isCancelling ? 'Cancelando...' : 'Cancelar'}
             </button>
           </div>
         )}
