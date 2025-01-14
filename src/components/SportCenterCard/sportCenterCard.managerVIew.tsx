@@ -123,7 +123,7 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps> = ({
           {sportCenter?.status === "draft" && (
             <button
               onClick={handlePublish}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-full  transition-colors"
             >
               <Send className="w-4 h-4" />
               <span>Publicar</span>
