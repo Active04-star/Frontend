@@ -16,7 +16,7 @@ const cards: Card[] = [
   {
     name: "Centros Deportivos",
     icon: <FaChartBar size={40} className="text-green-500" />, 
-    viewName: "centroDepotivos",
+    viewName: "centers",
   },
   {
     name: "Clientes",
