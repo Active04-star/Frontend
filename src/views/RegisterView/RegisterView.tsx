@@ -46,7 +46,7 @@ const RegisterView: React.FC = () => {
 
 
   useEffect(() => {
-    const data = zodValidate(userData, UserRegisterSchema);
+    const data = zodValidate<RegisterErrors>(userData, UserRegisterSchema);
 
     if (!data.success) {
       setErrors(data.errors);
