@@ -40,7 +40,7 @@ const LoginView: React.FC = () => {
 
   useEffect(() => {
     setIsSubmitting(false);
-    const data = zodValidate(userData, UserLoginSchema);
+    const data = zodValidate<LoginErrors>(userData, UserLoginSchema);
 
     if (!data.success) {
       setErrors(data.errors);
@@ -84,9 +84,9 @@ const LoginView: React.FC = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const validation = zodValidate(userData, UserLoginSchema);
+    const validation = zodValidate<LoginErrors>(userData, UserLoginSchema);
 
-    if (validation.errors === undefined || validation.errors.email === undefined) {
+    if (validation.errors === null || validation.errors.email === undefined) {
 
       try {
 
