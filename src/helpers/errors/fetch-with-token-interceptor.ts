@@ -18,7 +18,6 @@ export async function fetchWithAuth(url: string | URL | globalThis.Request, opti
     if (token!) {
         try {
             const data = await fetchAndCatch(url, { ...options, headers });
-console.log('data',data);
 
             return data;
         } catch (error) {
@@ -27,6 +26,7 @@ console.log('data',data);
                 if (error.message === ApiStatusEnum.TOKEN_EXPIRED) {
                     window.location.href = "/api/auth/logout?from=out_session";
                     localStorage.clear();
+                    throw new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "403");
                 } else if (error.message === ApiStatusEnum.USER_DELETED) {
                     window.location.href = "api/auth/logout?from=user_blocked";
                     localStorage.clear();

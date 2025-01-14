@@ -7,13 +7,13 @@
  * @param schema zSchema (usualmente de registro, encontrados en la carpeta "types")
  * @returns 
  */
-export function zodValidate(data: unknown, schema: any) {
+export function zodValidate<T>(data: unknown, schema: any) {
     const result = schema.safeParse(data);
 
     if (!result.success) {
-        const errors = result.error.format();
+        const errors: T = result.error.format();
         return { success: false, errors };
     }
 
-    return { success: true, data: result.data };
+    return { success: true, data: result.data, errors: null };
 }
