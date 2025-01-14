@@ -1,4 +1,5 @@
 import { IField_Blocks } from "./field_schedule.Interface";
+import { IReservation } from "./reservation_Interface";
 import { ISportCategory } from "./sportCategory_interface";
 
 export interface IField {
@@ -10,5 +11,6 @@ export interface IField {
   duration_minutes: number;
   photos?: string[]; 
   blocks: IField_Blocks[]; 
-  sportCategory?:ISportCategory
+  sportCategory?:ISportCategory;
+  reservation:IReservation[]
 }

@@ -64,19 +64,19 @@ const LoadingView: React.FC = () => {
                                     //     return;
                                     // }
 
-                                          const roleRoutes = {
-                                            [UserRole.USER]: "/user",
-                                            [UserRole.MAIN_MANAGER]: "/manager",
-                                            [UserRole.ADMIN]: "/admin",
-                                            [UserRole.MANAGER]: "/manager",
-                                          };
-                                    
-                                          const route = roleRoutes[(response as IUser).user.role];
-                                          if (route) {
-                                            window.location.href = route;
-                                            return;
-                                          }
-                                    
+                                    const roleRoutes = {
+                                        [UserRole.USER]: "/user",
+                                        [UserRole.MAIN_MANAGER]: "/manager",
+                                        [UserRole.ADMIN]: "/admin",
+                                        [UserRole.MANAGER]: "/manager",
+                                    };
+
+                                    const route = roleRoutes[(response as IUser).user.role];
+                                    if (route) {
+                                        window.location.href = route;
+                                        return;
+                                    }
+
 
                                     window.location.href = "/"
                                 } else {
@@ -89,18 +89,20 @@ const LoadingView: React.FC = () => {
                             } catch (error) {
 
                                 setError(true);
-                                console.log(error);
-
-                                if(error instanceof ApiError) {
+                                
+                                if (error instanceof ApiError) {
                                     await swalCustomError(error.message)
+                                } else {
+
+                                    console.log(error);
+                                    await swalCustomError("No se pudo iniciar sesion intentalo mas tarde",).then((result) => {
+    
+                                        if (result.isConfirmed) {
+                                            window.location.href = "/";
+                                        }
+                                    });
                                 }
-
-                                await swalCustomError("No se pudo iniciar sesion intentalo mas tarde",).then((result) => {
-
-                                    if (result.isConfirmed) {
-                                        window.location.href = "/";
-                                    }
-                                });
+                                
                                 window.location.href = "/api/auth/logout";
 
                             }
@@ -108,15 +110,19 @@ const LoadingView: React.FC = () => {
                     }
 
                 } else {
-                    window.location.href = "/";
+                    window.location.href = "/api/auth/logout";
+
                     setShow(false);
                 }
 
             } catch (error: unknown) {
-                if (error instanceof ApiError) {
+                if (error instanceof Error && error.message === 'Cookie not found') {
+                    window.location.href = "/api/auth/logout";
+
+                } else if (error instanceof ApiError) {
                     setError(true);
                     console.log(error);
-            
+
                     await swalCustomError(error.message);
                 } else if (error instanceof Error) {
                     console.log(error.message);
@@ -124,7 +130,7 @@ const LoadingView: React.FC = () => {
                     console.log("Unknown error:", error);
                 }
             }
-            
+
         }
 
         handle();

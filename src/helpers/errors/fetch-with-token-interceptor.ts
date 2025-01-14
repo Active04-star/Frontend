@@ -22,9 +22,15 @@ export async function fetchWithAuth(url: string | URL | globalThis.Request, opti
             return data;
         } catch (error) {
 
-            if(error instanceof ErrorHelper && error.message === ApiStatusEnum.TOKEN_EXPIRED) {
-                window.location.href = "/api/auth/logout?from=out_session";
-                localStorage.clear();
+            if (error instanceof ErrorHelper) {
+                if (error.message === ApiStatusEnum.TOKEN_EXPIRED) {
+                    window.location.href = "/api/auth/logout?from=out_session";
+                    localStorage.clear();
+                    throw new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "403");
+                } else if (error.message === ApiStatusEnum.USER_DELETED) {
+                    window.location.href = "api/auth/logout?from=user_blocked";
+                    localStorage.clear();
+                }
             }
 
             throw error;

@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ICenterRegister, IUser } from "@/types/zTypes";
+import {
+  ICenterRegister,
+  ISportCenter,
+  IUser,
+  IuserWithoutToken,
+} from "@/types/zTypes";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { API_URL } from "@/config/config";
@@ -13,13 +18,14 @@ import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error
 import BotonVolver from "@/components/back-button/back-button";
 import { ModalInformacion } from "@/components/modal/modal.component";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 
 type FormErrors<T> = { [K in keyof T]?: string[] };
 
 export default function RegisterSportcenter() {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const router = useRouter(); // Hook para redirigir
-  const [user, ] = useLocalStorage<IUser | null>("userSession", null);
+  const [user, setUser] = useLocalStorage<IUser | null>("userSession", null);
   // const user: Partial<IUser> = iuser ? iuser.user : null;
   const [hide, setHide] = useState(true);
 
@@ -62,26 +68,47 @@ export default function RegisterSportcenter() {
     }
 
     try {
-
-      if(user !== null) {
-
+      if (user !== null) {
         const validatedData = CenterRegisterSchema.parse(sportCenter);
         console.log("Form data is valid:", validatedData);
         const new_sportcenter = { ...sportCenter, manager: user.user.id };
-        await fetchWithAuth(`${API_URL}/sportcenter/create`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(new_sportcenter),
-        });
-        
+
+        const response: ISportCenter = await fetchWithAuth(
+          `${API_URL}/sportcenter/create`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(new_sportcenter),
+          }
+        );
+
+        const userData: IuserWithoutToken = await fetchWithAuth(
+          `${API_URL}/user/solo-para-testing/${user.user.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setUser(userData);
+        localStorage.setItem(
+          "sportCenter",
+          JSON.stringify({ id: response.id })
+        );
+
+        swalNotifySuccess(
+          "Creacion exitosa",
+          "seras redirigido a panel de manager"
+        );
+
+        router.push("/manager");
+      } else {
+        swalCustomError("error,necesitar iniciar sesion");
       }
-
-      localStorage.removeItem("userSession");
-      swalNotifySuccess("Creacion exitosa", "seras redirigido a login");
-      router.push("/login");
-
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
@@ -176,7 +203,6 @@ export default function RegisterSportcenter() {
                       </p>
                     )}
                   </div>
-
 
                   <div className="w-auto flex justify-around">
                     <button

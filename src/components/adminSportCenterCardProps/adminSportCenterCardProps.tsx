@@ -2,7 +2,8 @@ import Image from 'next/image';
 import { ISportCenter } from '@/interfaces/sport_center.interface';
 
 interface SportCenterCardProps extends ISportCenter {
-  onBan: (id: string) => void;
+  onBan: (id: string) => void;     // Función para banear
+  onUnban: (id: string) => void;   // Función para desbanear
 }
 
 const SportCenterCard: React.FC<SportCenterCardProps> = ({
@@ -11,10 +12,16 @@ const SportCenterCard: React.FC<SportCenterCardProps> = ({
   address,
   averageRating,
   photos,
+  status, // Asegurarnos de recibir el 'status' que indica si está baneado
   onBan,
+  onUnban, // Recibimos la función onUnban
 }) => {
   const handleBanClick = () => {
-    onBan(id);
+    if (status === "banned") {
+      onUnban(id); // Si está baneado, se desbanea
+    } else {
+      onBan(id); // Si no está baneado, se banea
+    }
   };
 
   return (
@@ -23,7 +30,7 @@ const SportCenterCard: React.FC<SportCenterCardProps> = ({
         {/* Imagen */}
         <div className="relative w-full h-32">
           <Image
-            src={photos?.[0] || '/placeholder-image.jpg'}
+            src={photos?.[0]?.image_url || '/placeholder-image.jpg'}
             alt={name}
             layout="fill"
             objectFit="cover"
@@ -50,13 +57,13 @@ const SportCenterCard: React.FC<SportCenterCardProps> = ({
             <span className="text-xs text-gray-600">{averageRating}</span>
           </div>
 
-          {/* Botón Banear */}
+          {/* Botón Banear/Desbanear */}
           <div className="mt-3">
             <button
-              className="w-full bg-red-600 text-white text-xs font-medium py-1 rounded transition duration-300 hover:bg-red-700"
+              className={`w-full ${status === "banned" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"} text-white text-xs font-medium py-1 rounded transition duration-300`}
               onClick={handleBanClick}
             >
-              Banear
+              {status === "banned" ? "Desbanear" : "Banear"}
             </button>
           </div>
         </div>
@@ -64,5 +71,6 @@ const SportCenterCard: React.FC<SportCenterCardProps> = ({
     </div>
   );
 };
+
 
 export default SportCenterCard;

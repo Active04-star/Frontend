@@ -4,15 +4,10 @@ import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
+import Image from "next/image";
 import Link from "next/link";
-import Image from "next/image"; // ✅ Importación del componente Image
 import { useEffect, useRef, useState } from "react";
-import {
-  AiOutlineCalendar,
-  AiOutlineKey,
-  AiOutlineLogout,
-  AiOutlineSetting,
-} from "react-icons/ai";
+import { AiOutlineCalendar, AiOutlineKey, AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
 
 const DropDownButton: React.FC = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -122,6 +117,7 @@ const DropDownButton: React.FC = () => {
           <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
             <ul className="py-2">
               {userData?.user.role === UserRole.MAIN_MANAGER && (
+                <>
                 <li>
                   <Link
                     href="/manager"
@@ -134,6 +130,19 @@ const DropDownButton: React.FC = () => {
                     <AiOutlineKey className="mr-2" /> Panel de Manager
                   </Link>
                 </li>
+                  <li>
+                  <Link
+                    href="/settings"
+                    className={
+                      actualPage === "/settings" || actualPage === ""
+                        ? offStyle
+                        : onStyle
+                    }
+                  >
+                    <AiOutlineSetting className="mr-2" /> Configuración
+                  </Link>
+                </li>
+                </>
               )}
               {userData?.user.role === UserRole.ADMIN && (
                 <li>

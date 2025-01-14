@@ -12,6 +12,7 @@ export async function fetchAndCatch(url: string | URL | globalThis.Request, opti
         const data = await response.json();
 
         if (response.status === 401) {
+            console.log(response.body);
             throw new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "401");
         } else if (!response.ok) {
             throw new ErrorHelper(verifyError(data.message), data.status);

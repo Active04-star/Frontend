@@ -2,7 +2,6 @@
 
 import { ViewName } from "@/app/admin/page";
 import { logout } from "@/helpers/auth/logout";
-import Link from "next/link";
 
 const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
   onMenuClick,
@@ -26,34 +25,8 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
               </div>
             </li>
             <li>
-              <Link
-                href="#"
-                className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white border-transparent hover:border-yellow-400 pr-6"
-              >
-                <span className="inline-flex justify-center items-center ml-4">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                    ></path>
-                  </svg>
-                </span>
-                <span className="ml-2 text-sm tracking-wide truncate">
-                  Dashboard
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
+              <button
+                onClick={() => onMenuClick && onMenuClick("inicio")}
                 className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
               >
                 <span className="inline-flex justify-center items-center ml-4">
@@ -68,23 +41,57 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      d="M3 10l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V10z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 21V12h6v9"
+                    />
+                  </svg>
+                </span>
+                <span className="ml-2 text-sm tracking-wide truncate">
+                  Inicio
+                </span>
+              </button>
+            </li>
+
+            <li>
+              <button
+                onClick={() => onMenuClick && onMenuClick("managers")}
+                className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
+              >
+                <span className="inline-flex justify-center items-center ml-4">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM16 14H8c-2.21 0-4 1.79-4 4v2h16v-2c0-2.21-1.79-4-4-4zM20 8h-1.6M19 10l1 1m-1-1l-1-1m2-2l-2-2"
                     ></path>
                   </svg>
                 </span>
                 <span className="ml-2 text-sm tracking-wide truncate">
-                  Notifications
+                  Managers Premium
                 </span>
-              </Link>
-            </li>{" "}
+              </button>
+            </li>
+
             <div className="flex flex-row items-center h-8">
-              <div className="text-sm font-light tracking-wide text-gray-500">
-                Sports Centers and Clients
+              <div className="text-sm font-light tracking-wide text-gray-500 pl-5">
+                Centro deportivos y clientes
               </div>
             </div>
             <li>
               <button
-                onClick={() => onMenuClick && onMenuClick("centroDepotivos")}
+                onClick={() => onMenuClick && onMenuClick("centers")}
                 className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
               >
                 <span className="inline-flex justify-center items-center ml-4">
@@ -103,14 +110,14 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                     ></path>
                   </svg>
                   <span className="ml-2 text-sm tracking-wide truncate">
-                    Sports Centers
+                    Centros Deportivos
                   </span>
                 </span>
               </button>
             </li>
-        
+
             <li>
-            <button
+              <button
                 onClick={() => onMenuClick && onMenuClick("clientes")}
                 className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
               >
@@ -131,10 +138,9 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                   </svg>
                 </span>
                 <span className="ml-2 text-sm tracking-wide truncate">
-                  Clients
+                  Clientes
                 </span>
-                </button>
-
+              </button>
             </li>
             <li className="px-5">
               <div className="flex flex-row items-center h-8">

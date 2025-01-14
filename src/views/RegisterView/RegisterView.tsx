@@ -46,7 +46,7 @@ const RegisterView: React.FC = () => {
 
 
   useEffect(() => {
-    const data = zodValidate(userData, UserRegisterSchema);
+    const data = zodValidate<RegisterErrors>(userData, UserRegisterSchema);
 
     if (!data.success) {
       setErrors(data.errors);
@@ -109,7 +109,7 @@ const RegisterView: React.FC = () => {
 
   return (
     <>
-      <div className=" min-h-screen flex flex-col items-center justify-center bg-custom-dark text-center">
+      <div className="mt-24 min-h-screen flex flex-col items-center justify-center bg-custom-dark text-center">
         {
           isSubmitting ?
             (
@@ -325,7 +325,7 @@ const RegisterView: React.FC = () => {
                     <Link
                       type="submit"
                       className="mt-5 bg-primary text-dark px-6 py-2 rounded bg-orange-100 text-black flex justify-between"
-                      href={"api/auth/login"}>
+                      href={"api/auth/login?screen_hint=signup"}>
 
                       <Image
                         src="https://auth.openai.com/assets/google-logo-NePEveMl.svg"

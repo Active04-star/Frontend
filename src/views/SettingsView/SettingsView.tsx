@@ -19,7 +19,9 @@ import { ApiError } from "next/dist/server/api-utils";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { API_URL } from "@/config/config";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
-import Image  from "next/image";
+import Image from "next/image";
+import verifyUser from "@/helpers/auth/illegalUserVerify";
+import { UserRole } from "@/enum/userRole";
 
 interface IPhotoUpdateResponse {
   message: string;
@@ -30,16 +32,17 @@ export default function SettingsView() {
   const [user] = useLocalStorage<IUser | null>("userSession", null);
   const [userData, setUserData] = useState<IuserWithoutToken | null>(null);
   const [name, setName] = useState<IUserUpdate>({ name: "" });
-  const [password, setPassword] = useState<IPasswordUpdate>({
-    password: "",
-    confirm_password: "",
-  });
+  const [password, setPassword] = useState<IPasswordUpdate>({ password: "", confirm_password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingPhoto, setIsSavingPhoto] = useState(false);
+
+  // const [user] = useLocalStorage<IUser | null>("userSession", null);
+
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -52,6 +55,7 @@ export default function SettingsView() {
       reader.readAsDataURL(file);
     }
   };
+
 
   const handleUpdatePhoto = async () => {
     if (!image) {
@@ -96,6 +100,7 @@ export default function SettingsView() {
     }
   };
 
+
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword({
       ...password,
@@ -103,9 +108,8 @@ export default function SettingsView() {
     });
   };
 
-  const handleSubmit = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
     if (
@@ -168,7 +172,10 @@ export default function SettingsView() {
     }
   };
 
+
   const fetchUser = useCallback(async () => {
+    await verifyUser();
+
     if (!user?.user?.id) return;
     try {
       const response = await fetchWithAuth(
@@ -190,9 +197,16 @@ export default function SettingsView() {
     }
   }, [user?.user?.id]);
 
+
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
+  if (typeof window !== "undefined" && (user?.user === undefined)) {
+    window.location.href = "/";
+    return (<div className="flex min-h-screen"></div>);
+
+  }
 
   if (isLoading) {
     return (
@@ -212,17 +226,17 @@ export default function SettingsView() {
         <div className="flex flex-col items-center mb-6">
           <div className="relative w-32 h-32 mb-4">
             <div className="w-full h-full rounded-full overflow-hidden bg-white border-2 border-gray-300">
-            <Image
-                  src={
-                    previewImage ||
-                    userData?.profile_image ||
-                    "/images/default-profile.jpg"
-                  }
-                  alt="Foto de perfil"
-                  width={128}
-                  height={128}
-                  className="w-full h-full object-cover"
-                />
+              <Image
+                src={
+                  previewImage ||
+                  userData?.profile_image ||
+                  "/images/default-profile.jpg"
+                }
+                alt="Foto de perfil"
+                width={128}
+                height={128}
+                className="w-full h-full object-cover"
+              />
             </div>
             <label
               htmlFor="photo-upload"
@@ -242,9 +256,8 @@ export default function SettingsView() {
           {image && (
             <button
               onClick={handleUpdatePhoto}
-              className={`flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors ${
-                isSavingPhoto ? "cursor-not-allowed opacity-70" : ""
-              }`}
+              className={`flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors ${isSavingPhoto ? "cursor-not-allowed opacity-70" : ""
+                }`}
               disabled={isSavingPhoto}
             >
               {isSavingPhoto ? (
