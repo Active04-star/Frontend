@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ISportCenter } from "@/interfaces/sport_center.interface";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { DayOfWeek } from "@/enum/DayOfWeek";
 
 const SportCenterCard: React.FC<ISportCenter> = ({
@@ -15,7 +15,7 @@ const SportCenterCard: React.FC<ISportCenter> = ({
   photos,
   fields,
   schedules,
-  averageRating
+  averageRating,
 }) => {
   const currentDay = new Date().getDay();
   const daysOfWeek = [
@@ -33,31 +33,39 @@ const SportCenterCard: React.FC<ISportCenter> = ({
     (schedule) => schedule.day === (currentDayName as DayOfWeek)
   );
 
-  const images = photos && photos.length > 0
-  ? photos.map(photo => photo.image_url)
-  : ['/placeholder-image.jpg'];
+  const images =
+    photos && photos.length > 0
+      ? photos.map((photo) => photo.image_url)
+      : ["/placeholder-image.jpg"];
 
   return (
     <div className="flex justify-center items-center p-2">
       <div className="flex flex-col bg-white shadow-md rounded-lg overflow-hidden transform transition hover:scale-105 hover:shadow-lg w-80">
-          {/* Image Gallery */}
-          <div className="w-full h-48">
-            <Swiper
-              modules={[Navigation, Pagination, Autoplay]}
-              spaceBetween={0}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              autoplay={{ delay: 5000 }}
-            >
-              {images.map((image, index) => (
-                <SwiperSlide key={index}>
-                  <Image src={image} alt={`${name} - Image ${index + 1}`} layout="fill" objectFit="cover" />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-
+        {/* Image Gallery */}
+        <div className="w-full h-48 overflow-hidden">
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={0}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 5000 }}
+            className="h-full"
+          >
+            {images.map((image, index) => (
+              <SwiperSlide key={index} className="h-full">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={image}
+                    alt={`${name} - Image ${index + 1}`}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
 
         {/* Content */}
         <div className="flex flex-col p-4">
@@ -78,7 +86,7 @@ const SportCenterCard: React.FC<ISportCenter> = ({
               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
             </svg>
             <span className="text-sm text-gray-600">
-              {averageRating?.toFixed(1)||0}
+              {averageRating?.toFixed(1) || 0}
             </span>
           </div>
 
