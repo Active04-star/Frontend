@@ -9,9 +9,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineCalendar, AiOutlineKey, AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
 
-// Asegúrate de importar Image desde next/image
-import Image from 'next/image';
-
 const DropDownButton: React.FC = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
   const [actualPage, setActualPage] = useState("loading");
