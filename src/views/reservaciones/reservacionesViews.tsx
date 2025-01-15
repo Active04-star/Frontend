@@ -129,9 +129,6 @@ const ReservacionesViews: React.FC = () => {
 
   return (
     <div className="mt-16 max-w-7xl mx-auto p-6 bg-gray-100">
-      <h1 className="text-3xl font-bold mb-8 text-center">
-        Reservations Management
-      </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <h2 className="text-xl font-semibold mb-4 text-green-600">Activas</h2>
