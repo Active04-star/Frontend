@@ -52,33 +52,34 @@ const Admin = () => {
 
   useEffect(() => {
     setIsMounted(true);
-
+  
     const handleResize = () => {
       window.requestAnimationFrame(() => {
         if (typeof window === "undefined") return;
         const width = window.innerWidth;
         const height = window.innerHeight;
-
+  
         if (width < 768) setSidebarWidth(200);
         else if (width < 1024) setSidebarWidth(250);
         else setSidebarWidth(300);
-
+  
         setSidebarHeight(height);
       });
     };
-
+  
     const queryString = new URLSearchParams(window.location.search);
-    const queryParams: any = Object.fromEntries(queryString.entries());
-
+    const queryParams: Record<string, string> = Object.fromEntries(queryString.entries());
+  
     if (queryParams.view !== undefined && isValidViewName(queryParams.view)) {
       setCurrentView(queryParams.view);
     } else {
       setCurrentView("inicio");
     }
-
+  
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  
 
   if (!isMounted) {
     return (

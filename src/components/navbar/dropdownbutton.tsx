@@ -7,7 +7,7 @@ import { getSubPath } from "@/utils/getSubPath";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineCalendar, AiOutlineKey, AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineCalendar, AiOutlineKey, AiOutlineLogout, AiOutlinePhone, AiOutlineSetting } from "react-icons/ai";
 
 const DropDownButton: React.FC = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -169,7 +169,19 @@ const DropDownButton: React.FC = () => {
                           : onStyle
                       }
                     >
-                      <AiOutlineCalendar className="mr-2" /> Reservar
+                      < AiOutlinePhone className="mr-2" /> Reservar
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/reservaciones"
+                      className={
+                        actualPage === "/reservaciones" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
+                    >
+                      <AiOutlineCalendar className="mr-2" /> Reservas
                     </Link>
                   </li>
                   <li>

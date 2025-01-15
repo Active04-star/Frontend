@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { IField } from "@/interfaces/field_Interface";
 import { format, addDays } from "date-fns";
 import { es } from "date-fns/locale";
@@ -9,22 +9,17 @@ interface FieldCardProps {
   field: IField;
   onReserve: (fieldId: string, blockId: string, date: Date) => void;
   isReserving: boolean;
-
 }
 
-const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve,isReserving }) => {
+const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve, isReserving }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [blocks, setBlocks] = useState<IField_Block[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  
 
   const nextDays = Array.from({ length: 7 }, (_, i) => addDays(new Date(), i));
 
-  useEffect(() => {
-    getBlocksForDate(selectedDate);
-  }, [selectedDate]);
-
-  const getBlocksForDate = async (date: Date) => {
+  // Memorizar la función `getBlocksForDate`
+  const getBlocksForDate = useCallback(async (date: Date) => {
     setIsLoading(true);
     try {
       const response = await fetch(
@@ -34,6 +29,7 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve,isReserving }) =
       if (!response.ok) {
         throw new Error("Failed to fetch blocks");
       }
+
       const data = await response.json();
       setBlocks(data);
     } catch (error) {
@@ -41,7 +37,12 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve,isReserving }) =
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [field.id]);
+
+  // Actualizar bloques cuando cambie la fecha seleccionada
+  useEffect(() => {
+    getBlocksForDate(selectedDate);
+  }, [selectedDate, getBlocksForDate]);
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden w-full max-w-md relative">
@@ -90,7 +91,7 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve,isReserving }) =
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={block.status !== "AVAILABLE" || isReserving}
-                >
+              >
                 {block.start_time.slice(0, 5)} - {block.end_time.slice(0, 5)}
               </button>
             ))

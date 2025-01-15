@@ -1,16 +1,16 @@
 import Swal from "sweetalert2";
 import { ErrorHelper, verifyError } from "../errors/error-helper";
 
-/** Muestra un Error establecido del enum `StatusEnum`. No permite click afuera, solo por medio de botones.
- * (Se puede encadenar con un .then() para llevar logica despues de dar click)
- */
-export function swalNotifyError(error: ErrorHelper) {
-    const verified_error = verifyError(error.message);
-
+// helpers/swal/swal-notify-error.ts
+export function swalNotifyError(error: string | ErrorHelper) {
+    // Si el error es un string, lo tratamos como tal
+    const verified_error = typeof error === "string" ? verifyError(error) : verifyError(error.message);
+  
     return Swal.fire({
-        icon: "error",
-        title: verified_error,
-        text: error.error,
-        allowOutsideClick: false,
+      icon: "error",
+      title: verified_error,
+      text: typeof error === "string" ? error : error.error,
+      allowOutsideClick: false,
     });
-}
+  }
+  
