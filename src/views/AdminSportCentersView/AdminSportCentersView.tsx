@@ -245,7 +245,7 @@ const AdminSportCentersView: React.FC = () => {
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [fetchData]);
 
 
   const changeParams = (params_: Partial<IQueryParams>) => {

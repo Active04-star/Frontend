@@ -76,6 +76,7 @@ const Navbar: React.FC = () => {
                   Reservar
                 </Link>
               </li>
+              
               <li>
                 <Link
                   href="https://web.whatsapp.com/"
