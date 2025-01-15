@@ -17,7 +17,7 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
         <div className="flex items-center justify-center h-14 border-b"></div>
         <div className="overflow-y-auto overflow-x-hidden flex-grow">
           <ul className="flex flex-col py-4 space-y-1">
-            <li className="px-5">
+            <li>
               <div className="flex flex-row items-center h-8">
                 <div className="text-sm font-light tracking-wide text-gray-500">
                   Menu

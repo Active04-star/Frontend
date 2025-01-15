@@ -190,7 +190,7 @@ const AdminSportCentersView: React.FC = () => {
           .map(([, value]) => {
             const errors = value._errors || [];
             return ` ${errors.join(", ")}`;
-            
+
           }).join(", ");
 
         setError(`Formato de búsqueda inválido ${error}`);
@@ -218,13 +218,37 @@ const AdminSportCentersView: React.FC = () => {
 
 
   const handleBan = async (id: string) => {
-    await banSportCenter(id); // Usamos la función banSportCenter para banear
-    fetchData(); // Actualizar la lista después de banear
+    const result = await Swal.fire({
+      title: `¿Estás seguro de que quieres banear este centro?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Sí, banear`,
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      await banSportCenter(id); // Usamos la función banSportCenter para banear
+      fetchData(); // Actualizar la lista después de banear
+    }
   };
 
   const handleUnban = async (id: string) => {
-    await unbanSportCenter(id); // Usamos la función unbanSportCenter para desbanear
-    fetchData(); // Actualizar la lista después de desbanear
+    const result = await Swal.fire({
+      title: `¿Estás seguro de que quieres desbanear este centro?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Sí, desbanear`,
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      await unbanSportCenter(id); // Usamos la función unbanSportCenter para desbanear
+      fetchData(); // Actualizar la lista después de desbanear
+    }
   };
 
 
@@ -245,7 +269,7 @@ const AdminSportCentersView: React.FC = () => {
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [fetchData]);
 
 
   const changeParams = (params_: Partial<IQueryParams>) => {
@@ -282,13 +306,13 @@ const AdminSportCentersView: React.FC = () => {
   };
 
 
-  const handleSearch = (page?: number) => {
+  const handleSearch = (params_?: Partial<IQueryParams>) => {
     const searchParams = new URLSearchParams({
-      view: "centers",
-      page: page?.toString() || params.page.toString(),
-      limit: params.limit.toString(),
+      page: params_?.page?.toString() || params.page.toString(),
+      limit: params_?.limit?.toString() || params.limit.toString(),
       search: params.search?.toString() || "",
       rating: params.rating?.toString() || "0",
+      view: "centers"
     });
 
     window.location.href = `/admin?${searchParams.toString()}`;
@@ -361,7 +385,7 @@ const AdminSportCentersView: React.FC = () => {
                   {(page - 2) > 1 ?
                     <button
                       disabled={page === 1}
-                      onClick={() => handleSearch(1)}
+                      onClick={() => handleSearch({ page: 1 })}
                       className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
                       {(page - 2) > 1 ? 1 : "  "}
                     </button>
@@ -380,7 +404,7 @@ const AdminSportCentersView: React.FC = () => {
                     i < (page + 3) && i > (page - 3) ?
                       <button
                         disabled={page === i}
-                        onClick={() => handleSearch(i)}
+                        onClick={() => handleSearch({ page: i })}
                         className={page === i ?
                           "rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1"
                           :
@@ -401,7 +425,7 @@ const AdminSportCentersView: React.FC = () => {
                   {(page + 2) < centerList.total_pages ?
                     <button
                       disabled={page === centerList.total_pages}
-                      onClick={() => handleSearch(centerList.total_pages)}
+                      onClick={() => handleSearch({ page: centerList.total_pages })}
                       className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
                       {(page + 2) < centerList.total_pages ? centerList.total_pages : "  "}
                     </button>
@@ -437,7 +461,8 @@ const AdminSportCentersView: React.FC = () => {
                           key={limit}
                           className="px-4 py-2 text-gray-700 hover:bg-gray-200 cursor-pointer"
                           onClick={() => {
-                            changeParams({ limit: limit });
+                            // changeParams({ limit: limit });
+                            handleSearch({ limit: limit });
                             setIsOpen(false);
                           }}
                         >

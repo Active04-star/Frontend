@@ -19,6 +19,7 @@ import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
 import { getUserType } from "@/helpers/auth/getUserType";
 import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
+import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -99,20 +100,27 @@ const LoginView: React.FC = () => {
 
       } catch (error) {
 
-        if (error instanceof ErrorHelper && error.message === ApiStatusEnum.USER_DELETED) {
-          swalCustomError(ApiStatusEnum.USER_DELETED, "No se pudo logear");
-          setIsSubmitting(false);
-          setUserData(initialState);
-          
-          return;
+        if (error instanceof ErrorHelper) {
 
-        } else if(error instanceof ErrorHelper && error.message === ApiStatusEnum.INVALID_CREDENTIALS) {
-          swalCustomError(ApiStatusEnum.INVALID_CREDENTIALS, "No se pudo logear");
+          if (error.message === ApiStatusEnum.USER_DELETED) {
+            swalCustomError(ApiStatusEnum.USER_DELETED, "No se pudo logear", ["top-right", ]);
+            setIsSubmitting(false);
+            setUserData(initialState);
+
+            return;
+
+          } else if (error.message === ApiStatusEnum.INVALID_CREDENTIALS || error.message === ApiStatusEnum.USER_NOT_FOUND) {
+            swalCustomError(ApiStatusEnum.INVALID_CREDENTIALS, "No se pudo logear", ["top-right", ]);
+            setIsSubmitting(false);
+            setUserData(initialState);
+
+            return;
+          }
 
         } else {
+          swalNotifyUnknownError(error);
           console.error(error);
-          window.location.href = "/";
-
+          // window.location.href = "/";
         }
       }
     }

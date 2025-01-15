@@ -1,29 +1,29 @@
-"use client";
-import ReservationCard from "@/components/managerReservations/reservationCardd";
+'use client'
+import ReservationCard from "@/components/userReservations/userReservations";
 import { API_URL } from "@/config/config";
 import { ReservationStatus } from "@/enum/ReservationStatus";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
-import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { IReservation } from "@/interfaces/reservation_Interface";
 import { IUser } from "@/types/zTypes";
-import React, { useCallback, useEffect, useState } from "react";
+import { id } from "date-fns/locale";
+import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-const ReservacionesViews: React.FC = () => {
+const ReservacionesUsersView = () => {
   const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
   const [reservations, setReservations] = useState<IReservation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [completingId, setCompletingId] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
-
+  const [user,] = useLocalStorage<IUser | null>("userSession", null);
+  
   const fetchReservations = useCallback(async () => {
     if (!userLocalStorage?.user?.id) return;
     try {
       const response: IReservation[] = await fetchWithAuth(
-        `${API_URL}/manager/reservations/${userLocalStorage.user.id}`,
+        `${API_URL}/reservation/${userLocalStorage.user.id}`,
         {
           method: "GET",
           headers: {
@@ -32,7 +32,11 @@ const ReservacionesViews: React.FC = () => {
         }
       );
 
-      setReservations(response);
+      // Filtrar solo las reservas activas
+      const activeReservations = response.filter(
+        (reservation) => reservation.status === ReservationStatus.ACTIVE
+      );
+      setReservations(activeReservations);
     } catch (error: any) {
       swalNotifyError(error);
     } finally {
@@ -44,53 +48,15 @@ const ReservacionesViews: React.FC = () => {
     fetchReservations();
   }, [fetchReservations]);
 
-  const filterReservations = (status: string) => {
-    return reservations.filter((reservation) => reservation.status === status);
-  };
-  const handleComplete = async (id: string) => {
-    const result = await Swal.fire({
-      title: "Estas seguro?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si, completar",
-    });
-
-    if (result.isConfirmed) {
-      setCompletingId(id);
-    try {
-      await fetchWithAuth(`${API_URL}/manager/reservation/complete/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      setReservations((prevReservations) =>
-        prevReservations.map((reservation) =>
-          reservation.id === id
-            ? { ...reservation, status: ReservationStatus.COMPLETED }
-            : reservation
-        )
-      );
-      swalConfirmation("Reservacion completada");
-    } catch (error: any) {
-      swalNotifyError(error);
-    } finally {
-      setCompletingId(null);
-    }}
-  };
-
   const handleCancel = async (id: string) => {
     const result = await Swal.fire({
-      title: "Estas seguro",
+      title: "Estás seguro?",
       text: "No podrás revertir esto!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Si, cancelarla!",
+      confirmButtonText: "Sí, cancelarla!",
     });
 
     if (result.isConfirmed) {
@@ -110,7 +76,8 @@ const ReservacionesViews: React.FC = () => {
               : reservation
           )
         );
-        swalConfirmation("Reservacion Cancelada");
+        swalNotifySuccess("Reserva cancelada", "Tu reserva ha sido cancelada exitosamente.");
+        await fetchReservations()
       } catch (error: any) {
         swalNotifyError(error);
       } finally {
@@ -128,45 +95,17 @@ const ReservacionesViews: React.FC = () => {
   }
 
   return (
-    <div className="mt-16 max-w-7xl mx-auto p-6 bg-gray-100">
+    <div className="mt-16 max-w-7xl mx-auto p-6 bg-black">
+      <h1 className="text-3xl font-bold mb-8 text-center ">Mis Reservas</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <h2 className="text-xl font-semibold mb-4 text-green-600">Activas</h2>
-          {filterReservations("active").map((reservation) => (
+          {reservations.map((reservation) => (
             <ReservationCard
               key={reservation.id}
               reservation={reservation}
               onCancel={handleCancel}
-              onComplete={handleComplete
-              }
-              isCompleting={completingId === reservation.id}
               isCancelling={cancellingId === reservation.id}
-            />
-          ))}
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold mb-4 text-blue-600">
-            Completadas
-          </h2>
-          {filterReservations("completed").map((reservation) => (
-            <ReservationCard
-              key={reservation.id}
-              reservation={reservation}
-              isCompleting={false}
-              isCancelling={false}
-            />
-          ))}
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold mb-4 text-red-600">
-            Canceladas
-          </h2>
-          {filterReservations("cancelled").map((reservation) => (
-            <ReservationCard
-              key={reservation.id}
-              reservation={reservation}
-              isCompleting={false}
-              isCancelling={false}
             />
           ))}
         </div>
@@ -175,4 +114,4 @@ const ReservacionesViews: React.FC = () => {
   );
 };
 
-export default ReservacionesViews;
+export default ReservacionesUsersView;

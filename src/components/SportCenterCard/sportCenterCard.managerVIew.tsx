@@ -1,11 +1,12 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { Send } from "lucide-react";
+import { CheckCircle, Send } from "lucide-react";
 import ImageCarousel from "./ImageCarousel";
 import SportCenterDetails from "./sportCenter.details";
 import { ISportCenter } from "@/interfaces/sport_center.interface";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { API_URL } from "@/config/config";
+import { SportCenterStatus } from "@/enum/sportCenterStatus";
 
 interface StoredImage {
   id: string;
@@ -20,6 +21,7 @@ interface SportCenterCardProps {
   onPublish: (id: string) => void;
   onImageUpload: (file: File) => void;
   onUpdateSuccess: () => void;
+  isPublishing:boolean
 }
 
 const ManagerSportCenterCard: React.FC<SportCenterCardProps> = ({
@@ -27,12 +29,15 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps> = ({
   onPublish,
   onImageUpload,
   onUpdateSuccess,
+  isPublishing
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [pendingImages, setPendingImages] = useState<StoredImage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const handlePublish = () => {
+    console.log('sportcenterid',sportCenter.id);
+  
     onPublish(sportCenter.id);
   };
 
@@ -107,6 +112,11 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps> = ({
           isLoading={isLoading}
         />
         <div className="absolute top-4 right-4 flex gap-2">
+        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+            sportCenter.status === "draft" ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'
+          }`}>
+            {sportCenter.status === "draft" ? "Borrador" : "Publicado"}
+          </span>
           {pendingImages.length > 0 && (
             <button
               onClick={handleSave}
@@ -120,14 +130,18 @@ const ManagerSportCenterCard: React.FC<SportCenterCardProps> = ({
               <span>{isUploading ? "Guardando..." : "Guardar Imágenes"}</span>
             </button>
           )}
-          {sportCenter?.status === "draft" && (
+       {sportCenter.status === SportCenterStatus.DRAFT && (
             <button
               onClick={handlePublish}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+              disabled={isPublishing}
+              className="px-3 py-1 rounded-md text-sm font-medium bg-yellow-600 text-white hover:bg-yellow-700 flex items-center"
             >
-              <Send className="w-4 h-4" />
-              <span>Publicar</span>
+              <Send className="w-4 h-4 mr-2" />
+              {isPublishing ? "Publicando..." : "Publicar"}
             </button>
+          )}
+          {sportCenter.status === SportCenterStatus.PUBLISHED && (
+            <CheckCircle className="w-6 h-6 text-green-500" />
           )}
         </div>
       </div>

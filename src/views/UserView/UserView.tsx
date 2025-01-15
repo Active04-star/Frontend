@@ -127,7 +127,7 @@ const UserView: React.FC = () => {
           .map(([, value]) => {
             const errors = value._errors || [];
             return ` ${errors.join(", ")}`;
-            
+
           }).join(", ");
 
         setError(`Formato de búsqueda inválido ${error}`);
@@ -161,7 +161,6 @@ const UserView: React.FC = () => {
 
   const changeParams = (params_: Partial<IQueryParams>) => {
     const merged: IQueryParams = merge(params, params_);
-    console.log(merged);
     setParams(merged);
   };
 
@@ -194,10 +193,10 @@ const UserView: React.FC = () => {
   };
 
 
-  const handleSearch = (page?: number) => {
+  const handleSearch = (params_?: Partial<IQueryParams>) => {
     const searchParams = new URLSearchParams({
-      page: page?.toString() || params.page.toString(),
-      limit: params.limit.toString(),
+      page: params_?.page?.toString() || params.page.toString(),
+      limit: params_?.limit?.toString() || params.limit.toString(),
       search: params.search?.toString() || "",
       rating: params.rating?.toString() || "0",
     });
@@ -274,7 +273,7 @@ const UserView: React.FC = () => {
                     {(page - 2) > 1 ?
                       <button
                         disabled={page === 1}
-                        onClick={() => handleSearch(1)}
+                        onClick={() => handleSearch({ page: 1 })}
                         className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
                         {(page - 2) > 1 ? 1 : "  "}
                       </button>
@@ -293,7 +292,7 @@ const UserView: React.FC = () => {
                       i < (page + 3) && i > (page - 3) ?
                         <button
                           disabled={page === i}
-                          onClick={() => handleSearch(i)}
+                          onClick={() => handleSearch({ page: i })}
                           className={page === i ?
                             "rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1"
                             :
@@ -314,7 +313,7 @@ const UserView: React.FC = () => {
                     {(page + 2) < centerList.total_pages ?
                       <button
                         disabled={page === centerList.total_pages}
-                        onClick={() => handleSearch(centerList.total_pages)}
+                        onClick={() => handleSearch({ page: centerList.total_pages })}
                         className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
                         {(page + 2) < centerList.total_pages ? centerList.total_pages : "  "}
                       </button>
@@ -350,7 +349,8 @@ const UserView: React.FC = () => {
                             key={limit}
                             className="px-4 py-2 text-gray-700 hover:bg-gray-200 cursor-pointer"
                             onClick={() => {
-                              changeParams({ limit: limit });
+                              // changeParams({ limit: limit });
+                              handleSearch({ limit: limit });
                               setIsOpen(false);
                             }}
                           >
