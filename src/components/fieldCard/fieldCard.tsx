@@ -4,19 +4,76 @@ import { format, addDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { IField_Block } from "@/types/zTypes";
 import { API_URL } from "@/config/config";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
+import Swal from "sweetalert2";
+import { IUser } from "@/types/zTypes";
+import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
+import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
+
 
 interface FieldCardProps {
   field: IField;
-  onReserve: (fieldId: string, blockId: string, date: Date) => void;
-  isReserving: boolean;
+  user:IUser | null
 }
 
-const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve, isReserving }) => {
+const FieldCard: React.FC<FieldCardProps> = ({ field,user }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [blocks, setBlocks] = useState<IField_Block[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isReserving, setIsReserving] = useState<boolean>(false);
+
 
   const nextDays = Array.from({ length: 7 }, (_, i) => addDays(new Date(), i));
+
+  const handleReserve = async (
+    blockId: string,
+  ) => {
+
+    if (user === null) {
+      swalCustomError("Error, necesitas iniciar sesión");
+      return;
+    }
+   
+    const result = await Swal.fire({
+      title: "¿Confirmar reserva?",
+      text: `¿Deseas reservar la cancha para el ${selectedDate.toLocaleDateString()}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, reservar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      setIsReserving(true);
+      try {
+        await fetchWithAuth(`${API_URL}/reservation/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fieldId:field.id,
+            fieldBlockId: blockId,
+            date:selectedDate,
+            userId: user?.user.id,
+          }),
+        });
+
+        swalConfirmation("Reservada creada");
+        getBlocksForDate(selectedDate); // Actualizar los bloques después de una reserva exitosa
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire(
+          "Error",
+          "No se pudo completar la reserva. Por favor, intenta de nuevo.",
+          "error"
+        );
+      } finally {
+        setIsReserving(false);
+      }
+    }
+  };
 
   // Memorizar la función `getBlocksForDate`
   const getBlocksForDate = useCallback(async (date: Date) => {
@@ -27,17 +84,19 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve, isReserving }) 
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch blocks");
+        swalCustomError("Ocurrio un error al traer los bloques");
       }
 
       const data = await response.json();
       setBlocks(data);
-    } catch (error) {
-      console.error("Error fetching blocks:", error);
+    } catch (error:any) {
+      swalNotifyError(error);
     } finally {
       setIsLoading(false);
     }
   }, [field.id]);
+
+  
 
   // Actualizar bloques cuando cambie la fecha seleccionada
   useEffect(() => {
@@ -46,7 +105,7 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve, isReserving }) 
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden w-full max-w-md relative">
-      {isLoading && (
+      {(isLoading || isReserving) && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex justify-center items-center z-10">
           <div className="loader border-t-4 border-yellow-600 rounded-full w-8 h-8 animate-spin"></div>
         </div>
@@ -84,7 +143,7 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve, isReserving }) 
             blocks.map((block) => (
               <button
                 key={block.id}
-                onClick={() => onReserve(field.id, block.id, selectedDate)}
+                onClick={() => handleReserve(block.id)}
                 className={`px-3 py-2 rounded text-sm ${
                   block.status === "AVAILABLE"
                     ? "bg-green-500 text-white hover:bg-green-600"
@@ -103,5 +162,4 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onReserve, isReserving }) 
     </div>
   );
 };
-
 export default FieldCard;
