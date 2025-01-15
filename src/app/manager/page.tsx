@@ -6,7 +6,6 @@ import NotificacionesView from "@/views/Notificaciones/NotificacionesView";
 import PanelView from "@/views/Panel/PanelView";
 import CanchasView from "@/views/Canchas/CanchasViews";
 import ReservacionesViews from "@/views/reservaciones/reservacionesViews";
-import SettingsView from "@/views/SettingsView/SettingsView";
 import PremiumCard from "@/views/PremiumCard/PremiumCard";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
@@ -57,11 +56,11 @@ const ManagerPage = () => {
   };
 
   useEffect(() => {
-    // if (user?.token === null || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER) {
-    //   window.location.href = "/";
-    //   return;
+    if (user?.token === null || user?.user.role === UserRole.ADMIN || user?.user.role === UserRole.USER) {
+      window.location.href = "/";
+      return;
 
-    // }
+    }
 
     setIsMounted(true);
 

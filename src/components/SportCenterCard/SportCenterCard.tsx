@@ -44,7 +44,7 @@ const SportCenterCard: React.FC<ISportCenter> = ({
               >
                 <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
               </svg>
-              <span className="text-xs text-gray-600">{averageRating}</span>
+              <span className="text-xs text-gray-600">{Number.parseFloat(averageRating?.toString() || "0").toFixed(1)}</span>
             </div>
 
             {/* Botón Ver Más */}

@@ -5,6 +5,9 @@ import { API_URL } from "../../config/config";
 import { IUser } from "@/interfaces/user_Interface";
 import Swal from "sweetalert2";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
+import { ErrorHelper } from "@/helpers/errors/error-helper";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 
 const UserList = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -60,7 +63,7 @@ const UserList = () => {
   const handleToggleBan = async (id: string, wasBanned: boolean) => {
     const action = wasBanned ? "desbanear" : "banear";
     const confirmAction = wasBanned ? "desbaneado" : "baneado";
-  
+
     const result = await Swal.fire({
       title: `¿Estás seguro de que quieres ${action} a este usuario?`,
       icon: "warning",
@@ -70,49 +73,32 @@ const UserList = () => {
       confirmButtonText: `Sí, ${action}`,
       cancelButtonText: "Cancelar",
     });
-  
+
     if (result.isConfirmed) {
       try {
-        const response = await fetchWithAuth(
-          `${API_URL}/admin/ban-unban/user/${id}`,
-          {
-            method: "PUT",
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`Error al ${action} al usuario: ${response.statusText}`);
-        }
-  
-        // Refrescar la lista de usuarios después de banear/desbanear
-        const updatedResponse = await fetchWithAuth(
-          `${API_URL}/admin/list/user?limit=100`,
-          {
-            method: "GET",
-          }
-        );
-        const updatedData = await updatedResponse.json();
-        setUsers(updatedData.users || []);
-  
-        Swal.fire({
-          icon: "success",
-          title: `Usuario ${confirmAction}`,
-          text: `El usuario ha sido ${confirmAction} correctamente.`,
-          confirmButtonText: "Aceptar",
+        await fetchWithAuth(`${API_URL}/admin/ban-unban/user/${id}`, {
+          method: "PUT",
         });
+
+        // Refrescar la lista de usuarios después de banear/desbanear
+        const updated = await fetchWithAuth(`${API_URL}/admin/list/user?limit=100`, {
+          method: "GET",
+        });
+
+        setUsers(updated.users || []);
+
+        swalNotifySuccess(`Usuario ${confirmAction}`, `El usuario ha sido ${confirmAction} correctamente.`, ["top-right", 4000]);
+
       } catch (error) {
         // Verificar si el error es un objeto Error
-        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-        console.error(`Error al ${action} al usuario:`, errorMessage);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: `No se pudo ${action} al usuario. ${errorMessage}`,
-          confirmButtonText: "Aceptar",
-        });
+        if (error instanceof ErrorHelper) {
+          swalCustomError(error.message, "Error al banear el usuario");
+
+        }
       }
     }
   };
-  
+
 
   return (
     <div className="p-4">
@@ -148,11 +134,10 @@ const UserList = () => {
               </span>
               <button
                 onClick={() => handleToggleBan(user.id, user.was_banned)}
-                className={`px-3 py-1 rounded ${
-                  user.was_banned
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-red-500 hover:bg-red-600"
-                } text-white`}
+                className={`px-3 py-1 rounded ${user.was_banned
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-red-500 hover:bg-red-600"
+                  } text-white`}
               >
                 {user.was_banned ? "Desbanear" : "Banear"}
               </button>

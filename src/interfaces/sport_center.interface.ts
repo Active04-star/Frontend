@@ -3,7 +3,6 @@ import { SportCenterStatus } from "@/enum/sportCenterStatus";
 import { IUser } from "./user_Interface";
 import { IField } from "./field_Interface";
 import { ISportCategory } from "./sportCategory_interface";
-import { IReview } from "./reviews_interface";
 import { ISportCenterSchedule } from "./sportCenter_schedule_interface";
 import { Interface_Image } from "./image.interface";
 

@@ -14,7 +14,7 @@ export function swalNotifyUnknownError(error: any) {
 
     Swal.fire({
         icon: "error",
-        title,
+        title: error.message || title,
         text,
     });
 }
