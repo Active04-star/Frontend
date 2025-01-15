@@ -48,10 +48,19 @@ const ReservacionesViews: React.FC = () => {
     return reservations.filter((reservation) => reservation.status === status);
   };
   const handleComplete = async (id: string) => {
-    setCompletingId(id);
+    const result = await Swal.fire({
+      title: "Estas seguro?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, completar",
+    });
 
+    if (result.isConfirmed) {
+      setCompletingId(id);
     try {
-      await fetchWithAuth(`${API_URL}/reservation/complete/${id}`, {
+      await fetchWithAuth(`${API_URL}/manager/reservation/complete/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +79,7 @@ const ReservacionesViews: React.FC = () => {
       swalNotifyError(error);
     } finally {
       setCompletingId(null);
-    }
+    }}
   };
 
   const handleCancel = async (id: string) => {
@@ -131,6 +140,8 @@ const ReservacionesViews: React.FC = () => {
               key={reservation.id}
               reservation={reservation}
               onCancel={handleCancel}
+              onComplete={handleComplete
+              }
               isCompleting={completingId === reservation.id}
               isCancelling={cancellingId === reservation.id}
             />

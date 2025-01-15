@@ -17,6 +17,9 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
   isCompleting,
   isCancelling,
 }) => {
+
+  console.log('comleting',isCompleting);
+  
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-4">
       <div className="p-4">
