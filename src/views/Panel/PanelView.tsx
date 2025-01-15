@@ -67,15 +67,9 @@ const PanelView: React.FC = () => {
       }));
   
       swalConfirmation("Centro deportivo publicado exitosamente");
-    } catch (error) {
-      // Aquí puedes usar el tipo de error más específico
-      if (error instanceof Error) {
-        console.error("Error publishing sport center:", error);
-        swalNotifyError(error.message);  // Error.message o cualquier otra propiedad que necesites
-      } else {
-        console.error("Unexpected error:", error);
-        swalNotifyError("Error desconocido al publicar el centro deportivo.");
-      }
+    } catch (error: any) {
+      console.error("Error publishing sport center:", error);
+      swalNotifyError(error);
     } finally {
       setIsPublishing(false);
     }
