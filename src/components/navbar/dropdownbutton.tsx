@@ -7,7 +7,14 @@ import { getSubPath } from "@/utils/getSubPath";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineCalendar, AiOutlineKey, AiOutlineLogout, AiOutlinePhone, AiOutlineSetting } from "react-icons/ai";
+import {
+  AiOutlineCalendar,
+  AiOutlineHome,
+  AiOutlineKey,
+  AiOutlineLogout,
+  AiOutlinePhone,
+  AiOutlineSetting,
+} from "react-icons/ai";
 
 const DropDownButton: React.FC = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -118,30 +125,30 @@ const DropDownButton: React.FC = () => {
             <ul className="py-2">
               {userData?.user.role === UserRole.MAIN_MANAGER && (
                 <>
-                <li>
-                  <Link
-                    href="/manager"
-                    className={
-                      actualPage === "/manager" || actualPage === ""
-                        ? offStyle
-                        : onStyle
-                    }
-                  >
-                    <AiOutlineKey className="mr-2" /> Panel de Manager
-                  </Link>
-                </li>
                   <li>
-                  <Link
-                    href="/settings"
-                    className={
-                      actualPage === "/settings" || actualPage === ""
-                        ? offStyle
-                        : onStyle
-                    }
-                  >
-                    <AiOutlineSetting className="mr-2" /> Configuración
-                  </Link>
-                </li>
+                    <Link
+                      href="/manager"
+                      className={
+                        actualPage === "/manager" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
+                    >
+                      <AiOutlineKey className="mr-2" /> Panel de Manager
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/settings"
+                      className={
+                        actualPage === "/settings" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
+                    >
+                      <AiOutlineSetting className="mr-2" /> Configuración
+                    </Link>
+                  </li>
                 </>
               )}
               {userData?.user.role === UserRole.ADMIN && (
@@ -169,7 +176,7 @@ const DropDownButton: React.FC = () => {
                           : onStyle
                       }
                     >
-                      < AiOutlinePhone className="mr-2" /> Reservar
+                      <AiOutlinePhone className="mr-2" /> Reservar
                     </Link>
                   </li>
                   <li>
@@ -182,6 +189,18 @@ const DropDownButton: React.FC = () => {
                       }
                     >
                       <AiOutlineCalendar className="mr-2" /> Reservas
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/for-business"
+                      className={
+                        actualPage === "/reservaciones" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
+                    >
+                      <AiOutlineHome className="mr-2" /> Registra tu negocio
                     </Link>
                   </li>
                   <li>
