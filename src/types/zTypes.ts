@@ -9,6 +9,7 @@ import { FieldCreationSchema } from "./field-schema";
 import { FieldBlockSchema } from "./fieldBlock.type";
 import { SportCenterScheduleSchema } from "./sportCenterSchedules.type";
 import { QueryParamsSchema } from "./queryParams-schema";
+import { UserQueryParamsSchema } from "./userQueryParams-schema";
 
 /**Registro de Usuario de formulario, se valida con `UserRegisterSchema`
  */
@@ -55,3 +56,5 @@ export type ISportCenter_Schedule = z.infer<typeof SportCenterScheduleSchema>
 /**
  */
 export type IQueryParams = z.infer<typeof QueryParamsSchema>
+
+export type IUserQueryParams = z.infer<typeof UserQueryParamsSchema>

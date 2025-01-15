@@ -218,13 +218,37 @@ const AdminSportCentersView: React.FC = () => {
 
 
   const handleBan = async (id: string) => {
-    await banSportCenter(id); // Usamos la función banSportCenter para banear
-    fetchData(); // Actualizar la lista después de banear
+    const result = await Swal.fire({
+      title: `¿Estás seguro de que quieres banear este centro?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Sí, banear`,
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      await banSportCenter(id); // Usamos la función banSportCenter para banear
+      fetchData(); // Actualizar la lista después de banear
+    }
   };
 
   const handleUnban = async (id: string) => {
-    await unbanSportCenter(id); // Usamos la función unbanSportCenter para desbanear
-    fetchData(); // Actualizar la lista después de desbanear
+    const result = await Swal.fire({
+      title: `¿Estás seguro de que quieres desbanear este centro?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Sí, desbanear`,
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      await unbanSportCenter(id); // Usamos la función unbanSportCenter para desbanear
+      fetchData(); // Actualizar la lista después de desbanear
+    }
   };
 
 
@@ -288,9 +312,10 @@ const AdminSportCentersView: React.FC = () => {
       limit: params_?.limit?.toString() || params.limit.toString(),
       search: params.search?.toString() || "",
       rating: params.rating?.toString() || "0",
+      view: "centers"
     });
 
-    window.location.href = `/user?${searchParams.toString()}`;
+    window.location.href = `/admin?${searchParams.toString()}`;
   };
 
 
@@ -437,7 +462,7 @@ const AdminSportCentersView: React.FC = () => {
                           className="px-4 py-2 text-gray-700 hover:bg-gray-200 cursor-pointer"
                           onClick={() => {
                             // changeParams({ limit: limit });
-                            handleSearch({limit: limit});
+                            handleSearch({ limit: limit });
                             setIsOpen(false);
                           }}
                         >
