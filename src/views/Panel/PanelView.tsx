@@ -70,7 +70,6 @@ const PanelView: React.FC = () => {
       swalConfirmation("Centro deportivo publicado exitosamente");
     } catch (error: any) {
       console.error("Error publishing sport center:", error);
-      ("Error al publicar el centro deportivo");
       swalNotifyError(error);
     } finally {
       setIsPublishing(false);
