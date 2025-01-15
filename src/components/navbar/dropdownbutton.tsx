@@ -195,7 +195,7 @@ const DropDownButton: React.FC = () => {
                     <Link
                       href="/for-business"
                       className={
-                        actualPage === "/reservaciones" || actualPage === ""
+                        actualPage === "/for-business" || actualPage === ""
                           ? offStyle
                           : onStyle
                       }
