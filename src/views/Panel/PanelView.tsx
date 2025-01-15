@@ -6,17 +6,21 @@ import { API_URL } from "@/config/config";
 import React, { useState, useEffect, useCallback } from "react";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { IUser } from "@/types/zTypes";
-
+import { SportCenterStatus } from "@/enum/sportCenterStatus";
+import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
+import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
+import { swalCustomError } from "@/helpers/swal/swal-custom-error";
+import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 
 const PanelView: React.FC = () => {
   const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
   const [sportCenter, setSportCenter] = useState<ISportCenter | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const fetchSportCenter = useCallback(async () => {
-    console.log('user', userLocalStorage);
-  
+    console.log("user", userLocalStorage);
+
     if (!userLocalStorage?.user?.id) return;
     try {
       const response = await fetchWithAuth(
@@ -28,8 +32,8 @@ const PanelView: React.FC = () => {
           },
         }
       );
-      console.log('sportcenter', response);
-  
+      console.log("sportcenter", response);
+
       setSportCenter(response);
     } catch (error) {
       console.error("Error fetching sport center:", error);
@@ -37,17 +41,40 @@ const PanelView: React.FC = () => {
       setIsLoading(false);
     }
   }, [userLocalStorage]);
-  
-
-
-
 
   useEffect(() => {
     fetchSportCenter();
   }, [fetchSportCenter]);
 
-  const handlePublish = (id: string) => {
-    console.log("Publishing sport center:", id);
+  const handlePublish = async (id: string) => {
+    setIsPublishing(true);
+    console.log('id',id);
+    
+    try {
+       await fetchWithAuth(
+        `${API_URL}/manager/sportcenter/publish/${sportCenter?.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Actualizar el estado local con la respuesta del servidor
+      setSportCenter((prevState) => ({
+        ...prevState!,
+        status: SportCenterStatus.PUBLISHED,
+      }));
+
+      swalConfirmation("Centro deportivo publicado exitosamente");
+    } catch (error: any) {
+      console.error("Error publishing sport center:", error);
+      ("Error al publicar el centro deportivo");
+      swalNotifyError(error);
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   const handleImageUpload = (file: File) => {
@@ -64,7 +91,6 @@ const PanelView: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-20">
-      
       <div className="w-full max-w-4xl mx-auto">
         {sportCenter ? (
           <ManagerSportCenterCard
@@ -72,7 +98,7 @@ const PanelView: React.FC = () => {
             onPublish={handlePublish}
             onImageUpload={handleImageUpload}
             onUpdateSuccess={fetchSportCenter}
-
+            isPublishing={isPublishing}
           />
         ) : (
           <div className="text-center text-white text-lg">
