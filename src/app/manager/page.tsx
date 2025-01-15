@@ -89,7 +89,7 @@ const ManagerPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-black">
       <div
         className="bg-gray-800 transition-all duration-300"
         style={{ width: sidebarWidth, height: sidebarHeight }}

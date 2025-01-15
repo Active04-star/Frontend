@@ -10,6 +10,7 @@ import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error
 import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 import { ApiError } from "next/dist/server/api-utils";
+import FieldList from "@/components/fieldList/field_list";
 
 // ✅ Generar rutas estáticas dinámicamente
 export async function generateStaticParams() {
@@ -47,7 +48,7 @@ const SportCenterPage = async ({ params }: { params: Promise<{ centerId: string 
       <div className="pt-8">
         <Navbar />
         <BotonVolver />
-        <h1 className="text-2xl font-bold mb-6 mt-16 text-center">{sport_center.name}</h1>
+        {sport_center && (<h1 className="text-2xl font-bold mb-6 mt-16 text-center">{sport_center.name}</h1>)}
         <div className="w-full flex justify-evenly">
 
           <div className="mx-6 w-2/3">
@@ -72,10 +73,8 @@ const SportCenterPage = async ({ params }: { params: Promise<{ centerId: string 
           </div>
 
         </div>
-        <div className="mt-8 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sport_center.fields.map((field) => (
-            <FieldCard key={field.id} {...field} />
-          ))}
+        <div className="mt-8 mb-8">
+          <FieldList fields={sport_center.fields} />
         </div>
       </div>
     );
