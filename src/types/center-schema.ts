@@ -11,4 +11,8 @@ export const SportCenterSchema = z.object({
   address: z.string(),
 
   status: z.nativeEnum(SportCenterStatus),
+
+  latitude: z.number().nullable(),
+
+  longitude: z.number().nullable(),
 });
