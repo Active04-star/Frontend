@@ -6,7 +6,6 @@ import DropDownButton from "./dropdownbutton";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { UserRole } from "@/enum/userRole";
-import { WebSocketProvider } from "@/helpers/websocketContext";
 
 const Navbar: React.FC = () => {
   const [shouldShow, setShouldShow] = useState(false);
