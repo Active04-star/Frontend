@@ -33,8 +33,12 @@ const ReservacionesViews: React.FC = () => {
       );
 
       setReservations(response);
-    } catch (error: any) {
-      swalNotifyError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        swalNotifyError(error.message);
+      } else {
+        swalNotifyError("Error desconocido");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -75,8 +79,12 @@ const ReservacionesViews: React.FC = () => {
         )
       );
       swalConfirmation("Reservacion completada");
-    } catch (error: any) {
-      swalNotifyError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        swalNotifyError(error.message);
+      } else {
+        swalNotifyError("Error desconocido");
+      }
     } finally {
       setCompletingId(null);
     }}
@@ -111,10 +119,14 @@ const ReservacionesViews: React.FC = () => {
           )
         );
         swalConfirmation("Reservacion Cancelada");
-      } catch (error: any) {
-        swalNotifyError(error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          swalNotifyError(error.message);
+        } else {
+          swalNotifyError("Error desconocido");
+        }
       } finally {
-        setCancellingId(null);
+        setCompletingId(null);
       }
     }
   };
@@ -128,7 +140,7 @@ const ReservacionesViews: React.FC = () => {
   }
 
   return (
-    <div className="mt-16 max-w-7xl mx-auto p-6 bg-gray-100">
+    <div className="mt-16 max-w-7xl mx-auto p-6 bg-black">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <h2 className="text-xl font-semibold mb-4 text-green-600">Activas</h2>

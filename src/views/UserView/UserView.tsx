@@ -156,7 +156,7 @@ const UserView: React.FC = () => {
     }
 
     fetchData();
-  }, []);
+  }, [fetchData]);
 
 
   const changeParams = (params_: Partial<IQueryParams>) => {

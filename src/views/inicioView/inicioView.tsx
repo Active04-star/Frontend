@@ -1,4 +1,4 @@
-import { FaUsers, FaCogs, FaChartBar, FaDollarSign } from "react-icons/fa"; 
+import { FaUsers, FaCogs, FaChartBar, FaDollarSign, FaFolderPlus } from "react-icons/fa"; 
 import { ViewName } from "@/app/admin/page";
 
 type Card = {
@@ -27,6 +27,11 @@ const cards: Card[] = [
     name: "Configuración",
     icon: <FaCogs size={40} className="text-gray-500" />, 
     viewName: "settings",
+  },
+  {
+    name: "Crear Categoria",
+    icon: <FaFolderPlus size={40} className="text-gray-500" />, 
+    viewName: "categorias",
   },
 ];
 
