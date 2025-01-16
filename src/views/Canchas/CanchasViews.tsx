@@ -26,10 +26,13 @@ const CanchasPanelView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingFields, setDeletingFields] = useState<Set<string>>(new Set());
+
 
   // Eliminar cancha
   const deleteField = async (fieldId: string) => {
     try {
+      setDeletingFields((prev) => new Set(prev).add(fieldId)); // Agrega el ID al conjunto
       await fetchWithAuth(`${API_URL}/field/delete/${fieldId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -38,7 +41,12 @@ const CanchasPanelView: React.FC = () => {
       setFields((prevFields) => prevFields.filter((field) => field.id !== fieldId));
     } catch (error: unknown) {
       swalNotifyError(error instanceof Error ? error.message : "Error desconocido");
-    }
+    }finally{
+      setDeletingFields((prev) => {
+        const updatedSet = new Set(prev);
+        updatedSet.delete(fieldId); // Elimina el ID del conjunto
+        return updatedSet;
+      });    }
   };
 
   // Alternar vista
@@ -178,7 +186,7 @@ const CanchasPanelView: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {fields.map((field) => (
-              <FieldCard key={field.id} field={field} onDelete={deleteField} />
+              <FieldCard key={field.id} field={field} onDelete={deleteField} isDeleting={deletingFields.has(field.id)} />
             ))}
           </div>
         )}
