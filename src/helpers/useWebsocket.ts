@@ -7,37 +7,37 @@ const useWebSocket = (userId: any) => {
     const [notifications, setNotifications] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!userId) return; // No conecta si no hay un userId
+        // if (!userId) return; // No conecta si no hay un userId
 
-        const socketInstance = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
+        // const socketInstance = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
 
-        // Conectarse y notificar al backend
-        socketInstance.on("connect", () => {
-            console.log("Conectado al WebSocket:", socketInstance.id);
-            socketInstance.emit("identify", { userId });
-        });
+        // // Conectarse y notificar al backend
+        // socketInstance.on("connect", () => {
+        //     console.log("Conectado al WebSocket:", socketInstance.id);
+        //     socketInstance.emit("identify", { userId });
+        // });
 
-        // Manejar desconexión
-        socketInstance.on("disconnect", () => {
-            console.log("Desconectado del WebSocket");
-        });
+        // // Manejar desconexión
+        // socketInstance.on("disconnect", () => {
+        //     console.log("Desconectado del WebSocket");
+        // });
 
-        // Manejar notificaciones
-        socketInstance.on("notification", (message) => {
-            console.log("Notificación recibida:", message);
-            setNotifications((prev) => [...prev, message]); // Guardar notificación en el estado
-        });
+        // // Manejar notificaciones
+        // socketInstance.on("notification", (message) => {
+        //     console.log("Notificación recibida:", message);
+        //     setNotifications((prev) => [...prev, message]); // Guardar notificación en el estado
+        // });
 
-        // Guardar instancia en el estado
-        setSocket(socketInstance);
+        // // Guardar instancia en el estado
+        // setSocket(socketInstance);
 
-        if(userId === "none") {
-            socketInstance.disconnect();
-        }
-        // Limpieza: cerrar conexión al desmontar el componente
-        return () => {
-            socketInstance.disconnect();
-        };
+        // if(userId === "none") {
+        //     socketInstance.disconnect();
+        // }
+        // // Limpieza: cerrar conexión al desmontar el componente
+        // return () => {
+        //     socketInstance.disconnect();
+        // };
     }, [userId]);
 
     return { socket, notifications };

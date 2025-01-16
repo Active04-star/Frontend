@@ -116,5 +116,6 @@ export enum ApiStatusEnum {
   TEST_ERROR = 'Error de prueba, debe ser eliminado en modo produccion!',
   RATING_OUT_OF_BOUNDS = "La calificacion debe estar entre 1 y 5",
   INVALID_DATE_FORMAT = "El formato de la fecha es invalido!",
+  THIRD_PARTY_NOT_ALLOWED = "Usuarios externos no pueden cambiar su contraseña!",
  
 }

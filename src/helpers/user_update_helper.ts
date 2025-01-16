@@ -2,13 +2,10 @@ import { API_URL } from "@/config/config";
 import { IPasswordUpdate, IUser, IUserUpdate } from "@/types/zTypes";
 import { fetchWithAuth } from "./errors/fetch-with-token-interceptor";
 
-export async function updateUser(
-  id: string,
-  body: Partial<IUserUpdate & IPasswordUpdate>
-): Promise<Omit<IUser, "token"> | null> {
+export async function updateUser(id: string, body: Partial<IUserUpdate & IPasswordUpdate>): Promise<Omit<IUser, "token"> | null> {
   let response = null;
 
-  if (body.name !== undefined) {
+  if (body.name !== undefined && body.name !== "") {
     response = await fetchWithAuth(`${API_URL}/user/${id}`, {
       method: "PUT",
       headers: {
@@ -18,7 +15,7 @@ export async function updateUser(
     });
   }
 
-  if (body.password !== undefined && body.confirm_password !== undefined) {
+  if ((body.password !== undefined && body.password !== "") && (body.confirm_password !== undefined && body.confirm_password !== "")) {
     response = await fetchWithAuth(`${API_URL}/auth/update-password/${id}`, {
       method: "PUT",
       headers: {
