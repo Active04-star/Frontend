@@ -1,6 +1,7 @@
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 import { ErrorHelper } from "./error-helper";
 import { fetchAndCatch } from "./fetch-error-interceptor";
+import verifyUser from "../auth/illegalUserVerify";
 
 /**
  * Función para hacer fetch con autenticación, atrapa errores y convierte la respuesta a un objeto
@@ -26,7 +27,7 @@ export async function fetchWithAuth(url: string | URL | globalThis.Request, opti
                 if (error.message === ApiStatusEnum.TOKEN_EXPIRED) {
                     window.location.href = "/api/auth/logout?from=out_session";
                     localStorage.clear();
-                    throw new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "403");
+                    throw new ErrorHelper(ApiStatusEnum.TOKEN_EXPIRED, "Debes iniciar sesion nuevamente");
                 } else if (error.message === ApiStatusEnum.USER_DELETED) {
                     window.location.href = "api/auth/logout?from=user_blocked";
                     localStorage.clear();

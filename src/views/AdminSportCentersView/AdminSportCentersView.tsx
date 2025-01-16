@@ -204,9 +204,9 @@ const AdminSportCentersView: React.FC = () => {
 
       } else {
         console.error(error);
-        swalCustomError(error.message);
+        // swalCustomError(error.message);
 
-        setError("An error occurred while fetching sport centers");
+        setError("No se encontraron centros deportivos");
         setCenterList(null);
 
       }
@@ -386,7 +386,7 @@ const AdminSportCentersView: React.FC = () => {
                     <button
                       disabled={page === 1}
                       onClick={() => handleSearch({ page: 1 })}
-                      className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
+                      className="rounded-lg bg-neutral-900 px-3 py-1 font-bold mx-1">
                       {(page - 2) > 1 ? 1 : "  "}
                     </button>
                     :
@@ -408,7 +408,7 @@ const AdminSportCentersView: React.FC = () => {
                         className={page === i ?
                           "rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1"
                           :
-                          "rounded-lg bg-black px-3 py-1 font-bold mx-1"} key={i}>
+                          "rounded-lg bg-black transition-colors hover:bg-neutral-900 px-3 py-1 font-bold mx-1"} key={i}>
                         {i}
                       </button>
                       :
@@ -426,7 +426,7 @@ const AdminSportCentersView: React.FC = () => {
                     <button
                       disabled={page === centerList.total_pages}
                       onClick={() => handleSearch({ page: centerList.total_pages })}
-                      className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
+                      className="rounded-lg bg-neutral-900 px-3 py-1 font-bold mx-1">
                       {(page + 2) < centerList.total_pages ? centerList.total_pages : "  "}
                     </button>
                     :

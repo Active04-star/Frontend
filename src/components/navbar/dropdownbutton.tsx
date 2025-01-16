@@ -2,6 +2,7 @@
 import { UserRole } from "@/enum/userRole";
 import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { useWebSocketContext } from "@/helpers/websocketContext";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
 import Image from "next/image";
@@ -23,6 +24,7 @@ const DropDownButton: React.FC = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { notifications } = useWebSocketContext() || { notifications: undefined };
 
   const offStyle =
     "flex items-center block px-4 py-2 text-gray-400 hover:bg-gray-100 transition-colors duration-200 pointer-events-none";
@@ -151,7 +153,7 @@ const DropDownButton: React.FC = () => {
                   </li>
                 </>
               )}
-              {userData?.user?.role === UserRole.ADMIN && (
+              {(userData?.user.role === UserRole.ADMIN || userData?.user.role === UserRole.SUPER_ADMIN) && (
                 <li>
                   <Link
                     href="/admin"

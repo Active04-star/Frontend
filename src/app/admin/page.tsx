@@ -10,10 +10,12 @@ import { IUser } from "@/types/zTypes";
 import { UserRole } from "@/enum/userRole";
 import ManagerPremium from "@/components/managerPremium/managerPremium";
 import InicioView from "@/views/inicioView/inicioView";
+import verifyUser from "@/helpers/auth/illegalUserVerify";
+import RegisterAdminView from "@/views/RegisterAdminView/RegisterAdminView";
 import Categorias from "@/views/categoriasView/categoriasView";
 
-export type ViewName = "settings" | "centers" | "clientes" | "managers" | "inicio" | "categorias";
-const validViewNames: ViewName[] = ["settings", "centers", "clientes", "managers", "inicio","categorias"];
+export type ViewName = "settings" | "centers" | "clientes" | "managers" | "inicio" | "newadmin" | "categorias";
+const validViewNames: ViewName[] = ["settings", "centers", "clientes", "managers", "inicio", "newadmin", "categorias"];
 
 const isValidViewName = (value: string): value is ViewName => {
   return validViewNames.includes(value as ViewName);
@@ -24,6 +26,7 @@ const VIEWS: Record<ViewName, React.ComponentType<{ onCardClick?: (viewName: Vie
   centers: AdminSportCentersView,
   clientes: UserList,
   managers: ManagerPremium,
+  newadmin: RegisterAdminView,
   categorias: Categorias,
   inicio: ({ onCardClick }) => <InicioView onCardClick={onCardClick!} />,
 };
@@ -42,19 +45,41 @@ const Admin = () => {
       view: viewName,
     });
 
-    if(viewName === "centers") {
+    if (viewName === "centers") {
       searchParams.append("page", "1");
       searchParams.append("search", "");
       searchParams.append("limit", "9");
       searchParams.append("rating", "0");
+    } else if (viewName === "clientes") {
+      searchParams.append("page", "1");
+      searchParams.append("search", "");
+      searchParams.append("limit", "9");
     }
 
     window.location.href = `/admin?${searchParams.toString()}`;
   };
 
+  const verify = async () => {
+    try {
+      await verifyUser();
+    } catch (error: any) {
+      console.error(error);
+    }
+
+    const queryString = new URLSearchParams(window.location.search);
+    const queryParams: Record<string, string> = Object.fromEntries(queryString.entries());
+
+    if (queryParams.view !== undefined && isValidViewName(queryParams.view)) {
+      setCurrentView(queryParams.view);
+    } else {
+      setCurrentView("inicio");
+    }
+  };
+
   useEffect(() => {
     setIsMounted(true);
-  
+    verify();
+
     const handleResize = () => {
       window.requestAnimationFrame(() => {
         if (typeof window === "undefined") return;
@@ -68,16 +93,7 @@ const Admin = () => {
         setSidebarHeight(height);
       });
     };
-  
-    const queryString = new URLSearchParams(window.location.search);
-    const queryParams: Record<string, string> = Object.fromEntries(queryString.entries());
-  
-    if (queryParams.view !== undefined && isValidViewName(queryParams.view)) {
-      setCurrentView(queryParams.view);
-    } else {
-      setCurrentView("inicio");
-    }
-  
+    
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -94,7 +110,7 @@ const Admin = () => {
   const CurrentViewComponent = VIEWS[currentView];
 
 
-  if (user?.user === undefined || user?.user.role !== UserRole.ADMIN) {
+  if (user?.user === undefined || (user?.user.role !== UserRole.ADMIN && user?.user.role !== UserRole.SUPER_ADMIN)) {
     window.location.href = "/";
     return (<div className="flex min-h-screen"></div>);
 
