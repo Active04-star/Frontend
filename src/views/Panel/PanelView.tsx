@@ -67,9 +67,14 @@ const PanelView: React.FC = () => {
       }));
   
       swalConfirmation("Centro deportivo publicado exitosamente");
-    } catch (error: any) {
-      console.error("Error publishing sport center:", error);
-      swalNotifyError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error publishing sport center:", error);
+        swalNotifyError(error.message);
+      } else {
+        console.error("Error publishing sport center:", error);
+        swalNotifyError("Error desconocido");
+      }
     } finally {
       setIsPublishing(false);
     }

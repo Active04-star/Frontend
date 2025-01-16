@@ -10,9 +10,10 @@ import { IUser } from "@/types/zTypes";
 import { UserRole } from "@/enum/userRole";
 import ManagerPremium from "@/components/managerPremium/managerPremium";
 import InicioView from "@/views/inicioView/inicioView";
+import Categorias from "@/views/categoriasView/categoriasView";
 
-export type ViewName = "settings" | "centers" | "clientes" | "managers" | "inicio";
-const validViewNames: ViewName[] = ["settings", "centers", "clientes", "managers", "inicio"];
+export type ViewName = "settings" | "centers" | "clientes" | "managers" | "inicio" | "categorias";
+const validViewNames: ViewName[] = ["settings", "centers", "clientes", "managers", "inicio","categorias"];
 
 const isValidViewName = (value: string): value is ViewName => {
   return validViewNames.includes(value as ViewName);
@@ -23,6 +24,7 @@ const VIEWS: Record<ViewName, React.ComponentType<{ onCardClick?: (viewName: Vie
   centers: AdminSportCentersView,
   clientes: UserList,
   managers: ManagerPremium,
+  categorias: Categorias,
   inicio: ({ onCardClick }) => <InicioView onCardClick={onCardClick!} />,
 };
 
