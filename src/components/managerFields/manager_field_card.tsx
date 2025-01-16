@@ -8,12 +8,12 @@ import Swal from "sweetalert2";
 
 interface FieldCardProps {
   field: IField;
-  onDelete: (fieldId: string) => void; // Callback para eliminar el campo
+  onDelete: (fieldId: string) => void;
+  isDeleting:boolean // Callback para eliminar el campo
 }
 
-export const FieldCard: React.FC<FieldCardProps> = ({ field, onDelete }) => {
+export const FieldCard: React.FC<FieldCardProps> = ({ field, onDelete ,isDeleting}) => {
   const priceLevel = Number(field.price) > 50 ? "high" : "low";
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -32,7 +32,6 @@ export const FieldCard: React.FC<FieldCardProps> = ({ field, onDelete }) => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        setIsDeleting(true); // Activar estado de carga
         onDelete(field.id); // Llamar a la función de eliminación
       }
     });

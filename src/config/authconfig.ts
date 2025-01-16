@@ -10,6 +10,7 @@ export default initAuth0({
         callback: '/api/auth/callback',
         postLogoutRedirect: '/',
     },
+    httpTimeout: 15000,
     session: {
         rollingDuration: 1,
         absoluteDuration: 1,

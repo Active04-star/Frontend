@@ -17,15 +17,11 @@ interface FieldListProps {
 
 const FieldList: React.FC<FieldListProps> = ({ fields }) => {
   const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
       {fields.map((field) => (
-        <FieldCard
-          key={field.id}
-          field={field}
-          user={userLocalStorage}
-        />
+        <FieldCard key={field.id} field={field} user={userLocalStorage} />
       ))}
     </div>
   );

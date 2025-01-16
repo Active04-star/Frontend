@@ -2,12 +2,20 @@
 import { UserRole } from "@/enum/userRole";
 import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { useWebSocketContext } from "@/helpers/websocketContext";
 import { IUser } from "@/types/zTypes";
 import { getSubPath } from "@/utils/getSubPath";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineCalendar, AiOutlineKey, AiOutlineLogout, AiOutlinePhone, AiOutlineSetting } from "react-icons/ai";
+import {
+  AiOutlineCalendar,
+  AiOutlineHome,
+  AiOutlineKey,
+  AiOutlineLogout,
+  AiOutlinePhone,
+  AiOutlineSetting,
+} from "react-icons/ai";
 
 const DropDownButton: React.FC = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
@@ -16,6 +24,7 @@ const DropDownButton: React.FC = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { notifications } = useWebSocketContext() || { notifications: undefined };
 
   const offStyle =
     "flex items-center block px-4 py-2 text-gray-400 hover:bg-gray-100 transition-colors duration-200 pointer-events-none";
@@ -91,7 +100,7 @@ const DropDownButton: React.FC = () => {
             className="flex items-center focus:outline-none"
           >
             <Image
-              src={userData?.user.profile_image || "/default-profile.png"} // ✅ Imagen optimizada
+              src={userData?.user?.profile_image || "/default-profile.png"} // ✅ Imagen optimizada
               alt="Foto de perfil"
               width={32} // Ajusta el ancho
               height={32} // Ajusta la altura
@@ -116,35 +125,35 @@ const DropDownButton: React.FC = () => {
         <div className="absolute right-0 max-w-fit max-h-fit">
           <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
             <ul className="py-2">
-              {userData?.user.role === UserRole.MAIN_MANAGER && (
+              {userData?.user?.role === UserRole.MAIN_MANAGER && (
                 <>
-                <li>
-                  <Link
-                    href="/manager"
-                    className={
-                      actualPage === "/manager" || actualPage === ""
-                        ? offStyle
-                        : onStyle
-                    }
-                  >
-                    <AiOutlineKey className="mr-2" /> Panel de Manager
-                  </Link>
-                </li>
                   <li>
-                  <Link
-                    href="/settings"
-                    className={
-                      actualPage === "/settings" || actualPage === ""
-                        ? offStyle
-                        : onStyle
-                    }
-                  >
-                    <AiOutlineSetting className="mr-2" /> Configuración
-                  </Link>
-                </li>
+                    <Link
+                      href="/manager"
+                      className={
+                        actualPage === "/manager" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
+                    >
+                      <AiOutlineKey className="mr-2" /> Panel de Manager
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/settings"
+                      className={
+                        actualPage === "/settings" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
+                    >
+                      <AiOutlineSetting className="mr-2" /> Configuración
+                    </Link>
+                  </li>
                 </>
               )}
-              {userData?.user.role === UserRole.ADMIN && (
+              {(userData?.user.role === UserRole.ADMIN || userData?.user.role === UserRole.SUPER_ADMIN) && (
                 <li>
                   <Link
                     href="/admin"
@@ -158,7 +167,7 @@ const DropDownButton: React.FC = () => {
                   </Link>
                 </li>
               )}
-              {userData?.user.role === UserRole.USER && (
+              {userData?.user?.role === UserRole.USER && (
                 <>
                   <li>
                     <Link
@@ -169,7 +178,7 @@ const DropDownButton: React.FC = () => {
                           : onStyle
                       }
                     >
-                      < AiOutlinePhone className="mr-2" /> Reservar
+                      <AiOutlinePhone className="mr-2" /> Reservar
                     </Link>
                   </li>
                   <li>
@@ -182,6 +191,18 @@ const DropDownButton: React.FC = () => {
                       }
                     >
                       <AiOutlineCalendar className="mr-2" /> Reservas
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/for-business"
+                      className={
+                        actualPage === "/for-business" || actualPage === ""
+                          ? offStyle
+                          : onStyle
+                      }
+                    >
+                      <AiOutlineHome className="mr-2" /> Registra tu negocio
                     </Link>
                   </li>
                   <li>

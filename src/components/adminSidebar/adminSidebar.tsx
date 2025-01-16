@@ -1,23 +1,49 @@
 "use client";
-
 import { ViewName } from "@/app/admin/page";
+import { UserRole } from "@/enum/userRole";
 import { logout } from "@/helpers/auth/logout";
+import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
+import { IUser } from "@/types/zTypes";
+import { useEffect, useState } from "react";
 
 const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
   onMenuClick,
 }) => {
+
+  const [user] = useLocalStorage<IUser | null>("userSession", null);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && user !== null) {
+      if (user.user.role === UserRole.SUPER_ADMIN) {
+        setShowForm(true);
+
+      } else {
+        setShowForm(false);
+
+      }
+    }
+
+    return () => {
+      setShowForm(false);
+    };
+  }, [])
+
+
   const handleLogout = () => {
     localStorage.removeItem("userSession");
 
     logout(true);
   };
+
+
   return (
     <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-black text-gray-800">
       <div className="sticky flex flex-col top-0 left-0 w-64 bg-black h-full ">
         <div className="flex items-center justify-center h-14 border-b"></div>
         <div className="overflow-y-auto overflow-x-hidden flex-grow">
           <ul className="flex flex-col py-4 space-y-1">
-            <li>
+            <li className="px-5" >
               <div className="flex flex-row items-center h-8">
                 <div className="text-sm font-light tracking-wide text-gray-500">
                   Menu
@@ -56,7 +82,35 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                 </span>
               </button>
             </li>
-
+            {showForm ?
+              <li>
+                <button
+                  onClick={() => onMenuClick && onMenuClick("newadmin")}
+                  className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
+                >
+                  <span className="inline-flex justify-center items-center ml-4">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM16 14H8c-2.21 0-4 1.79-4 4v2h16v-2c0-2.21-1.79-4-4-4zM20 8h-1.6M19 10l1 1m-1-1l-1-1m2-2l-2-2"
+                      />
+                    </svg>
+                  </span>
+                  <span className="ml-2 text-sm tracking-wide truncate">
+                    Nuevo Admin
+                  </span>
+                </button>
+              </li>
+              : null
+            }
             <li>
               <button
                 onClick={() => onMenuClick && onMenuClick("managers")}
@@ -83,6 +137,32 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                 </span>
               </button>
             </li>
+            <li>
+  <button
+    onClick={() => onMenuClick && onMenuClick("categorias")}
+    className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
+  >
+    <span className="inline-flex justify-center items-center ml-4">
+      {/* Nuevo SVG - Ícono de Carpeta */}
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M3 7c0-1.1.9-2 2-2h6l2 2h6c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V7z"
+        ></path>
+      </svg>
+    </span>
+    <span className="ml-2 text-sm tracking-wide truncate">Crear Categorias</span>
+  </button>
+</li>
+
 
             <div className="flex flex-row items-center h-8">
               <div className="text-sm font-light tracking-wide text-gray-500 pl-5">

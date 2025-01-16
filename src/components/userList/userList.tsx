@@ -8,7 +8,7 @@ import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { Search } from "lucide-react";
-import { IQueryParams, IUserQueryParams } from "@/types/zTypes";
+import { IUserQueryParams } from "@/types/zTypes";
 import { merge } from "@/utils/mergeObject";
 import { IUserList } from "@/interfaces/user_list.interface";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
@@ -43,8 +43,8 @@ const UserList = () => {
     setIsLoading(true);
     setError(null);
 
-    try { //TODO HACER LA FUNCION ESTA PERO PARA USUARIOS
-      const total_items = await fetchAndCatch(`${API_URL}/sportcenter/total/true`, { method: "GET" });
+    try {
+      const total_items = await fetchAndCatch(`${API_URL}/admin/users/total`, { method: "GET" });
       const queryString = new URLSearchParams(window.location.search);
       const queryParams: unknown = Object.fromEntries(queryString.entries());
       let actual_params: IUserQueryParams;
@@ -52,12 +52,16 @@ const UserList = () => {
 
       if (validate.success || queryString.size === 1 && queryString.has("view", "clientes")) {
 
-        if (Number((queryParams as IQueryParams).limit) * Number((queryParams as IQueryParams).page) > (total_items.total + 9)) {
-          (queryParams as IQueryParams).page = 1;
+        if (Number((queryParams as IUserQueryParams).limit) * Number((queryParams as IUserQueryParams).page) > (total_items.total + 9)) {
+          (queryParams as IUserQueryParams).page = 1;
           swalCustomError("Limite de pagina alcanzado", "", ["top-right",]);
         }
 
-        actual_params = queryParams as IQueryParams;
+        if (queryString.size > 0 && validate.success) {
+          setParams(queryParams as IUserQueryParams);
+        }
+
+        actual_params = queryParams as IUserQueryParams;
 
         const url = new URL(`${API_URL}/admin/list/user`);
         url.searchParams.append(
@@ -100,9 +104,9 @@ const UserList = () => {
 
       } else {
         console.error(error);
-        swalCustomError(error.message);
+        // swalCustomError(error.message);
 
-        setError("An error occurred while fetching sport centers");
+        setError("No se encontraron usuarios");
         setUsers(null);
 
       }
@@ -142,7 +146,7 @@ const UserList = () => {
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [fetchUsers]);
 
 
   const handleToggleBan = async (id: string, wasBanned: boolean) => {
@@ -179,8 +183,8 @@ const UserList = () => {
   };
 
 
-  const changeParams = (params_: Partial<Omit<IQueryParams, "rating">>) => {
-    const merged: IQueryParams = merge(params, params_);
+  const changeParams = (params_: Partial<IUserQueryParams>) => {
+    const merged: IUserQueryParams = merge(params, params_);
     console.log(merged);
     setParams(merged);
   };
@@ -194,7 +198,7 @@ const UserList = () => {
   };
 
 
-  const handleSearch = (params_?: Partial<IQueryParams>) => {
+  const handleSearch = (params_?: Partial<IUserQueryParams>) => {
     const searchParams = new URLSearchParams({
       page: params_?.page?.toString() || params.page.toString(),
       limit: params_?.limit?.toString() || params.limit.toString(),
@@ -265,7 +269,7 @@ const UserList = () => {
                     <button
                       disabled={page === 1}
                       onClick={() => handleSearch({ page: 1 })}
-                      className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
+                      className="rounded-lg bg-neutral-900 px-3 py-1 font-bold mx-1">
                       {(page - 2) > 1 ? 1 : "  "}
                     </button>
                     :
@@ -287,7 +291,7 @@ const UserList = () => {
                         className={page === i ?
                           "rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1"
                           :
-                          "rounded-lg bg-black px-3 py-1 font-bold mx-1"} key={i}>
+                          "rounded-lg bg-black transition-colors hover:bg-neutral-900 px-3 py-1 font-bold mx-1"} key={i}>
                         {i}
                       </button>
                       :
@@ -305,7 +309,7 @@ const UserList = () => {
                     <button
                       disabled={page === users.total_pages}
                       onClick={() => handleSearch({ page: users.total_pages })}
-                      className="rounded-lg bg-yellow-600 px-3 py-1 font-bold mx-1">
+                      className="rounded-lg bg-neutral-900 px-3 py-1 font-bold mx-1">
                       {(page + 2) < users.total_pages ? users.total_pages : "  "}
                     </button>
                     :
