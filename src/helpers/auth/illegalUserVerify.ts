@@ -8,9 +8,9 @@ import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 
 export default async function verifyUser(): Promise<boolean> {
     const userSession = localStorage.getItem("userSession");
-    const token = userSession ? JSON.parse(userSession).token : null;
-
-    if (token) {
+    
+    if (userSession !== null) {
+        // const token = userSession ? JSON.parse(userSession).token : null;
         try {
             await fetchWithAuth(`${API_URL}/user/verify/`, { method: "GET", });
 

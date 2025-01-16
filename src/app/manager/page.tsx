@@ -32,7 +32,7 @@ const ManagerPage = () => {
   const router = useRouter();
   const [currentView, setCurrentView] = useState<ViewName>("panel");
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); // Ancho inicial en píxeles
-  const [user,setUser] = useLocalStorage<IUser | null>("userSession", null);
+  const [user, setUser] = useLocalStorage<IUser | null>("userSession", null);
   // Estado para manejar la altura del sidebar
   const [sidebarHeight, setSidebarHeight] = useState<number>(0); // Altura inicial igual al alto de la ventana
   const [isMounted, setIsMounted] = useState(false);
@@ -59,12 +59,12 @@ const ManagerPage = () => {
 
   useEffect(() => {
     const checkUserSession = () => {
-      const storedUser = JSON.parse(localStorage.getItem("userSession") || "null");
-      if (!storedUser || storedUser.user.role !== UserRole.MAIN_MANAGER) {
-        router.push("/login?from=out_session");
-        return;
-      }
-      setUser(storedUser); // Asegurarse de que el estado de usuario esté sincronizado con localStorage
+      // const storedUser = JSON.parse(localStorage.getItem("userSession") || "null");
+      // if (!storedUser || storedUser.user.role !== UserRole.MAIN_MANAGER) {
+      //   router.push("/login?from=out_session");
+      //   return;
+      // }
+      // setUser(storedUser); // Asegurarse de que el estado de usuario esté sincronizado con localStorage
       setIsMounted(true);
       updateSidebarDimensions();
     };
@@ -81,20 +81,26 @@ const ManagerPage = () => {
   if (!isMounted) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-       <h1>No se monto el componente</h1>
+        <h1>No se monto el componente</h1>
       </div>
     );
   }
 
   const CurrentViewComponent = VIEWS[currentView];
 
-  if (
-    user?.user === undefined ||
-    user?.user.role === UserRole.ADMIN ||
-    user?.user.role === UserRole.USER
-  ) {
+  // if (
+  //   user?.user === undefined ||
+  //   user?.user.role === UserRole.ADMIN ||
+  //   user?.user.role === UserRole.USER
+  // ) {
+  //   window.location.href = "/";
+  //   return <div className="flex min-h-screen"></div>;
+  // }
+
+  if (user?.user === undefined || (user?.user.role !== UserRole.MAIN_MANAGER && user?.user.role !== UserRole.MANAGER)) {
     window.location.href = "/";
-    return <div className="flex min-h-screen"></div>;
+    return (<div className="flex min-h-screen"></div>);
+
   }
 
   return (
