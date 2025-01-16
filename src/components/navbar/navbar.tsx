@@ -20,11 +20,11 @@ const Navbar: React.FC = () => {
         setShouldShow(true);
         console.log(null)
 
-      } else if (typeof user !== "string" && user.user !== undefined && user.user.role === UserRole.USER) {
+      } else if (typeof user !== "string" && user?.user !== undefined && user.user.role === UserRole.USER) {
         setShouldShow(true);
         console.log("User")
 
-      } else if (typeof user !== "string" && user.user !== undefined) {
+      } else if (typeof user !== "string" && user?.user !== undefined) {
         setShouldShow(false);
         setUserRole(user.user.role);
         console.log("VIP")
