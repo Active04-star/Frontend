@@ -22,7 +22,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
             <li className="px-5">
               <div className="flex flex-row items-center h-8">
                 <div className="text-sm font-light tracking-wide text-gray-500">
-                 Menu
+                  Menu
                 </div>
               </div>
             </li>
@@ -32,7 +32,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                 className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
               >
                 <span className="inline-flex justify-center items-center ml-4">
-                <svg
+                  <svg
                     className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
@@ -70,7 +70,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      d="M9 20l-5.447-2.724A2 2 0 013 15.382V6.618a2 2 0 011.553-1.894L9 2l6 2.724 5.447-2.724A2 2 0 0121 6.618v8.764a2 2 0 01-1.553 1.894L15 20l-6-2.724L9 20z"
                     ></path>
                   </svg>
                 </span>
