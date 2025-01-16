@@ -1,288 +1,189 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect, useRef } from "react";
-import { AiOutlineWechat } from "react-icons/ai";
-import { IoClose } from "react-icons/io5";
+import React, { useState, useEffect } from 'react'
+import { MessageCircle, X, Send, Loader } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useLocalStorage } from '@/helpers/auth/useLocalStorage'
+import { IUser } from '@/types/zTypes'
+import { API_URL } from '@/config/config'
+import { fetchAndCatch } from '@/helpers/errors/fetch-error-interceptor'
+import { useRouter } from 'next/navigation'
 
-const ChatButton = () => {
-  // Estados principales
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [conversation, setConversation] = useState<{ sender: string; text: string }[]>([]);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [userInput, setUserInput] = useState("");
-  const [error, setError] = useState("");
-  const [username, setUsername] = useState("");
-  const [problemDescription, setProblemDescription] = useState("");
-  const divRef = useRef<HTMLDivElement>(null);
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
-  const [showText, setShowText] = useState(false);
+interface Message {
+  id: number
+  text: string
+  sender: 'user' | 'bot'
+}
 
-  const availableSports = ["Fútbol", "Tenis", "Pádel"];
+interface SportCenter {
+  name: string
+  address: string
+  averageRating: number
+}
 
-  // Efecto para cerrar el chat si se hace clic fuera del área del chat
+const Chatbot: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([
+    { id: Date.now(), text: "Hola! ¿En qué puedo ayudarte?", sender: 'bot' }
+  ])
+  const [isLoading, setIsLoading] = useState(false)
+  const [user] = useLocalStorage<IUser | null>("userSession", null)
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null)
+  const router = useRouter()
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (divRef.current && !divRef.current.contains(event.target as Node)) {
-        setIsChatOpen(false);
+    let timer: NodeJS.Timeout
+    if (redirectCountdown !== null && redirectCountdown > 0) {
+      timer = setTimeout(() => {
+        setRedirectCountdown(redirectCountdown - 1)
+      }, 1000)
+    } else if (redirectCountdown === 0) {
+      router.push('/user')
+      setRedirectCountdown(null)  // Reinicia el estado después de la redirección
+    }
+    return () => clearTimeout(timer)
+  }, [redirectCountdown, router])
+
+  const handleOptionClick = async (option: string) => {
+    setMessages(prev => [...prev, { id: Date.now() + Math.random(), text: option, sender: 'user' }])
+    setIsLoading(true)
+
+    if (option === "Mejores centros deportivos") {
+      await getBestSportCenters()
+    } else if (option === "¿Cómo puedo registrar mi centro?") {
+      await getRegisterCenterInfo()
+    } else if (option === "Cómo reservar") {
+      await getReservationInfo()
+    }
+
+    setIsLoading(false)
+  }
+
+  const getBestSportCenters = async () => {
+    try {
+      const data = await fetchAndCatch(`${API_URL}/sportcenter/search?page=1&limit=3&rating=4`, { method: "GET" })
+
+      if (data.sport_centers && data.sport_centers.length > 0) {
+        const topCenters = data.sport_centers.slice(0, 3).map((center: SportCenter) => 
+          `${center.name} - Calificación: ${center.averageRating.toFixed(1)}`
+        ).join('\n')
+        
+        setMessages(prev => [...prev, { id: Date.now(), text: `Los mejores centros deportivos(rating >=4) son:\n${topCenters}`, sender: 'bot' }])
+      } else {
+        setMessages(prev => [...prev, { id: Date.now(), text: "Lo siento, no se encontraron centros deportivos.", sender: 'bot' }])
       }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Efecto para hacer scroll hacia el final cuando se actualiza la conversación
-  useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    } catch (error) {
+      setMessages(prev => [...prev, { id: Date.now(), text: "Hubo un error al obtener los centros deportivos. Por favor, intenta más tarde.", sender: 'bot' }])
     }
-  }, [conversation]);
+  }
 
-  // Lógica para manejar la selección de opciones
-  const handleOptionSelect = (option: string) => {
-    let response = "";
-    let nextStep = currentStep;
-
-    switch (option) {
-      case "1":
-        response = "Tenemos canchas de Fútbol, Tenis y Pádel. ¿Cuál te interesa? Si eliges Fútbol, la cancha está cubierta y tiene césped sintético. En Tenis, contamos con superficies de arcilla. En Pádel, las canchas son de vidrio. ¿Te gustaría más detalles sobre alguna?";
-        nextStep = 1;
-        break;
-      case "2":
-        response = "Puedes registrarte en nuestra página web aquí: [Registrarse](https://www.tusitioweb.com/registro). Solo necesitarás tu correo, nombre y teléfono. ¿Te gustaría proceder con el registro?";
-        nextStep = 2;
-        break;
-      case "3":
-        response = "Para hacer una reserva, por favor proporciona lo siguiente:\n1. El tipo de cancha (Fútbol, Tenis o Pádel)\n2. La fecha y hora de la reserva.\n3. Duración de la reserva.";
-        nextStep = 3;
-        break;
-      case "4":
-        response = "Las opciones de membresía son:\n1. Membresía mensual - Acceso ilimitado durante un mes.\n2. Membresía anual - Acceso ilimitado durante todo el año. ¿Te gustaría más información sobre alguna?";
-        nextStep = 4;
-        break;
-      case "5":
-        response = "Por favor, proporciona tu nombre de usuario. Luego, describe el problema que estás experimentando para que podamos ayudarte mejor.";
-        nextStep = 5;
-        break;
-      case "6":
-        response = "Puedes contactarnos por email o WhatsApp. ¿Te gustaría hablar por alguno de estos canales?";
-        nextStep = 6;
-        break;
-      default:
-        response = "Lo siento, no entendí esa opción. ¿En qué más puedo ayudarte?";
-    }
-
-    setConversation((prevConversation) => [
-      ...prevConversation,
-      { sender: "user", text: option },
-      { sender: "bot", text: response },
-    ]);
-    setCurrentStep(nextStep);
-  };
-
-  // Manejo de la entrada del usuario
-  const handleUserInput = () => {
-    if (!userInput.trim()) {
-      setError("Por favor, escribe algo");
-      return;
-    }
-
-    let response = "";
-    const sportSelected = userInput.trim();
-
-    if (availableSports.includes(sportSelected)) {
-      if (currentStep === 1) {
-        response = `¡Genial! Has elegido la cancha de ${sportSelected}. A continuación, te mostramos nuestras opciones de canchas disponibles para este deporte:\n\n`;
-
-        if (sportSelected === "Fútbol") {
-          response += "1. Cancha 1: Césped sintético, medidas: 30x50m, ideal para partidos recreativos.\n2. Cancha 2: Césped sintético, medidas: 40x70m, ideal para partidos más grandes.\n";
-        } else if (sportSelected === "Tenis") {
-          response += "1. Cancha 1: Superficie de arcilla, medidas: 23.77x8.23m, ideal para jugadores avanzados.\n2. Cancha 2: Superficie dura, medidas: 23.77x8.23m, ideal para entrenamientos.\n";
-        } else if (sportSelected === "Pádel") {
-          response += "1. Cancha 1: Superficie de vidrio, medidas: 10x20m, ideal para partidos recreativos.\n2. Cancha 2: Superficie de vidrio, medidas: 10x20m, ideal para torneos.\n";
-        }
-
-        response += "\nTe invitamos a registrarte y proceder con la reserva aquí: [Registrarse](https://www.tusitioweb.com/registro).";
-        setCurrentStep(2); // Pasar al paso de registro
-      } else if (currentStep === 2) {
-        response = "Perfecto, ahora que estás registrado, puedes proceder a realizar la reserva directamente en nuestro sistema.";
-        setCurrentStep(3); // Pasamos al siguiente paso para la reserva
-      }
+  const getRegisterCenterInfo = async () => {
+    if (user) {
+      setMessages(prev => [...prev, { 
+        id: Date.now() + Math.random(), 
+        text: "Para registrar tu centro deportivo, sigue estos pasos:\n1. Haz clic en tu imagen de perfil en la esquina superior derecha.\n2. Selecciona 'Registrar mi centro' en el menú desplegable.\n3. Completa el formulario con los datos de tu centro deportivo.\n4. Una vez validados los datos, se te otorgará acceso al panel exclusivo para managers.\n\nSi tienes alguna duda durante el proceso, no dudes en contactar con nuestro equipo de soporte.", 
+        sender: 'bot' 
+      }])
     } else {
-      response = `Lo siento, no tenemos canchas de ${sportSelected}. Las opciones disponibles son: Fútbol, Tenis y Pádel. ¿Te gustaría elegir uno de estos deportes?`;
-      setCurrentStep(0); // Volver al paso inicial
+      setMessages(prev => [...prev, { 
+        id: Date.now() + Math.random(), 
+        text: "Para registrar tu centro deportivo, primero debes iniciar sesión o registrarte en nuestra plataforma. Sigue estos pasos:\n1. Haz clic en 'Iniciar sesión' o 'Registrarse' en la esquina superior derecha de la página.\n2. Una vez que hayas iniciado sesión, haz clic en tu imagen de perfil.\n3. Selecciona 'Registrar mi centro' en el menú desplegable.\n4. Completa el formulario con los datos de tu centro deportivo.\n5. Después de que tus datos sean validados, tendrás acceso al panel exclusivo para managers.\n\nSi necesitas ayuda durante el proceso, nuestro equipo de soporte estará encantado de asistirte.", 
+        sender: 'bot' 
+      }])
     }
+  }
 
-    setConversation((prevConversation) => [
-      ...prevConversation,
-      { sender: "user", text: userInput },
-      { sender: "bot", text: response },
-    ]);
-    setError("");
-    setUserInput("");
-  };
+  const getReservationInfo = async () => {
+    setMessages(prev => [...prev, { 
+      id: Date.now() + Math.random(), 
+      text: "Para realizar una reserva, te redirigiremos a la página de usuarios donde encontrarás una lista de centros deportivos. Cada centro tiene canchas disponibles para reservar. Te llevaremos allí en 10 segundos. Si deseas cancelar la redirección, haz clic en el botón 'Cancelar' que aparecerá a continuación.", 
+      sender: 'bot' 
+    }])
+    setRedirectCountdown(10)
+  }
 
-  // Manejo de la acción para contactar por email o WhatsApp
-  const handleContact = (platform: string) => {
-    if (platform === "email") {
-      window.location.href = "mailto:support@canchas.com"; // Reemplaza por tu correo electrónico real
-      setIsChatOpen(false); // Cerrar el chat cuando se hace clic en el correo
-    } else if (platform === "whatsapp") {
-      window.location.href = "https://wa.me/+1234567890"; // Reemplaza con tu número de WhatsApp real
-      setIsChatOpen(false); // Cerrar el chat cuando se hace clic en WhatsApp
-    }
-  };
-
-  // Manejo de la tecla Enter en el campo de texto
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleUserInput();
-    }
-  };
-
-  // Control de visibilidad del texto en el botón de chat
-  const toggleText = (flag: boolean) => {
-    setShowText(flag);
-  };
-
-  // Función para minimizar el chat y resetear la conversación
-  const minimizeChat = () => {
-    setIsChatOpen(false);
-    setConversation([]);  // Resetear la conversación
-    setCurrentStep(0);     // Reiniciar el paso
-    setUserInput("");      // Limpiar la entrada del usuario
-  };
+  const cancelRedirect = () => {
+    setRedirectCountdown(null)
+    setMessages(prev => [...prev, { 
+      id: Date.now() + Math.random(), 
+      text: "Has cancelado la redirección. ¿En qué más puedo ayudarte?", 
+      sender: 'bot' 
+    }])
+  }
 
   return (
-    <div ref={divRef} className="fixed bottom-4 right-4">
-      {/* Botón de abrir chat */}
-      <button
-        onMouseEnter={() => toggleText(true)}
-        onMouseLeave={() => toggleText(false)}
-        onClick={() => setIsChatOpen(true)}
-        className="flex items-center bg-yellow-500 text-white p-2 rounded-full transition-transform shadow-lg focus:outline-none"
-      >
-        <AiOutlineWechat className="w-8 h-8" />
-        <span className={`ml-2 transition-all duration-300 ${showText ? "max-w-xs opacity-100" : "max-w-0 opacity-0"} overflow-hidden whitespace-nowrap`}>
-          ¿En qué puedo ayudarte?
-        </span>
-      </button>
-
-      {/* Chat abierto */}
-      {isChatOpen && (
-        <div className="absolute bottom-16 right-0 w-80 bg-white p-4 shadow-lg rounded-lg border border-gray-300 max-h-96 overflow-y-auto">
-          {/* Botón para cerrar el chat */}
-          <button
-            onClick={minimizeChat}
-            className="absolute top-2 right-2 text-gray-500 hover:text-black"
+    <div className="fixed bottom-4 left-4 z-50">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="bg-white rounded-lg shadow-lg w-80 mb-4"
           >
-            <IoClose className="w-6 h-6" />
-          </button>
-
-          <div className="flex flex-col space-y-4">
-            {/* Saludo inicial */}
-            {currentStep === 0 && (
-              <div className="text-center">
-                <p className="text-lg font-semibold text-black">
-                  ¡Hola! Soy Valentina, tu asistente virtual. ¿En qué puedo ayudarte hoy?
-                </p>
-              </div>
-            )}
-
-            {/* Mostrar conversación */}
-            {conversation.map((msg, index) => (
-              <div key={index} className={msg.sender === "user" ? "text-right" : "text-left"}>
-                <p
-                  className={`inline-block p-3 rounded-lg text-sm ${msg.sender === "user" ? "bg-yellow-100 text-black" : "bg-gray-100 text-black"}`}
-                >
-                  {msg.text}
-                </p>
-              </div>
-            ))}
-
-            <div ref={chatEndRef} />
-            {error && <p className="text-red-500 text-center">{error}</p>}
-
-            {/* Opciones dependiendo del paso actual */}
-            {currentStep === 0 && (
-              <div className="mt-4 space-y-2">
-                <button onClick={() => handleOptionSelect("1")} className="w-full p-3 bg-gray-100 text-black rounded-lg text-sm">
-                  1. ¿Qué tipo de canchas hay?
-                </button>
-                <button onClick={() => handleOptionSelect("2")} className="w-full p-3 bg-gray-100 text-black rounded-lg text-sm">
-                  2. ¿Cómo me puedo registrar?
-                </button>
-                <button onClick={() => handleOptionSelect("3")} className="w-full p-3 bg-gray-100 text-black rounded-lg text-sm">
-                  3. ¿Cómo puedo reservar?
-                </button>
-                <button onClick={() => handleOptionSelect("4")} className="w-full p-3 bg-gray-100 text-black rounded-lg text-sm">
-                  4. ¿Qué tipos de membresías se manejan?
-                </button>
-                <button onClick={() => handleOptionSelect("5")} className="w-full p-3 bg-gray-100 text-black rounded-lg text-sm">
-                  5. ¿Presentas algún problema para ingresar?
-                </button>
-                <button onClick={() => handleOptionSelect("6")} className="w-full p-3 bg-gray-100 text-black rounded-lg text-sm">
-                  6. Información de contacto o servicio al cliente
-                </button>
-              </div>
-            )}
-
-            {/* Volver al menú principal */}
-            <div className="mt-4">
-              <button onClick={() => setCurrentStep(0)} className="w-full bg-red-100 text-black p-2 rounded-lg text-sm">
-                Volver al menú principal
+            <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+              <h3 className="font-bold">Chatbot</h3>
+              <button onClick={() => setIsOpen(false)}>
+                <X size={20} />
               </button>
             </div>
-
-            {/* Flujos específicos para cada paso */}
-            {(currentStep === 1 || currentStep === 2) && (
-              <div className="mt-4 space-y-2">
-                <input
-                  type="text"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder="Escribe aquí..."
-                  className="w-full p-2 border border-gray-300 rounded-lg text-sm text-black"
-                />
-                <button onClick={handleUserInput} className="w-full mt-2 bg-yellow-500 text-white p-2 rounded-lg text-sm">
-                  Enviar
-                </button>
-              </div>
-            )}
-
-            {currentStep === 5 && (
-              <div className="mt-4 space-y-2">
-                <input
-                  type="text"
-                  placeholder="Tu nombre de usuario"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg text-sm text-black"
-                />
-                <textarea
-                  placeholder="Escribe tu problema aquí..."
-                  value={problemDescription}
-                  onChange={(e) => setProblemDescription(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg text-sm text-black"
-                />
-                <button
-                  onClick={() => {
-                    const problemMessage = `Mi nombre es ${username} y mi problema es: ${problemDescription}`;
-                    window.location.href = `https://wa.me/+1234567890?text=${encodeURIComponent(problemMessage)}`;
-                    setIsChatOpen(false); // Cerrar el chat al contactar por WhatsApp
-                  }}
-                  className="w-full mt-2 bg-yellow-500 text-white p-2 rounded-lg text-sm"
-                >
-                  Enviar mensaje
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+            <div className="h-96 overflow-y-auto p-4 space-y-4">
+              {messages.map(message => (
+                <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`rounded-lg p-2 max-w-[70%] ${message.sender === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                    {message.text}
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-center">
+                  <Loader className="animate-spin" />
+                </div>
+              )}
+              {redirectCountdown !== null && redirectCountdown > 0 && (
+                <div className="flex flex-col items-center">
+                  <p>Redirigiendo en {redirectCountdown} segundos...</p>
+                  <button 
+                    onClick={cancelRedirect}
+                    className="mt-2 bg-red-500 text-white rounded-lg py-1 px-3 hover:bg-red-600 transition duration-200"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t space-y-2">
+              <button
+                onClick={() => handleOptionClick("Mejores centros deportivos")}
+                className="w-full bg-blue-600 text-white rounded-lg py-2 px-4 hover:bg-blue-700 transition duration-200"
+              >
+                Mejores centros deportivos
+              </button>
+              <button
+                onClick={() => handleOptionClick("¿Cómo puedo registrar mi centro?")}
+                className="w-full bg-blue-600 text-white rounded-lg py-2 px-4 hover:bg-blue-700 transition duration-200"
+              >
+                ¿Cómo puedo registrar mi centro?
+              </button>
+              <button
+                onClick={() => handleOptionClick("Cómo reservar")}
+                className="w-full bg-blue-600 text-white rounded-lg py-2 px-4 hover:bg-blue-700 transition duration-200"
+              >
+                Cómo reservar
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition duration-200"
+      >
+        <MessageCircle size={24} />
+      </button>
     </div>
-  );
-};
+  )
+}
 
-export default ChatButton;
+export default Chatbot
+
