@@ -34,6 +34,8 @@ export default function RegisterSportcenter() {
   const [sportCenter, setSportCenter] = useState<ICenterRegister>({
     name: "",
     address: "",
+    latitude: undefined,
+    longitude: undefined
   });
   const [errors, setErrors] = useState<FormErrors<ICenterRegister>>({});
 
@@ -45,8 +47,11 @@ export default function RegisterSportcenter() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSportCenter((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const finalValue = type === 'number' 
+      ? (value ? parseFloat(value) : undefined) 
+      : value;
+    setSportCenter(prev => ({ ...prev, [name]: finalValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -206,6 +211,56 @@ export default function RegisterSportcenter() {
                       </p>
                     )}
                   </div>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <label
+                        className="block text-white mb-2 text-center font-medium text-lg"
+                        htmlFor="latitude"
+                      >
+                        Latitud
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        id="latitude"
+                        name="latitude"
+                        value={sportCenter.latitude || ''}
+                        onChange={handleChange}
+                        placeholder="Ej: -34.603722"
+                        className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                      />
+                      {errors.latitude && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.latitude[0]}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label
+                        className="block text-white mb-2 text-center font-medium text-lg"
+                        htmlFor="longitude"
+                      >
+                        Longitud
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        id="longitude"
+                        name="longitude"
+                        value={sportCenter.longitude || ''}
+                        onChange={handleChange}
+                        placeholder="Ej: -58.381592"
+                        className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                      />
+                      {errors.longitude && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.longitude[0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
 
                   <div className="w-auto flex justify-around">
                     <button
