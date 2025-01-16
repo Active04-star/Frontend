@@ -18,8 +18,8 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
 }) => {
   return (
     <div className=" shadow-lg rounded-lg overflow-hidden mb-4 ">
-      <div className="p-4">
-        <h3 className="font-bold text-lg mb-2">
+      <div className="p-4 bg-white">
+        <h3 className="font-bold text-lg mb-2 text-black">
           Cancha {reservation.field?.number}
         </h3>
         <p className="text-sm text-gray-600 mb-1">

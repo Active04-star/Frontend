@@ -91,7 +91,7 @@ const DropDownButton: React.FC = () => {
             className="flex items-center focus:outline-none"
           >
             <Image
-              src={userData?.user.profile_image || "/default-profile.png"} // ✅ Imagen optimizada
+              src={userData?.user?.profile_image || "/default-profile.png"} // ✅ Imagen optimizada
               alt="Foto de perfil"
               width={32} // Ajusta el ancho
               height={32} // Ajusta la altura
@@ -116,7 +116,7 @@ const DropDownButton: React.FC = () => {
         <div className="absolute right-0 max-w-fit max-h-fit">
           <div className="mt-2 w-48 bg-white border border-gray-300 rounded-sm shadow-lg z-10">
             <ul className="py-2">
-              {userData?.user.role === UserRole.MAIN_MANAGER && (
+              {userData?.user?.role === UserRole.MAIN_MANAGER && (
                 <>
                 <li>
                   <Link
@@ -144,7 +144,7 @@ const DropDownButton: React.FC = () => {
                 </li>
                 </>
               )}
-              {userData?.user.role === UserRole.ADMIN && (
+              {userData?.user?.role === UserRole.ADMIN && (
                 <li>
                   <Link
                     href="/admin"
@@ -158,7 +158,7 @@ const DropDownButton: React.FC = () => {
                   </Link>
                 </li>
               )}
-              {userData?.user.role === UserRole.USER && (
+              {userData?.user?.role === UserRole.USER && (
                 <>
                   <li>
                     <Link

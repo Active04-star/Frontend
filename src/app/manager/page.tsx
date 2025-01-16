@@ -73,7 +73,7 @@ const ManagerPage = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [user?.token, user?.user.role]);
 
   if (!isMounted) {
     return (

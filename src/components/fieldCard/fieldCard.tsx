@@ -86,16 +86,18 @@ const FieldCard: React.FC<FieldCardProps> = ({ field,user }) => {
       if (!response.ok) {
         swalCustomError("Ocurrio un error al traer los bloques");
       }
-
       const data = await response.json();
       setBlocks(data);
-    } catch (error:any) {
-      swalNotifyError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        swalNotifyError(error.message);
+      } else {
+        swalNotifyError("Ocurrió un error desconocido");
+      }
     } finally {
       setIsLoading(false);
     }
   }, [field.id]);
-
   
 
   // Actualizar bloques cuando cambie la fecha seleccionada

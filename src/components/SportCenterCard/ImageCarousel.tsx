@@ -94,8 +94,8 @@ export default function ImageCarousel({
 
           {showUploadButton && (
             <label className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white rounded-full cursor-pointer transition-colors">
-              <Upload className="w-4 h-4" />
-              <span className="text-sm">Agregar Imagen</span>
+              {/* <Upload className="w-4 h-4 " /> */}
+              <span className="text-sm text-black">Agregar Imagen</span>
               <input
                 type="file"
                 className="hidden"
@@ -113,7 +113,7 @@ export default function ImageCarousel({
                     prev === 0 ? allImages.length - 1 : prev - 1
                   )
                 }
-                className="absolute left-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white"
+                className="absolute left-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black "
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -123,7 +123,7 @@ export default function ImageCarousel({
                     prev === allImages.length - 1 ? 0 : prev + 1
                   )
                 }
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black "
               >
                 <ChevronRight className="w-6 h-6" />
               </button>
