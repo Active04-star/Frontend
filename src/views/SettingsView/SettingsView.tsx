@@ -9,7 +9,7 @@ import {
 } from "@/types/zTypes";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { zodValidate } from "@/helpers/validate-zod";
-import { UserUpdateSchema } from "@/types/userUpdate-schema";
+import { PasswordUpdateSchema, UserUpdateSchema } from "@/types/userUpdate-schema";
 import { updateUser } from "@/helpers/user_update_helper";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
@@ -21,7 +21,9 @@ import { API_URL } from "@/config/config";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import Image from "next/image";
 import verifyUser from "@/helpers/auth/illegalUserVerify";
-import { UserRole } from "@/enum/userRole";
+import LoadingCircle from "@/components/general/loading-circle";
+import { RegisterErrors } from "@/types/Errortypes";
+import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 
 interface IPhotoUpdateResponse {
   message: string;
@@ -38,11 +40,10 @@ export default function SettingsView() {
   const [image, setImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingConfig, setLoadingConfig] = useState(false);
   const [isSavingPhoto, setIsSavingPhoto] = useState(false);
-
-  // const [user] = useLocalStorage<IUser | null>("userSession", null);
-
-
+  const [errors, setErrors] = useState<Pick<RegisterErrors, "confirm_password" | "password"> | null>(null);
+  const [errorsName, setErrorsName] = useState<Pick<RegisterErrors, "name"> | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -55,6 +56,32 @@ export default function SettingsView() {
       reader.readAsDataURL(file);
     }
   };
+
+
+  useEffect(() => {
+    const data = zodValidate<Pick<RegisterErrors, "confirm_password" | "password">>(password, PasswordUpdateSchema);
+
+    if (!data.success) {
+      setErrors(data.errors);
+    } else if (password.password === "" && password.confirm_password === "") {
+      setErrors(null);
+    } else {
+      setErrors(null);
+    }
+  }, [password]);
+
+
+  useEffect(() => {
+    const data = zodValidate<Pick<RegisterErrors, "name">>(name, UserUpdateSchema);
+
+    if (!data.success) {
+      setErrorsName(data.errors);
+    } else if (name.name === "") {
+      setErrorsName(null);
+    } else {
+      setErrorsName(null);
+    }
+  }, [name]);
 
 
   const handleUpdatePhoto = async () => {
@@ -111,34 +138,49 @@ export default function SettingsView() {
 
   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
+    if (isLoading) return;
+    setLoadingConfig(true);
+
+    let a_name = ""
+    if (name.name !== user?.user.name) {
+      a_name = name.name;
+    }
 
     if (
       Object.values(name).every((data) => data === "") &&
       Object.values(password).every((data) => data === "")
     ) {
       swalCustomError("Error", "No hubo ningun cambio");
+      setLoadingConfig(false);
       return;
     }
 
-    if (password.password !== password.confirm_password) {
-      swalCustomError("Error", "Las contraseñas no coinciden");
+    if (a_name !== "" && errorsName !== null) {
+      swalCustomError("Error", "Corrige los errores antes de continuar");
+      setLoadingConfig(false);
       return;
     }
 
-    const nameUpdate = zodValidate(name, UserUpdateSchema);
-
-    if (!nameUpdate.success) {
-      swalCustomError(
-        "Error",
-        "Por favor corrige los errores antes de continuar."
-      );
+    if (errors !== null && Object.values(password).every((data) => data !== "")) {
+      swalCustomError("Error", "Corrige los errores antes de continuar");
+      setLoadingConfig(false);
       return;
     }
+    // const nameUpdate = zodValidate(name, UserUpdateSchema);
+
+    // if (!nameUpdate.success) {
+    //   swalCustomError(
+    //     "Error",
+    //     "Por favor corrige los errores antes de continuar."
+    //   );
+    //   setLoadingConfig(false);
+    //   return;
+    // }
 
     try {
       if (user !== null) {
         const response = await updateUser(user.user.id, {
-          name: name.name,
+          name: a_name,
           password: password.password,
           confirm_password: password.confirm_password,
         });
@@ -161,14 +203,22 @@ export default function SettingsView() {
       } else {
         throw new ApiError(500, "user LocalStorage is invalid");
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
+
       if (error instanceof ErrorHelper) {
-        swalNotifyError(error);
-      } else if (error instanceof Error) {
-        swalNotifyUnknownError(error.message);
+        if(error.message === ApiStatusEnum.THIRD_PARTY_NOT_ALLOWED) {
+          swalCustomError("Error", "Los usuarios de terceros no pueden cambiar su contraseña", ["top-right", 5000]);
+
+        } else {
+          swalNotifyError(error);
+
+        }
       } else {
-        swalNotifyUnknownError("Unexpected error occurred.");
+        console.error(error);
       }
+
+    } finally {
+      setLoadingConfig(false);
     }
   };
 
@@ -238,19 +288,20 @@ export default function SettingsView() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <label
-              htmlFor="photo-upload"
-              className="absolute bottom-0 right-0 bg-yellow-600 rounded-full p-2 cursor-pointer hover:bg-yellow-700 transition-colors"
-            >
-              <Camera className="w-5 h-5 text-white" />
-              <input
-                id="photo-upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
+            {!isSavingPhoto &&
+              <label
+                htmlFor="photo-upload"
+                className="absolute bottom-0 right-0 bg-yellow-600 rounded-full p-2 cursor-pointer hover:bg-yellow-700 transition-colors"
+              >
+                <Camera className="w-5 h-5 text-white" />
+                <input
+                  id="photo-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+              </label>}
           </div>
 
           {image && (
@@ -279,73 +330,151 @@ export default function SettingsView() {
           </h2>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-white mb-2">
-            Cambiar nombre de usuario
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={name.name}
-            onChange={(e) => setName({ name: e.target.value })}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-          />
-        </div>
+        {loadingConfig ?
+          <div className="mx-auto w-16 h-16"><LoadingCircle /></div>
+          :
+          <>
+            <div className="mb-4">
+              <label className="block text-white mb-2">
+                Cambiar nombre de usuario
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={name.name}
+                onChange={(e) => setName({ name: e.target.value })}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              />
+              {name.name &&
+                errorsName !== null &&
+                errorsName.name !== undefined &&
+                errorsName.name._errors !== undefined ? (
+                <>
+                  <span
+                    className="text-sm text-red-600"
+                    style={{ fontSize: "12px" }}
+                  >
+                    {errorsName.name._errors[0]}
+                  </span>
 
-        <div className="mb-4">
-          <label className="block text-white mb-2">Cambio de contraseña</label>
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={password.password}
-              onChange={handlePasswordChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            />
+                  <div>
+                    <span
+                      className="text-sm text-red-600"
+                      style={{ fontSize: "12px" }}
+                    >
+                      {errorsName.name._errors[1] !== undefined &&
+                        errorsName.name._errors[1].length > 0
+                        ? errorsName.name._errors[1]
+                        : null}
+                    </span>
+                  </div>
+                </>
+              ) : null}
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-white mb-2">Cambio de contraseña</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={password.password}
+                  onChange={handlePasswordChange}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5 text-gray-700" />
+                  ) : (
+                    <Eye className="w-5 h-5 text-gray-700" />
+                  )}
+                </button>
+              </div>
+              {/* {password.password &&
+                errors !== null &&
+                errors.password !== undefined &&
+                errors?.password._errors !== undefined ? (
+                <span
+                  className="text-sm text-red-600"
+                  style={{ fontSize: "12px" }}
+                >
+                  {errors.password._errors}
+                </span>
+              ) : null} */}
+              {password.password &&
+                errors !== null &&
+                errors.password !== undefined &&
+                errors?.password._errors !== undefined ? (
+                <>
+                  <span
+                    className="text-sm text-red-600"
+                    style={{ fontSize: "12px" }}
+                  >
+                    {errors.password._errors[0]}
+                  </span>
+
+                  <div>
+                    <span
+                      className="text-sm text-red-600"
+                      style={{ fontSize: "12px" }}
+                    >
+                      {errors.password._errors[1] !== undefined &&
+                        errors.password._errors[1].length > 0
+                        ? errors.password._errors[1]
+                        : null}
+                    </span>
+                  </div>
+                </>
+              ) : null}
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-white mb-2">Confirmar contraseña</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirm_password"
+                  value={password.confirm_password}
+                  onChange={handlePasswordChange}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5 text-gray-700" />
+                  ) : (
+                    <Eye className="w-5 h-5 text-gray-700" />
+                  )}
+                </button>
+              </div>
+              {password.confirm_password &&
+                errors !== null &&
+                errors.confirm_password !== undefined &&
+                errors?.confirm_password._errors !== undefined ? (
+                <span
+                  className="text-sm text-red-600"
+                  style={{ fontSize: "12px" }}
+                >
+                  {errors.confirm_password._errors}
+                </span>
+              ) : null}
+            </div>
+
             <button
-              type="button"
-              className="absolute inset-y-0 right-0 flex items-center pr-3"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={handleSubmit}
+              className="w-full bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 transition-colors"
             >
-              {showPassword ? (
-                <EyeOff className="w-5 h-5 text-gray-700" />
-              ) : (
-                <Eye className="w-5 h-5 text-gray-700" />
-              )}
+              Guardar Cambios
             </button>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-white mb-2">Confirmar contraseña</label>
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirm_password"
-              value={password.confirm_password}
-              onChange={handlePasswordChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            />
-            <button
-              type="button"
-              className="absolute inset-y-0 right-0 flex items-center pr-3"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? (
-                <EyeOff className="w-5 h-5 text-gray-700" />
-              ) : (
-                <Eye className="w-5 h-5 text-gray-700" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 transition-colors"
-        >
-          Guardar Cambios
-        </button>
+          </>
+        }
       </div>
     </div>
   );
