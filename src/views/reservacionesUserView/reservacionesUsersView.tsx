@@ -1,4 +1,5 @@
-'use client'
+"use client";
+import BotonVolver from "@/components/back-button/back-button";
 import ReservationCard from "@/components/userReservations/userReservations";
 import { API_URL } from "@/config/config";
 import { ReservationStatus } from "@/enum/ReservationStatus";
@@ -17,11 +18,12 @@ const ReservacionesUsersView = () => {
   const [reservations, setReservations] = useState<IReservation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
-  const [user,] = useLocalStorage<IUser | null>("userSession", null);
-  
+  const [user] = useLocalStorage<IUser | null>("userSession", null);
+
   const fetchReservations = useCallback(async () => {
     if (!userLocalStorage?.user?.id) return;
     try {
+      setIsLoading(true);
       const response: IReservation[] = await fetchWithAuth(
         `${API_URL}/reservation/${userLocalStorage.user.id}`,
         {
@@ -80,14 +82,13 @@ const ReservacionesUsersView = () => {
               : reservation
           )
         );
-        swalNotifySuccess("Reserva cancelada", "Tu reserva ha sido cancelada exitosamente.");
-        await fetchReservations()
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          swalNotifyError(error.message);
-        } else {
-          swalNotifyError("Error desconocido");
-        }
+        swalNotifySuccess(
+          "Reserva cancelada",
+          "Tu reserva ha sido cancelada exitosamente."
+        );
+        await fetchReservations();
+      } catch (error: any) {
+        swalNotifyError(error);
       } finally {
         setCancellingId(null);
       }
@@ -104,6 +105,7 @@ const ReservacionesUsersView = () => {
 
   return (
     <div className="mt-16 max-w-7xl mx-auto p-6">
+    <BotonVolver/>
   <h1 className="text-3xl font-bold mb-8 text-center">Mis Reservas</h1>
   <div>
     <h2 className="text-xl font-semibold mb-4 text-green-600 text-center">Activas</h2>

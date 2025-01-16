@@ -30,6 +30,15 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, user }) => {
       return;
     }
 
+   
+   
+   
+   
+   
+   
+   
+   
+   
     const result = await Swal.fire({
       title: "¿Confirmar reserva?",
       text: `¿Deseas reservar la cancha para el ${selectedDate.toLocaleDateString()}?`,
@@ -39,6 +48,10 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, user }) => {
       cancelButtonText: "Cancelar",
     });
 
+
+
+
+    
     if (result.isConfirmed) {
       setIsReserving(true);
       try {
@@ -121,7 +134,7 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, user }) => {
 
       <div className="p-4">
         <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2">Selecciona una fecha:</h3>
+          <h3 className="text-lg font-semibold mb-2 text-black">Selecciona una fecha:</h3>
           <div className="flex overflow-x-auto space-x-2 pb-2">
             {nextDays.map((day) => (
               <button
@@ -139,7 +152,7 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, user }) => {
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mb-2">Horarios disponibles:</h3>
+        <h3 className="text-lg font-semibold mb-2 text-black">Horarios disponibles:</h3>
         <div className="grid grid-cols-3 gap-2">
           {isLoading ? (
             <div className="col-span-3 text-center">Cargando horarios...</div>
