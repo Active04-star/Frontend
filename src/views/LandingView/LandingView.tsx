@@ -18,7 +18,7 @@ import { IUser } from "@/types/zTypes";
 import { UserRole } from "@/enum/userRole";
 
 const LandingView: React.FC = () => {
-  const [user] = useLocalStorage<IUser>("userSession", "");
+  const [user] = useLocalStorage<IUser | null>("userSession", null);
   const [sportCenter,] = useLocalStorage("sportCenter", "");
   const [show, setShow] = useState<boolean>(false);
   const [isManager, setIsManager] = useState<boolean>(false);
@@ -28,7 +28,7 @@ const LandingView: React.FC = () => {
   useEffect(() => {
     setIsLoading(true);
 
-    if (typeof window !== "undefined" && window.localStorage) {
+    if (typeof window !== "undefined" && window.localStorage && user !== null) {
       const validate = zodValidate(user, UserSchemaWToken);
 
       if (!validate.success) {
@@ -37,23 +37,18 @@ const LandingView: React.FC = () => {
 
       if (sportCenter !== null && sportCenter !== "") {
         setIsManager(true);
-      } else if (user.user !== undefined && user.user.role === UserRole.ADMIN) {
+      } else if ((user.user !== undefined) && user.user.role === UserRole.ADMIN || user.user.role === UserRole.SUPER_ADMIN) {
         setIsAdmin(true);
         setIsManager(false);
       }
 
       setIsLoading(false);
+    } else if (user === null){
+      setIsLoading(false);
+      setShow(true);
+
     }
   }, [user, sportCenter]);
-
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex w-96 h-96 justify-center items-center bg-dark">
-  //       <LoadingCircle />
-  //     </div>
-  //   );
-  // }
 
   return (
     <>
