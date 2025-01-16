@@ -46,37 +46,39 @@ const SportCenterPage = async ({ params }: { params: Promise<{ centerId: string 
 
     return (
       <div className="pt-8">
-        <Navbar />
-        <BotonVolver />
-        {sport_center && (<h1 className="text-2xl font-bold mb-6 mt-16 text-center">{sport_center.name}</h1>)}
-        <div className="w-full flex justify-evenly">
-
-          <div className="mx-6 w-2/3">
-            <div className="flex">
-              <div className="font-bold mr-2">Direccion: </div>
-              {sport_center.address}
-            </div>
-
-            <div className="mt-2 flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 text-yellow-400 mr-1"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                stroke="none"
-              >
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-              </svg>
-              <div>{Number.parseFloat(sport_center.averageRating?.toString() || "0").toFixed(1)}</div>
-            </div>
-
+      <Navbar />
+      <BotonVolver />
+      {sport_center && (
+        <h1 className="text-2xl font-bold mb-6 mt-16 text-center">{sport_center.name}</h1>
+      )}
+      
+      <div className="w-full flex justify-center">
+        <div className="mx-6 w-2/3">
+          <div className="flex justify-center">
+            <div className="font-bold mr-2">Direccion: </div>
+            <div>{sport_center.address}</div>
           </div>
-
-        </div>
-        <div className="mt-8 mb-8">
-          <FieldList fields={sport_center.fields} />
+    
+          <div className="mt-2 flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-yellow-400 mr-1"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              stroke="none"
+            >
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <div>{Number.parseFloat(sport_center.averageRating?.toString() || "0").toFixed(1)}</div>
+          </div>
         </div>
       </div>
+    
+      <div className="mt-8 mb-8">
+        <FieldList fields={sport_center.fields} />
+      </div>
+    </div>
+    
     );
 
   } catch (error) {

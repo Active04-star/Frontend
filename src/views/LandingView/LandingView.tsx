@@ -37,7 +37,7 @@ const LandingView: React.FC = () => {
 
       if (sportCenter !== null && sportCenter !== "") {
         setIsManager(true);
-      } else if (user.user !== undefined && user.user.role === UserRole.ADMIN) {
+      } else if (user?.user !== undefined && user.user.role === UserRole.ADMIN) {
         setIsAdmin(true);
         setIsManager(false);
       }
