@@ -23,7 +23,7 @@ interface SportCenter {
 
 const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useLocalStorage<Message[]>("chatHistory", [
     { id: Date.now(), text: "Hola! ¿En qué puedo ayudarte?", sender: 'bot' }
   ])
   const [isLoading, setIsLoading] = useState(false)
@@ -39,13 +39,14 @@ const Chatbot: React.FC = () => {
       }, 1000)
     } else if (redirectCountdown === 0) {
       router.push('/user')
-      setRedirectCountdown(null)  // Reinicia el estado después de la redirección
+      setRedirectCountdown(null)
     }
     return () => clearTimeout(timer)
   }, [redirectCountdown, router])
 
   const handleOptionClick = async (option: string) => {
-    setMessages(prev => [...prev, { id: Date.now() + Math.random(), text: option, sender: 'user' }])
+    const newUserMessage = { id: Date.now() + Math.random(), text: option, sender: 'user' as const }
+    setMessages((prev :Message[])=> [...prev, newUserMessage])
     setIsLoading(true)
 
     if (option === "Mejores centros deportivos") {
@@ -68,51 +69,51 @@ const Chatbot: React.FC = () => {
           `${center.name} - Calificación: ${center.averageRating.toFixed(1)}`
         ).join('\n')
         
-        setMessages(prev => [...prev, { id: Date.now(), text: `Los mejores centros deportivos(rating >=4) son:\n${topCenters}`, sender: 'bot' }])
+        const newBotMessage = { id: Date.now(), text: `Los mejores centros deportivos(rating >=4) son:\n${topCenters}`, sender: 'bot' as const }
+        setMessages((prev: Message[]) => [...prev, newBotMessage])
       } else {
-        setMessages(prev => [...prev, { id: Date.now(), text: "Lo siento, no se encontraron centros deportivos.", sender: 'bot' }])
+        const newBotMessage = { id: Date.now(), text: "Lo siento, no se encontraron centros deportivos.", sender: 'bot' as const }
+        setMessages((prev: Message[]) => [...prev, newBotMessage])
       }
     } catch (error) {
-      setMessages(prev => [...prev, { id: Date.now(), text: "Hubo un error al obtener los centros deportivos. Por favor, intenta más tarde.", sender: 'bot' }])
+      const newBotMessage = { id: Date.now(), text: "Hubo un error al obtener los centros deportivos. Por favor, intenta más tarde.", sender: 'bot' as const }
+      setMessages((prev: Message[]) => [...prev, newBotMessage])
     }
   }
 
   const getRegisterCenterInfo = async () => {
-    if (user) {
-      setMessages(prev => [...prev, { 
-        id: Date.now() + Math.random(), 
-        text: "Para registrar tu centro deportivo, sigue estos pasos:\n1. Haz clic en tu imagen de perfil en la esquina superior derecha.\n2. Selecciona 'Registrar mi centro' en el menú desplegable.\n3. Completa el formulario con los datos de tu centro deportivo.\n4. Una vez validados los datos, se te otorgará acceso al panel exclusivo para managers.\n\nSi tienes alguna duda durante el proceso, no dudes en contactar con nuestro equipo de soporte.", 
-        sender: 'bot' 
-      }])
-    } else {
-      setMessages(prev => [...prev, { 
-        id: Date.now() + Math.random(), 
-        text: "Para registrar tu centro deportivo, primero debes iniciar sesión o registrarte en nuestra plataforma. Sigue estos pasos:\n1. Haz clic en 'Iniciar sesión' o 'Registrarse' en la esquina superior derecha de la página.\n2. Una vez que hayas iniciado sesión, haz clic en tu imagen de perfil.\n3. Selecciona 'Registrar mi centro' en el menú desplegable.\n4. Completa el formulario con los datos de tu centro deportivo.\n5. Después de que tus datos sean validados, tendrás acceso al panel exclusivo para managers.\n\nSi necesitas ayuda durante el proceso, nuestro equipo de soporte estará encantado de asistirte.", 
-        sender: 'bot' 
-      }])
+    const newBotMessage = { 
+      id: Date.now() + Math.random(), 
+      text: user 
+        ? "Para registrar tu centro deportivo, sigue estos pasos:\n1. Haz clic en tu imagen de perfil en la esquina superior derecha.\n2. Selecciona 'Registrar mi centro' en el menú desplegable.\n3. Completa el formulario con los datos de tu centro deportivo.\n4. Una vez validados los datos, se te otorgará acceso al panel exclusivo para managers.\n\nSi tienes alguna duda durante el proceso, no dudes en contactar con nuestro equipo de soporte."
+        : "Para registrar tu centro deportivo, primero debes iniciar sesión o registrarte en nuestra plataforma. Sigue estos pasos:\n1. Haz clic en 'Iniciar sesión' o 'Registrarse' en la esquina superior derecha de la página.\n2. Una vez que hayas iniciado sesión, haz clic en tu imagen de perfil.\n3. Selecciona 'Registrar mi centro' en el menú desplegable.\n4. Completa el formulario con los datos de tu centro deportivo.\n5. Después de que tus datos sean validados, tendrás acceso al panel exclusivo para managers.\n\nSi necesitas ayuda durante el proceso, nuestro equipo de soporte estará encantado de asistirte.",
+      sender: 'bot' as const
     }
+    setMessages((prev: Message[]) => [...prev, newBotMessage])
   }
 
   const getReservationInfo = async () => {
-    setMessages(prev => [...prev, { 
+    const newBotMessage = { 
       id: Date.now() + Math.random(), 
       text: "Para realizar una reserva, te redirigiremos a la página de usuarios donde encontrarás una lista de centros deportivos. Cada centro tiene canchas disponibles para reservar. Te llevaremos allí en 10 segundos. Si deseas cancelar la redirección, haz clic en el botón 'Cancelar' que aparecerá a continuación.", 
-      sender: 'bot' 
-    }])
+      sender: 'bot' as const
+    }
+    setMessages((prev: Message[]) => [...prev, newBotMessage])
     setRedirectCountdown(10)
   }
 
   const cancelRedirect = () => {
     setRedirectCountdown(null)
-    setMessages(prev => [...prev, { 
+    const newBotMessage = { 
       id: Date.now() + Math.random(), 
       text: "Has cancelado la redirección. ¿En qué más puedo ayudarte?", 
-      sender: 'bot' 
-    }])
+      sender: 'bot' as const
+    }
+    setMessages((prev: Message[]) => [...prev, newBotMessage])
   }
 
   return (
-    <div className="fixed bottom-4 left-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
