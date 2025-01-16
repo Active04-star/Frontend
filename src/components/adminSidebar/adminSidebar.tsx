@@ -17,7 +17,7 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
         <div className="flex items-center justify-center h-14 border-b"></div>
         <div className="overflow-y-auto overflow-x-hidden flex-grow">
           <ul className="flex flex-col py-4 space-y-1">
-            <li>
+            <li className="px-5" >
               <div className="flex flex-row items-center h-8">
                 <div className="text-sm font-light tracking-wide text-gray-500">
                   Menu
@@ -83,6 +83,32 @@ const Sidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                 </span>
               </button>
             </li>
+            <li>
+  <button
+    onClick={() => onMenuClick && onMenuClick("categorias")}
+    className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
+  >
+    <span className="inline-flex justify-center items-center ml-4">
+      {/* Nuevo SVG - Ícono de Carpeta */}
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M3 7c0-1.1.9-2 2-2h6l2 2h6c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V7z"
+        ></path>
+      </svg>
+    </span>
+    <span className="ml-2 text-sm tracking-wide truncate">Crear Categorias</span>
+  </button>
+</li>
+
 
             <div className="flex flex-row items-center h-8">
               <div className="text-sm font-light tracking-wide text-gray-500 pl-5">
