@@ -30,6 +30,15 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, user }) => {
       return;
     }
 
+   
+   
+   
+   
+   
+   
+   
+   
+   
     const result = await Swal.fire({
       title: "¿Confirmar reserva?",
       text: `¿Deseas reservar la cancha para el ${selectedDate.toLocaleDateString()}?`,
@@ -39,6 +48,10 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, user }) => {
       cancelButtonText: "Cancelar",
     });
 
+
+
+
+    
     if (result.isConfirmed) {
       setIsReserving(true);
       try {

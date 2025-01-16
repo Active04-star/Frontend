@@ -68,6 +68,7 @@ const LoadingView: React.FC = () => {
                                         [UserRole.USER]: "/user",
                                         [UserRole.MAIN_MANAGER]: "/manager",
                                         [UserRole.ADMIN]: "/admin",
+                                        [UserRole.SUPER_ADMIN]: "/admin",
                                         [UserRole.MANAGER]: "/manager",
                                     };
 
