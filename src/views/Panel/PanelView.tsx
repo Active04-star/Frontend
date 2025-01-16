@@ -48,10 +48,10 @@ const PanelView: React.FC = () => {
 
   const handlePublish = async (id: string) => {
     setIsPublishing(true);
-    console.log('id',id);
-    
+    console.log('id', id);
+  
     try {
-       await fetchWithAuth(
+      await fetchWithAuth(
         `${API_URL}/manager/sportcenter/publish/${sportCenter?.id}`,
         {
           method: "PUT",
@@ -60,21 +60,26 @@ const PanelView: React.FC = () => {
           },
         }
       );
-
-      // Actualizar el estado local con la respuesta del servidor
+  
       setSportCenter((prevState) => ({
         ...prevState!,
         status: SportCenterStatus.PUBLISHED,
       }));
-
+  
       swalConfirmation("Centro deportivo publicado exitosamente");
-    } catch (error: any) {
-      console.error("Error publishing sport center:", error);
-      swalNotifyError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error publishing sport center:", error);
+        swalNotifyError(error.message);
+      } else {
+        console.error("Error publishing sport center:", error);
+        swalNotifyError("Error desconocido");
+      }
     } finally {
       setIsPublishing(false);
     }
   };
+  
 
   const handleImageUpload = (file: File) => {
     console.log("Uploading image:", file);

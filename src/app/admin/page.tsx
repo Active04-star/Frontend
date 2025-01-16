@@ -12,9 +12,10 @@ import ManagerPremium from "@/components/managerPremium/managerPremium";
 import InicioView from "@/views/inicioView/inicioView";
 import verifyUser from "@/helpers/auth/illegalUserVerify";
 import RegisterAdminView from "@/views/RegisterAdminView/RegisterAdminView";
+import Categorias from "@/views/categoriasView/categoriasView";
 
-export type ViewName = "settings" | "centers" | "clientes" | "managers" | "inicio" | "newadmin";
-const validViewNames: ViewName[] = ["settings", "centers", "clientes", "managers", "inicio", "newadmin"];
+export type ViewName = "settings" | "centers" | "clientes" | "managers" | "inicio" | "newadmin" | "categorias";
+const validViewNames: ViewName[] = ["settings", "centers", "clientes", "managers", "inicio", "newadmin", "categorias"];
 
 const isValidViewName = (value: string): value is ViewName => {
   return validViewNames.includes(value as ViewName);
@@ -26,6 +27,7 @@ const VIEWS: Record<ViewName, React.ComponentType<{ onCardClick?: (viewName: Vie
   clientes: UserList,
   managers: ManagerPremium,
   newadmin: RegisterAdminView,
+  categorias: Categorias,
   inicio: ({ onCardClick }) => <InicioView onCardClick={onCardClick!} />,
 };
 
@@ -65,7 +67,7 @@ const Admin = () => {
     }
 
     const queryString = new URLSearchParams(window.location.search);
-    const queryParams: any = Object.fromEntries(queryString.entries());
+    const queryParams: Record<string, string> = Object.fromEntries(queryString.entries());
 
     if (queryParams.view !== undefined && isValidViewName(queryParams.view)) {
       setCurrentView(queryParams.view);
@@ -83,18 +85,19 @@ const Admin = () => {
         if (typeof window === "undefined") return;
         const width = window.innerWidth;
         const height = window.innerHeight;
-
+  
         if (width < 768) setSidebarWidth(200);
         else if (width < 1024) setSidebarWidth(250);
         else setSidebarWidth(300);
-
+  
         setSidebarHeight(height);
       });
     };
-
+    
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  
 
   if (!isMounted) {
     return (

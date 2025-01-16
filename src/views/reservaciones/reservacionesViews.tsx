@@ -33,8 +33,12 @@ const ReservacionesViews: React.FC = () => {
       );
 
       setReservations(response);
-    } catch (error: any) {
-      swalNotifyError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        swalNotifyError(error.message);
+      } else {
+        swalNotifyError("Error desconocido");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -48,10 +52,19 @@ const ReservacionesViews: React.FC = () => {
     return reservations.filter((reservation) => reservation.status === status);
   };
   const handleComplete = async (id: string) => {
-    setCompletingId(id);
+    const result = await Swal.fire({
+      title: "Estas seguro?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, completar",
+    });
 
+    if (result.isConfirmed) {
+      setCompletingId(id);
     try {
-      await fetchWithAuth(`${API_URL}/reservation/complete/${id}`, {
+      await fetchWithAuth(`${API_URL}/manager/reservation/complete/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -66,11 +79,15 @@ const ReservacionesViews: React.FC = () => {
         )
       );
       swalConfirmation("Reservacion completada");
-    } catch (error: any) {
-      swalNotifyError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        swalNotifyError(error.message);
+      } else {
+        swalNotifyError("Error desconocido");
+      }
     } finally {
       setCompletingId(null);
-    }
+    }}
   };
 
   const handleCancel = async (id: string) => {
@@ -102,10 +119,14 @@ const ReservacionesViews: React.FC = () => {
           )
         );
         swalConfirmation("Reservacion Cancelada");
-      } catch (error: any) {
-        swalNotifyError(error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          swalNotifyError(error.message);
+        } else {
+          swalNotifyError("Error desconocido");
+        }
       } finally {
-        setCancellingId(null);
+        setCompletingId(null);
       }
     }
   };
@@ -119,10 +140,7 @@ const ReservacionesViews: React.FC = () => {
   }
 
   return (
-    <div className="mt-16 max-w-7xl mx-auto p-6 bg-gray-100">
-      <h1 className="text-3xl font-bold mb-8 text-center">
-        Reservations Management
-      </h1>
+    <div className="mt-16 max-w-7xl mx-auto p-6 bg-black">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <h2 className="text-xl font-semibold mb-4 text-green-600">Activas</h2>
@@ -131,6 +149,8 @@ const ReservacionesViews: React.FC = () => {
               key={reservation.id}
               reservation={reservation}
               onCancel={handleCancel}
+              onComplete={handleComplete
+              }
               isCompleting={completingId === reservation.id}
               isCancelling={cancellingId === reservation.id}
             />

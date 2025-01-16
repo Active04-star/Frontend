@@ -146,7 +146,7 @@ const UserList = () => {
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [fetchUsers]);
 
 
   const handleToggleBan = async (id: string, wasBanned: boolean) => {

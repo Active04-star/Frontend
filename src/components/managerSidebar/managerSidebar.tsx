@@ -55,7 +55,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
             {/* Menu Item "Notificaciones" */}
             <li>
               <button
-                onClick={() => onMenuClick && onMenuClick("Notificaciones")}
+                onClick={() => onMenuClick && onMenuClick("Ubicacion")}
                 className="relative flex flex-row items-center h-11 focus:outline-none text-gray-600 hover:text-white -l-4 border-transparent hover:border-yellow-400 pr-6"
               >
                 <span className="inline-flex justify-center items-center ml-4">
@@ -75,7 +75,7 @@ const MSidebar: React.FC<{ onMenuClick: (viewName: ViewName) => void }> = ({
                   </svg>
                 </span>
                 <span className="ml-2 text-sm tracking-wide truncate">
-                  Notificaciones
+                  Ubicacion
                 </span>
               </button>
             </li>
