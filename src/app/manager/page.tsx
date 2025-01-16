@@ -10,6 +10,7 @@ import PremiumCard from "@/views/PremiumCard/PremiumCard";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { UserRole } from "@/enum/userRole";
+import { useRouter } from "next/navigation";
 
 // Define view types for better type safety
 export type ViewName =
@@ -28,9 +29,10 @@ const VIEWS: Record<ViewName, React.ComponentType> = {
 };
 
 const ManagerPage = () => {
+  const router = useRouter();
   const [currentView, setCurrentView] = useState<ViewName>("panel");
   const [sidebarWidth, setSidebarWidth] = useState<number>(250); // Ancho inicial en píxeles
-  const [user] = useLocalStorage<IUser | null>("userSession", null);
+  const [user,setUser] = useLocalStorage<IUser | null>("userSession", null);
   // Estado para manejar la altura del sidebar
   const [sidebarHeight, setSidebarHeight] = useState<number>(0); // Altura inicial igual al alto de la ventana
   const [isMounted, setIsMounted] = useState(false);
@@ -56,17 +58,18 @@ const ManagerPage = () => {
   };
 
   useEffect(() => {
-    if (
-      user?.token === null ||
-      user?.user.role === UserRole.ADMIN ||
-      user?.user.role === UserRole.USER
-    ) {
-      window.location.href = "/";
-      return;
-    }
+    const checkUserSession = () => {
+      const storedUser = JSON.parse(localStorage.getItem("userSession") || "null");
+      if (!storedUser || storedUser.user.role !== UserRole.MAIN_MANAGER) {
+        router.push("/login?from=out_session");
+        return;
+      }
+      setUser(storedUser); // Asegurarse de que el estado de usuario esté sincronizado con localStorage
+      setIsMounted(true);
+      updateSidebarDimensions();
+    };
 
-    setIsMounted(true);
-
+    checkUserSession();
     const handleResize = () => {
       window.requestAnimationFrame(updateSidebarDimensions);
     };
@@ -78,7 +81,7 @@ const ManagerPage = () => {
   if (!isMounted) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-       <h1>Implementar mapas</h1>
+       <h1>No se monto el componente</h1>
       </div>
     );
   }
