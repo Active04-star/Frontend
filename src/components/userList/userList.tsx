@@ -118,22 +118,6 @@ const UserList = () => {
 
 
   useEffect(() => {
-    // const fetchUsers = async () => {
-    //   try {
-
-    //     const response = await fetchWithAuth(`${API_URL}/admin/list/user?limit=100`, {
-    //       method: "GET",
-    //     });
-
-    //     setUsers(response.users || []);
-
-    //   } catch (error) {
-    //     console.error("Error fetching users:", error);
-    //     setUsers([]);
-    //   }
-    // };
-
-    // fetchUsers();
 
     fetchUsers();
 

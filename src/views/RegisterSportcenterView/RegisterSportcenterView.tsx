@@ -1,15 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ICenterRegister,
-  ISportCenter,
-  IUser,
-  IuserWithoutToken,
-} from "@/types/zTypes";
+import { ICenterRegister, IUser } from "@/types/zTypes";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
-import { API_URL } from "@/config/config";
+import { API_URL, MAPBOX_TOKEN } from "@/config/config";
 import { CenterRegisterSchema } from "@/types/centerRegister-schema";
 import { z } from "zod";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
@@ -19,8 +14,9 @@ import BotonVolver from "@/components/back-button/back-button";
 import { ModalInformacion } from "@/components/modal/modal.component";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
-import { UserRole } from "@/enum/userRole";
 import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
+import RegistrationMap from "@/components/maps/registrationMap";
+import LoadingCircle from "@/components/general/loading-circle";
 
 type FormErrors<T> = { [K in keyof T]?: string[] };
 
@@ -28,9 +24,7 @@ export default function RegisterSportcenter() {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const router = useRouter(); // Hook para redirigir
   const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
-  // const user: Partial<IUser> = iuser ? iuser.user : null;
   const [hide, setHide] = useState(true);
-
   const [sportCenter, setSportCenter] = useState<ICenterRegister>({
     name: "",
     address: "",
@@ -38,19 +32,23 @@ export default function RegisterSportcenter() {
     longitude: undefined
   });
   const [errors, setErrors] = useState<FormErrors<ICenterRegister>>({});
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [navbarHeight, setNavbarHeight] = useState<number>(0);
+
+
+  useEffect(() => {
+    setIsLoaded(true);
+    return (() => setIsLoaded(false));
+  }, []);
 
   const closeModal = () => {
-    setIsModalOpen(false); // Cierra el modal
+    setIsModalOpen(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
-    const finalValue = type === 'number' 
-      ? (value ? parseFloat(value) : undefined) 
-      : value;
+    const finalValue = type === 'number' ? (value ? parseFloat(value) : undefined) : value;
     setSportCenter(prev => ({ ...prev, [name]: finalValue }));
   };
 
@@ -94,13 +92,9 @@ export default function RegisterSportcenter() {
           }
         );
 
-        console.log('firma del centro',response);
-        
-
         const { token, user } = response;
 
         localStorage.setItem("userSession", JSON.stringify({ token, user }))
-
 
         await getCenterIfManager(response);
 
@@ -141,25 +135,21 @@ export default function RegisterSportcenter() {
         setHide(false);
       }
     }
+
   }, [userLocalStorage]);
 
   return (
     <>
       {hide ? null : (
-        <>
+
+        <div style={{ paddingTop: `${navbarHeight + 16}px` }}>
+
           {isModalOpen && <ModalInformacion closeModal={closeModal} />}
           <BotonVolver />
 
           <div className="min-h-screen flex flex-col items-center justify-center bg-custom-dark text-center">
             {isSubmitting ? (
-              <>
-                <h1 className="text-4xl font-bold text-white mb-8 font-serif">
-                  Cargando...
-                </h1>
-                <div className="w-32 h-32">
-                  <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
-                </div>
-              </>
+              <LoadingCircle />
             ) : (
               <>
                 <h1 className="text-4xl font-bold text-white mb-8">
@@ -211,8 +201,10 @@ export default function RegisterSportcenter() {
                       </p>
                     )}
                   </div>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div>
+
+                  <div className="w-full h-[400px]">
+                    <RegistrationMap />
+                    {/* <div>
                       <label
                         className="block text-white mb-2 text-center font-medium text-lg"
                         htmlFor="latitude"
@@ -258,7 +250,7 @@ export default function RegisterSportcenter() {
                           {errors.longitude[0]}
                         </p>
                       )}
-                    </div>
+                    </div> */}
                   </div>
 
 
@@ -275,7 +267,8 @@ export default function RegisterSportcenter() {
               </>
             )}
           </div>
-        </>
+        </div>
+
       )}
     </>
   );
