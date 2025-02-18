@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 "use client";
 import LoadingCircle from "@/components/general/loading-circle";
 import { UserRole } from "@/enum/userRole";
@@ -20,6 +21,7 @@ import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
 import { getUserType } from "@/helpers/auth/getUserType";
 import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
+import { Page } from "@/enum/Pages";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -35,7 +37,10 @@ const LoginView: React.FC = () => {
   const [navbarHeight, setNavbarHeight] = useState<number>(0);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+    if(name === "email") {
+      value = value.toLowerCase();
+    }
     setUserData({ ...userData, [name]: value });
   };
 
@@ -154,7 +159,7 @@ const LoginView: React.FC = () => {
       await getCenterIfManager(response);
 
       const roleRoutes = {
-        [UserRole.USER]: "/user",
+        [UserRole.USER]: Page.SEARCH,
         [UserRole.MAIN_MANAGER]: "/manager",
         [UserRole.ADMIN]: "/admin",
         [UserRole.SUPER_ADMIN]: "/admin",

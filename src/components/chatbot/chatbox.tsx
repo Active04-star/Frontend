@@ -8,6 +8,7 @@ import { IUser } from '@/types/zTypes'
 import { API_URL } from '@/config/config'
 import { fetchAndCatch } from '@/helpers/errors/fetch-error-interceptor'
 import { useRouter } from 'next/navigation'
+import { Page } from '@/enum/Pages'
 
 interface Message {
   id: number
@@ -38,7 +39,7 @@ const Chatbot: React.FC = () => {
         setRedirectCountdown(redirectCountdown - 1)
       }, 1000)
     } else if (redirectCountdown === 0) {
-      router.push('/user')
+      router.push(Page.SEARCH)
       setRedirectCountdown(null)
     }
     return () => clearTimeout(timer)
