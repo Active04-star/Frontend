@@ -1,8 +1,5 @@
 import { API_URL } from "@/config/config";
 import { fetchWithAuth } from "../errors/fetch-with-token-interceptor";
-import { ApiError } from "next/dist/server/api-utils";
-import { swalCustomError } from "../swal/swal-custom-error";
-import { swalNotifyUnknownError } from "../swal/swal-notify-unknown-error";
 import { ErrorHelper } from "../errors/error-helper";
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
 

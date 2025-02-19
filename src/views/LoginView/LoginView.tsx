@@ -8,7 +8,6 @@ import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { login } from "@/helpers/auth/login";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
-import { LoginErrors } from "@/types/Errortypes";
 import { UserLoginSchema } from "@/types/userLogin-schema";
 import { IUser, IUserLogin } from "@/types/zTypes";
 import { useRouter } from "next/navigation";
@@ -22,6 +21,7 @@ import { getUserType } from "@/helpers/auth/getUserType";
 import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
 import { Page } from "@/enum/Pages";
+import { useError } from "@/helpers/errors/zod-error-normalizator";
 
 const LoginView: React.FC = () => {
   const router = useRouter();
@@ -31,7 +31,7 @@ const LoginView: React.FC = () => {
   };
 
   const [userData, setUserData] = useState<IUserLogin>(initialState);
-  const [errors, setErrors] = useState<LoginErrors | null>(null);
+  const [errors, setErrors] = useError<IUserLogin | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [navbarHeight, setNavbarHeight] = useState<number>(0);
@@ -46,7 +46,7 @@ const LoginView: React.FC = () => {
 
   useEffect(() => {
     setIsSubmitting(false);
-    const data = zodValidate<LoginErrors>(userData, UserLoginSchema);
+    const data = zodValidate<IUserLogin>(userData, UserLoginSchema);
 
     if (!data.success) {
       setErrors(data.errors);
@@ -90,7 +90,7 @@ const LoginView: React.FC = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const validation = zodValidate<LoginErrors>(userData, UserLoginSchema);
+    const validation = zodValidate<IUserLogin>(userData, UserLoginSchema);
 
     if (validation.errors === null || validation.errors.email === undefined) {
 
@@ -224,12 +224,12 @@ const LoginView: React.FC = () => {
               {userData.email &&
                 errors !== null &&
                 errors.email !== undefined &&
-                errors?.email._errors !== undefined ? (
+                errors?.email !== undefined ? (
                 <span
                   className="text-sm text-red-600"
                   style={{ fontSize: "12px" }}
                 >
-                  {errors.email._errors}
+                  {errors.email}
                 </span>
               ) : null}
             </div>
@@ -264,13 +264,13 @@ const LoginView: React.FC = () => {
               {userData.password &&
                 errors !== null &&
                 errors.password !== undefined &&
-                errors?.password._errors !== undefined ? (
+                errors?.password !== undefined ? (
                 <>
                   <span
                     className="text-sm text-red-600"
                     style={{ fontSize: "12px" }}
                   >
-                    {errors.password._errors[0]}
+                    {errors.password[0]}
                   </span>
 
                   <div>
@@ -278,9 +278,9 @@ const LoginView: React.FC = () => {
                       className="text-sm text-red-600"
                       style={{ fontSize: "12px" }}
                     >
-                      {errors.password._errors[1] !== undefined &&
-                        errors.password._errors[1].length > 0
-                        ? errors.password._errors[1]
+                      {errors.password[1] !== undefined &&
+                        errors.password[1].length > 0
+                        ? errors.password[1]
                         : null}
                     </span>
                   </div>

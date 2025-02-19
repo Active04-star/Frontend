@@ -58,3 +58,14 @@ export type ISportCenter_Schedule = z.infer<typeof SportCenterScheduleSchema>
 export type IQueryParams = z.infer<typeof QueryParamsSchema>
 
 export type IUserQueryParams = z.infer<typeof UserQueryParamsSchema>
+
+export const schemaMap = {
+    IUserRegister: UserRegisterSchema,
+    IUser: UserSchemaWToken,
+    ICenterRegister: CenterRegisterSchema,
+} as const;
+
+// Función para acceder al esquema dado un tipo
+export function getSchema<T extends keyof typeof schemaMap>(type: T): (typeof schemaMap)[T] {
+    return schemaMap[type];
+}

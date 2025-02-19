@@ -21,7 +21,7 @@ export const passwordSchema = z
     }
 
     if (!/[!@#$%^&*]/.test(password)) {
-      errors.push("almenos un caracter Especial !@#$%^&*");
+      errors.push("almenos un caracter especial !@#$%^&*");
     }
 
     if (errors.length === 0) {
