@@ -9,14 +9,14 @@ import { UserRegisterSchema } from "@/types/userRegister-schema";
 import React, { useEffect, useState } from "react";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { RegisterErrors } from "@/types/Errortypes";
 import LoadingCircle from "@/components/general/loading-circle";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { API_URL } from "@/config/config";
 import { UserRole } from "@/enum/userRole";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
-
+import { useError } from "@/helpers/errors/zod-error-normalizator";
+//TODO ERROR SPAN REFACTOR HERE
 const RegisterAdminView: React.FC = () => {
 
     const initalState: IUserRegister = {
@@ -27,7 +27,7 @@ const RegisterAdminView: React.FC = () => {
     };
 
     const [userData, setUserData] = useState<IUserRegister>(initalState);
-    const [errors, setErrors] = useState<RegisterErrors | null>(null);
+    const [errors, setErrors] = useError<IUserRegister | null>(null);
     const [user] = useLocalStorage<IUser | null>("userSession", null);
 
     const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +46,7 @@ const RegisterAdminView: React.FC = () => {
 
 
     useEffect(() => {
-        const data = zodValidate<RegisterErrors>(userData, UserRegisterSchema);
+        const data = zodValidate<IUserRegister>(userData, UserRegisterSchema);
 
         if (!data.success) {
             setErrors(data.errors);
@@ -154,12 +154,12 @@ const RegisterAdminView: React.FC = () => {
                                             {userData.name &&
                                                 errors !== null &&
                                                 errors.name !== undefined &&
-                                                errors?.name._errors !== undefined ? (
+                                                errors?.name !== undefined ? (
                                                 <span
                                                     className="text-sm text-red-600"
                                                     style={{ fontSize: "12px" }}
                                                 >
-                                                    {errors.name._errors}
+                                                    {errors.name}
                                                 </span>
                                             ) : null}
                                         </div>
@@ -183,12 +183,12 @@ const RegisterAdminView: React.FC = () => {
                                             {userData.email &&
                                                 errors !== null &&
                                                 errors.email !== undefined &&
-                                                errors?.email._errors !== undefined ? (
+                                                errors?.email !== undefined ? (
                                                 <span
                                                     className="text-sm text-red-600"
                                                     style={{ fontSize: "12px" }}
                                                 >
-                                                    {errors.email._errors}
+                                                    {errors.email}
                                                 </span>
                                             ) : null}
                                         </div>
@@ -225,13 +225,13 @@ const RegisterAdminView: React.FC = () => {
                                             {userData.password &&
                                                 errors !== null &&
                                                 errors.password !== undefined &&
-                                                errors?.password._errors !== undefined ? (
+                                                errors?.password !== undefined ? (
                                                 <>
                                                     <span
                                                         className="text-sm text-red-600"
                                                         style={{ fontSize: "12px" }}
                                                     >
-                                                        {errors.password._errors[0]}
+                                                        {errors.password[0]}
                                                     </span>
 
                                                     <div>
@@ -239,9 +239,9 @@ const RegisterAdminView: React.FC = () => {
                                                             className="text-sm text-red-600"
                                                             style={{ fontSize: "12px" }}
                                                         >
-                                                            {errors.password._errors[1] !== undefined &&
-                                                                errors.password._errors[1].length > 0
-                                                                ? errors.password._errors[1]
+                                                            {errors.password[1] !== undefined &&
+                                                                errors.password[1].length > 0
+                                                                ? errors.password[1]
                                                                 : null}
                                                         </span>
                                                     </div>
@@ -283,12 +283,12 @@ const RegisterAdminView: React.FC = () => {
                                             {userData.confirm_password &&
                                                 errors !== null &&
                                                 errors.confirm_password !== undefined &&
-                                                errors?.confirm_password._errors !== undefined ? (
+                                                errors?.confirm_password !== undefined ? (
                                                 <span
                                                     className="text-sm text-red-600"
                                                     style={{ fontSize: "12px" }}
                                                 >
-                                                    {errors.confirm_password._errors}
+                                                    {errors.confirm_password}
                                                 </span>
                                             ) : null}
                                         </div>

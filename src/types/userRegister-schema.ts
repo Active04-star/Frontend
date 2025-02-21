@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-export const mail_lenght_error = "El mail debe estar entre 3 - 50 caracteres";
-const name_lenght_error = "El nombre debe estar entre 3 - 50 caracteres";
+export const mail_lenght_error = "El mail debe estar entre 3 y 50 caracteres";
+const name_lenght_error = "El nombre debe estar entre 3 y 50 caracteres";
 
 export const passwordSchema = z
   .string()
-  .min(8, "Debe ser mayor a 8 caracteres")
+  .min(8, "La contraseña debe ser mayor a 8 caracteres")
   .superRefine((password, ctx) => {
     const errors = [];
     if (!/[a-z]/.test(password)) {
@@ -30,7 +30,7 @@ export const passwordSchema = z
 
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: errors.length > 0 ? "Debe contener " + errors.join(", ") : "",
+      message: errors.length > 0 ? "La contraseña debe contener " + errors.join(", ") : "",
     });
   });
 

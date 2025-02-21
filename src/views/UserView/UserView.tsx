@@ -120,7 +120,7 @@ const UserView: React.FC = () => {
       } else if (validate.errors !== null) {
         const error = Object.entries(validate.errors).map(([, value]) => {
           const errors = value || [];
-          return ` ${errors._errors.join(", ")}`;
+          return ` ${errors.join(", ")}`;
 
         }).join(", ");
 

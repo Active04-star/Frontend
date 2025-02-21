@@ -16,6 +16,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { useError } from "@/helpers/errors/zod-error-normalizator";
+import ErrorSpan from "@/components/general/error-form-span";
 
 const RegisterView: React.FC = () => {
   const router = useRouter();
@@ -54,7 +55,6 @@ const RegisterView: React.FC = () => {
     const data = zodValidate<IUserRegister>(userData, UserRegisterSchema);
 
     if (!data.success) {
-      console.log(data.errors);
       setErrors(data.errors);
     } else {
       setErrors(null);
@@ -138,28 +138,24 @@ const RegisterView: React.FC = () => {
                     >
                       Nombre
                     </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={userData.name}
-                      onChange={handleChange}
-                      placeholder="John Doe"
-                      className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                    />
-                    {
-                      userData.name &&
-                        errors !== null &&
-                        errors.name !== undefined &&
-                        errors?.name !== undefined ? (
-                        <span
-                          className="text-sm text-red-600"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {errors.name[0]}
-                        </span>
-                      ) : null
-                    }
+                    <div className="relative">
+
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={userData.name}
+                        onChange={handleChange}
+                        placeholder="John Doe"
+                        className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                      />
+                      {
+                        userData.name && errors?.name !== undefined &&
+                        <div className="absolute top-1 text-start text-xs text-red-600 z-20 w-full max-w-full left-full ml-3">
+                          <ErrorSpan errors={errors?.name} />
+                        </div>
+                      }
+                    </div>
                   </div>
 
                   <div className="mb-6">
@@ -169,26 +165,24 @@ const RegisterView: React.FC = () => {
                     >
                       Email
                     </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={userData.email}
-                      onChange={handleChange}
-                      placeholder="mail@mail.com"
-                      className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                    />
-                    {userData.email &&
-                      errors !== null &&
-                      errors.email !== undefined &&
-                      errors?.email !== undefined ? (
-                      <span
-                        className="text-sm text-red-600"
-                        style={{ fontSize: "12px" }}
-                      >
-                        {errors.email[0]}
-                      </span>
-                    ) : null}
+                    <div className="relative">
+
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={userData.email}
+                        onChange={handleChange}
+                        placeholder="mail@mail.com"
+                        className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                      />
+                      {
+                        userData.email && errors?.email !== undefined &&
+                        <div className="absolute top-1 text-start text-xs text-red-600 z-20 w-full max-w-full left-full ml-3">
+                          <ErrorSpan errors={errors?.email} />
+                        </div>
+                      }
+                    </div>
                   </div>
 
                   <div className="mb-6 relative">
@@ -218,33 +212,14 @@ const RegisterView: React.FC = () => {
                           <FaEye style={{ color: "black" }} />
                         )}
                       </div>
+                      {
+                        userData.password && errors?.password !== undefined &&
+                        <div className="absolute top-1 text-start text-xs text-red-600 z-20 w-full max-w-full left-full ml-3">
+                          <ErrorSpan errors={errors?.password} />
+                        </div>
+                      }
                     </div>
 
-                    {userData.password &&
-                      errors !== null &&
-                      errors.password !== undefined &&
-                      errors?.password !== undefined ? (
-                      <>
-                        <span
-                          className="text-sm text-red-600"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {errors.password[0]}
-                        </span>
-
-                        <div>
-                          <span
-                            className="text-sm text-red-600"
-                            style={{ fontSize: "12px" }}
-                          >
-                            {errors.password[1] !== undefined &&
-                              errors.password[1].length > 0
-                              ? errors.password[1]
-                              : null}
-                          </span>
-                        </div>
-                      </>
-                    ) : null}
                   </div>
 
                   <div>
@@ -277,18 +252,13 @@ const RegisterView: React.FC = () => {
                           <FaEye style={{ color: "black" }} />
                         )}
                       </div>
+                      {
+                        userData.confirm_password && errors?.confirm_password !== undefined &&
+                        <div className="absolute top-1 text-start text-xs text-red-600 z-20 w-full max-w-full left-full ml-3">
+                          <ErrorSpan errors={errors?.confirm_password} />
+                        </div>
+                      }
                     </div>
-                    {userData.confirm_password &&
-                      errors !== null &&
-                      errors.confirm_password !== undefined &&
-                      errors?.confirm_password !== undefined ? (
-                      <span
-                        className="text-sm text-red-600"
-                        style={{ fontSize: "12px" }}
-                      >
-                        {errors.confirm_password}
-                      </span>
-                    ) : null}
                   </div>
 
                   <div className="w-auto flex justify-around">

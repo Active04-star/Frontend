@@ -18,6 +18,7 @@ import RegistrationMap from "@/components/maps/registrationMap";
 import LoadingCircle from "@/components/general/loading-circle";
 import { useError } from "@/helpers/errors/zod-error-normalizator";
 import { zodValidate } from "@/helpers/validate-zod";
+import ErrorSpan from "@/components/general/error-form-span";
 
 export default function RegisterSportcenter() {
   const initial = {
@@ -31,17 +32,20 @@ export default function RegisterSportcenter() {
   const [hide, setHide] = useState(true);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [sportCenter, setSportCenter] = useState<ICenterRegister>(initial);
-  // const [errors, setErrors] = useState<FormatedErrors<ICenterRegister> | null>(null);
   const [errors, setErrors] = useError<ICenterRegister | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  // const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // setIsLoaded(true);
-    // return (() => setIsLoaded(false));
-  }, []);
+    const data = zodValidate<ICenterRegister>(sportCenter, CenterRegisterSchema);
+
+    if (!data.success) {
+      setErrors(data.errors);
+    } else {
+      setErrors(null);
+    }
+  }, [sportCenter]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -54,13 +58,13 @@ export default function RegisterSportcenter() {
     if (value !== "" || value !== undefined) {
 
       const data = zodValidate<ICenterRegister>(sportCenter, CenterRegisterSchema);
-      
+
       if (!data.success) {
         setErrors(data.errors);
       } else {
         setErrors(null);
       }
-      if (descriptionRef.current !== null) {
+      if (descriptionRef.current !== null && name === "description") {
         const newHeight = descriptionRef.current.scrollHeight;
 
         e.target.style.height = "auto";
@@ -94,7 +98,7 @@ export default function RegisterSportcenter() {
     setIsSubmitting(true);
 
     if (Object.values(sportCenter).find((data) => data === "") === "") {
-      swalCustomError("Error en el registro", "Los campos están vacios.");
+      swalCustomError("Error", "Los campos están vacios.");
 
       setIsSubmitting(false);
       return;
@@ -183,81 +187,128 @@ export default function RegisterSportcenter() {
               <LoadingCircle />
             ) : (
 
-              <div className="grid grid-flow-col">
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-8">
+                  Tu Complejo deportivo
+                </h1>
+                <div className="grid grid-flow-col">
 
-                {/* FORM */}
-                <div>
-                  <h1 className="text-4xl font-bold text-white mb-8">
-                    Tu Complejo deportivo
-                  </h1>
-                  <form onSubmit={handleSubmit} className="w-full max-w-sm">
-                    <div className="mb-6">
-                      <label
-                        className="block text-white mb-2 text-center font-medium text-lg"
-                        htmlFor="name"
-                      >
-                        Nombre
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={sportCenter.name}
-                        onChange={handleChange}
-                        placeholder="Ej: Centro deportivo Active"
-                        className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                      />
+                  {/* FORM */}
+                  <div>
 
-                      {errors && errors.name && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.name[0]}
-                        </p>
-                      )}
-                    </div>
+                    <form onSubmit={handleSubmit} className="w-full max-w-sm">
+                      <div className="mb-6">
+                        <label
+                          className="block text-white mb-2 ml-3 font-medium text-lg text-start"
+                          htmlFor="name"
+                        >
+                          Nombre
+                        </label>
+                        <div className="relative">
 
-                    <div className="mb-6">
-                      <label
-                        className="block text-white mb-2 text-center font-medium text-lg"
-                        htmlFor="address"
-                      >
-                        Descripción
-                      </label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        ref={descriptionRef}
-                        value={sportCenter.description}
-                        onChange={handleChange}
-                        rows={2}
-                        placeholder="Ej: Calle Principal 123"
-                        className="w-full px-4 py-2 min-h-[40px] max-h-[120px] overflow-x-auto overflow-y-auto border-gray-300 rounded-lg bg-gray-200 focus:outline-none resize-none text-black font-sans overflow-scroll disabled:cursor-not-allowed"
-                      />
-                      {errors && errors.address && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.address[0]}
-                        </p>
-                      )}
-                    </div>
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={sportCenter.name}
+                            onChange={handleChange}
+                            placeholder="Ej: Centro deportivo Active"
+                            className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                          />
 
-                    <div className="w-auto flex justify-around">
-                      <button
-                        type="submit"
-                        className="mt-5 bg-yellow-600 text-dark px-4 py-2 rounded hover:bg-yellow-700 disabled:cursor-not-allowed disabled:text-yellow-100 disabled:hover:bg-yellow-600"
-                        disabled={errors !== null}
-                      >
-                        Registrar
-                      </button>
-                    </div>
-                  </form>
-                </div>
+                          {
+                            sportCenter.name && errors?.name !== undefined &&
+                            <div className="absolute top-1 text-start text-xs text-red-600 z-5 w-full max-w-full -start-full flex justify-end -ml-3">
+                              <div className="max-w-60">
+                                <ErrorSpan errors={errors?.name} />
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
 
-                {/* MAP */}
-                <div className="w-full h-[400px]">
-                  <RegistrationMap />
+                      <div className="mb-6">
+                        <label
+                          className="block text-white mb-2 ml-3 font-medium text-lg text-start"
+                          htmlFor="description"
+                        >
+                          Descripción (Opcional)
+                        </label>
+
+                        <div className="relative">
+                          <textarea
+                            id="description"
+                            name="description"
+                            ref={descriptionRef}
+                            value={sportCenter.description}
+                            onChange={handleChange}
+                            rows={2}
+                            placeholder="Describe aquí las instalaciones, actividades y ambiente de tu centro."
+                            className="w-full px-4 py-2 min-h-[40px] max-h-[120px] overflow-x-auto overflow-y-auto border-gray-300 rounded-lg bg-gray-200 focus:outline-none resize-none text-black font-sans overflow-scroll disabled:cursor-not-allowed"
+                          />
+
+                          {
+                            sportCenter.description && errors?.description !== undefined &&
+                            <div className="absolute top-1 text-start text-xs text-red-600 z-5 w-full max-w-full -start-full flex justify-end -ml-3">
+                              <div className="max-w-60">
+                                <ErrorSpan errors={errors?.description} />
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+
+                      <div className="mb-6">
+                        <label
+                          className="block text-white mb-2 ml-3 font-medium text-lg text-start"
+                          htmlFor="address"
+                        >
+                          Direccion
+                        </label>
+                        <span className="text-sm text-start block">Puedes editar la direccion para que sea mas legible</span>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            id="address"
+                            name="address"
+                            value={sportCenter.address}
+                            onChange={handleChange}
+                            placeholder="Ej: Calle falsa"
+                            className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                          />
+
+                          {
+                            sportCenter.address && errors?.address !== undefined &&
+                            <div className="absolute top-1 text-start text-xs text-red-600 z-5 w-full max-w-full -start-full flex justify-end -ml-3">
+                              <div className="max-w-60">
+                                <ErrorSpan errors={errors?.address} />
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+
+                      <div className="w-auto flex justify-around">
+                        <button
+                          type="submit"
+                          className="mt-5 bg-yellow-600 text-dark px-4 py-2 rounded hover:bg-yellow-700 disabled:cursor-not-allowed disabled:text-yellow-100 disabled:hover:bg-yellow-600"
+                          disabled={errors !== null}
+                        >
+                          Registrar
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  {/* MAP */}
+                  <div className="ml-12 w-[400px] h-[400px] overflow-hidden">
+                    <RegistrationMap />
+                  </div>
                 </div>
               </div>
             )}
           </div>
+
         </>
       }
     </>
