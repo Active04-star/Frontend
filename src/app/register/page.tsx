@@ -1,5 +1,5 @@
 import Navbar from "@/components/navbar/navbar";
-import RegisterView from "@/views/RegisterView/RegisterView";
+import RegisterView from "@/views/Register/RegisterView";
 import React from "react";
 
 const Register = () => {

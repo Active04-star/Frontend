@@ -8,14 +8,13 @@ import { ErrorHelper } from "@/helpers/errors/error-helper";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { Search } from "lucide-react";
-import { IUserQueryParams } from "@/types/zTypes";
+import { IQueryParams, IUserQueryParams } from "@/types/zTypes";
 import { merge } from "@/utils/mergeObject";
 import { IUserList } from "@/interfaces/user_list.interface";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
 import { zodValidate } from "@/helpers/validate-zod";
 import { UserQueryParamsSchema } from "@/types/userQueryParams-schema";
-import { IQueryErrors } from "@/types/Errortypes";
 import LoadingCircle from "../general/loading-circle";
 
 const UserList = () => {
@@ -48,7 +47,7 @@ const UserList = () => {
       const queryString = new URLSearchParams(window.location.search);
       const queryParams: unknown = Object.fromEntries(queryString.entries());
       let actual_params: IUserQueryParams;
-      const validate = zodValidate<Omit<IQueryErrors, "rating">>(queryParams, UserQueryParamsSchema);
+      const validate = zodValidate<Omit<IQueryParams, "rating">>(queryParams, UserQueryParamsSchema);
 
       if (validate.success || queryString.size === 1 && queryString.has("view", "clientes")) {
 
@@ -88,7 +87,7 @@ const UserList = () => {
 
         const error = Object.entries(validate.errors)
           .map(([, value]) => {
-            const errors = value._errors || [];
+            const errors = value || [];
             return ` ${errors.join(", ")}`;
 
           }).join(", ");

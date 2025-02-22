@@ -1,12 +1,12 @@
 import React from "react";
 import Navbar from "@/components/navbar/navbar";
-import RegisterSportcenter from "@/views/RegisterSportcenterView/RegisterSportcenterView";
+import RegisterCenter from "@/views/RegisterCenter/RegisterCenterView";
 
 const Business = () => {
     return (
         <>
             <Navbar />
-            <RegisterSportcenter/>
+            <RegisterCenter/>
         </>
     );
 };
