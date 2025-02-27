@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { Clock, Loader2, CheckCircle2 } from 'lucide-react';
-import BotonVolver from '@/components/back-button/back-button';
+import BackButton from '@/components/general/back-button';
 import { useLocalStorage } from '@/helpers/auth/useLocalStorage';
 import { useRouter } from 'next/navigation';
 import { API_URL } from '@/config/config';
@@ -124,7 +124,7 @@ export default function ScheduleForm() {
   }
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <BotonVolver />
+      <BackButton />
       <div className="max-w-3xl mx-auto">
         {error && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">

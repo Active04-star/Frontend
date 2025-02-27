@@ -9,18 +9,18 @@ import { CenterRegisterSchema } from "@/types/centerRegister-schema";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import { swalNotifyError } from "@/helpers/swal/swal-notify-error";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
-import BotonVolver from "@/components/back-button/back-button";
-import { ModalInformacion } from "@/components/modal/modal.component";
+import BackButton from "@/components/general/back-button";
+import { RegisterCenterModal } from "@/views/RegisterCenter/InfoModal";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
-import RegistrationMap from "@/components/maps/registrationMap";
 import LoadingCircle from "@/components/general/loading-circle";
 import { useError } from "@/helpers/errors/zod-error-normalizator";
 import { zodValidate } from "@/helpers/validate-zod";
 import ErrorSpan from "@/components/general/error-form-span";
-import DropdownList from "@/components/general/dropdownList";
 import LocationForm from "./LocationForm";
+import { reverseGeocode } from "@/helpers/location/reversedGeoCode";
+import { Check, CircleCheckBig, CircleX, RefreshCcw } from "lucide-react";
 
 export default function RegisterCenter() {
   const initial = {
@@ -33,14 +33,14 @@ export default function RegisterCenter() {
   const [user] = useLocalStorage<IUser | null>("userSession", null);
   const [hide, setHide] = useState(true);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const [_useGeoLocation, setUseGeoLocation] = useState<[number, number] | undefined>(undefined);
+  const [wasLocated, setWasLocated] = useState<boolean>(false);
+
   const [sportCenter, setSportCenter] = useState<ICenterRegister>(initial);
   const [errors, setErrors] = useError<ICenterRegister | null>(null);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disabled, setDisabled] = useState(true);
-
-
-
+  const [isLocating, setIsLocating] = useState(false);
 
   useEffect(() => {
     const data = zodValidate<ICenterRegister>(sportCenter, CenterRegisterSchema);
@@ -54,6 +54,17 @@ export default function RegisterCenter() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const searchDirection = async () => {
+    if (_useGeoLocation === undefined)
+      return;
+
+    setIsLocating(true);
+    const direction = await reverseGeocode(_useGeoLocation[1], _useGeoLocation[0]);
+    setSportCenter(prev => ({ ...prev, address: direction }))
+    setWasLocated(true);
+    setIsLocating(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -112,7 +123,7 @@ export default function RegisterCenter() {
     const data = zodValidate<ICenterRegister>(sportCenter, CenterRegisterSchema);
 
     if (!data.success) {
-      swalCustomError("Error en el registro", "Por favor corrige los errores antes de continuar.");
+      swalCustomError("Error", "Por favor corrige los errores antes de continuar.");
 
       setIsSubmitting(false);
       return;
@@ -127,16 +138,13 @@ export default function RegisterCenter() {
           manager: user.user.id,
         };
 
-        const response: IUser = await fetchWithAuth(
-          `${API_URL}/sportcenter/create`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(new_sportcenter),
-          }
-        );
+        const response: IUser = await fetchWithAuth(`${API_URL}/sportcenter/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(new_sportcenter),
+        });
 
         const { token, user: user_ } = response;
 
@@ -184,34 +192,25 @@ export default function RegisterCenter() {
     <>
       {hide ? null :
         <>
-          {isModalOpen && <ModalInformacion closeModal={closeModal} />}
-          <BotonVolver />
+          {isModalOpen && <RegisterCenterModal closeModal={closeModal} />}
+          <BackButton />
 
           <div className="min-h-screen pt-[3%] bg-custom-dark text-center">
             {isSubmitting ? (
               <LoadingCircle />
             ) : (
 
-              <div className="h-screen w-full">
+              <div className="min-h-screen h-fit w-full mb-[3%]">
                 <h1 className="text-4xl font-bold text-white mb-8 h-[6.5%]">
                   Tu Complejo deportivo
                 </h1>
 
-                {/* <div className="grid grid-flow-col">
-
-                  <div className="ml-3">
-                    <span className="text-lg text-start block">¿Donde te ubicas?</span>
-                    <span className="text-sm text-start block">Dinos donde tus clientes pueden encontrar tu negocio</span>
-                  </div>
-                </div> */}
-
-                <div className="flex flex-row h-[88.2%] w-full justify-center">
+                <div className="flex flex-row min-h-[88.2%] h-fit w-full justify-center">
 
                   <div className="bg-neutral-500 bg-opacity-15 flex flex-col h-fit py-6 w-[35%]">
 
                     <div className="h-[10%] ml-3 mb-3">
                       <span className="text-base text-center block">Informacion Basica</span>
-                      {/* <span className="text-sm text-start block">Dinos donde tus clientes pueden encontrar tu negocio</span> */}
                     </div>
 
                     {/* FORM */}
@@ -288,34 +287,62 @@ export default function RegisterCenter() {
                             >
                               Direccion
                             </label>
-                            <span className="text-sm text-start block ml-1 mb-2">Puedes editar los detalles de la direccion</span>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                id="address"
-                                name="address"
-                                value={sportCenter.address}
-                                onChange={handleChange}
-                                placeholder="Ej: Calle falsa"
-                                className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                              />
+                            {
+                              isLocating ?
+                                <div className="w-6">Buscando...</div>
+                                :
+                                !wasLocated ?
+                                  <button
+                                    disabled={_useGeoLocation === undefined}
+                                    onClick={() => searchDirection()}
+                                    className="mt-3 disabled:cursor-not-allowed disabled:bg-red-600 bg-lime-600 cursor-pointer px-4 py-2 rounded-lg font-semibold flex gap-2"
+                                  >
+                                    {_useGeoLocation === undefined ? "Agrega un marcador" : "Usar esta direccion"}
+                                    {_useGeoLocation === undefined ?
+                                      <CircleX />
+                                      :
+                                      <CircleCheckBig />
+                                    }
+                                  </button>
+                                  :
+                                  <>
+                                    <span className="text-sm text-start block ml-1 mb-2">Puedes editar los detalles de la direccion</span>
+                                    <div className="relative flex gap-2">
+                                      <input
+                                        type="text"
+                                        id="address"
+                                        name="address"
+                                        value={sportCenter.address}
+                                        onChange={handleChange}
+                                        placeholder="Ej: Calle falsa"
+                                        className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
+                                      />
 
-                              {
-                                sportCenter.address && errors?.address !== undefined &&
-                                <div className="absolute top-1 text-start text-xs text-red-600 z-5 w-full max-w-full -start-full flex justify-end -ml-3">
-                                  <div className="max-w-60">
-                                    <ErrorSpan errors={errors?.address} />
-                                  </div>
-                                </div>
-                              }
-                            </div>
+                                      <div
+                                        title="Re-generar direccion"
+                                        className="h-full w-fit rounded-lg cursor-pointer p-2 bg-lime-600"
+                                        onClick={() => searchDirection()}
+                                      >
+                                        <RefreshCcw />
+                                      </div>
+                                      {
+                                        sportCenter.address && errors?.address !== undefined &&
+                                        <div className="absolute top-1 text-start text-xs text-red-600 z-5 w-full max-w-full -start-full flex justify-end -ml-3">
+                                          <div className="max-w-60">
+                                            <ErrorSpan errors={errors?.address} />
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                  </>
+                            }
                           </div>
 
                           <div className="w-auto flex justify-around">
                             <button
                               type="submit"
                               className="mt-5 bg-yellow-600 text-dark px-4 py-2 rounded hover:bg-yellow-700 disabled:cursor-not-allowed disabled:text-yellow-100 disabled:hover:bg-yellow-600"
-                              disabled={errors !== null}
+                              disabled={errors !== null && disabled}
                             >
                               Registrar
                             </button>
@@ -326,7 +353,7 @@ export default function RegisterCenter() {
                   </div>
 
                   {/* MAP */}
-                  <LocationForm />
+                  <LocationForm useGeoLocation={setUseGeoLocation} formName={sportCenter.name} />
                 </div>
               </div>
 

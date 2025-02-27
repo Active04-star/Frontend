@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 
-// Componente Modal con las dos páginas de información
-export const ModalInformacion: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
+export const RegisterCenterModal: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleSiguiente = () => {
-    if (currentPage === 1) {
-      setCurrentPage(2); // Avanzamos a la página 2
+  const nextPage = (page?: number) => {
+    if (page) {
+      setCurrentPage(currentPage + page);
+    } else if (currentPage === 1) {
+      setCurrentPage(2);
     }
-  };
-
-  const handleCerrar = () => {
-    closeModal(); // Cerrar el modal
   };
 
   return (
@@ -29,7 +26,7 @@ export const ModalInformacion: React.FC<{ closeModal: () => void }> = ({ closeMo
               como reservas, usuarios y eventos, de manera eficiente y organizada.
             </p>
             <button
-              onClick={handleSiguiente}
+              onClick={() => nextPage()}
               className="mt-5 bg-yellow-600 px-4 py-2 rounded hover:bg-yellow-700 text-white"
             >
               Siguiente
@@ -46,7 +43,13 @@ export const ModalInformacion: React.FC<{ closeModal: () => void }> = ({ closeMo
               ¡Haz crecer tu negocio y mejora la experiencia de tus clientes con nosotros!
             </p>
             <button
-              onClick={handleCerrar}
+              onClick={() => nextPage(-1)}
+              className="mt-5 bg-yellow-600 px-4 py-2 rounded hover:bg-yellow-700 text-white mr-3"
+            >
+              Anterior
+            </button>
+            <button
+              onClick={() => closeModal()}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             >
               Cerrar

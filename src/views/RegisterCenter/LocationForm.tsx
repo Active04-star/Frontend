@@ -1,21 +1,21 @@
-import DropdownList from "@/components/general/dropdownList";
 import LoadingCircle from "@/components/general/loading-circle";
-import RegistrationMap from "@/components/maps/registrationMap";
-import { useEffect, useState } from "react";
+import FormMap from "@/views/RegisterCenter/FormMap";
+import { MapPin } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-export default function LocationForm() {
-    const initial_location = { longitude: -74.006, latitude: 40.7128, zoom: 12 };
-    const [location, setLocation] = useState<{ latitude: number; longitude: number; zoom: number }>(initial_location);
+const LocationForm: React.FC<{ formName: string; useGeoLocation: Dispatch<SetStateAction<[number, number] | undefined>> }> = ({ formName, useGeoLocation }) => {
+    const initial_location = { longitude: -74.006, latitude: 40.7128, zoom: 12, default: true };
+    const [location, setLocation] = useState<{ latitude: number; longitude: number; zoom: number; default?: boolean }>(initial_location);
     const [loading, setLoading] = useState(false);
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
-        getCountries();
-        handleGetLocation();
 
         return (() => setLocation(initial_location));
     }, []);
 
     const handleGetLocation = () => {
+        setDisabled(true);
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -37,15 +37,8 @@ export default function LocationForm() {
         }
 
         setLoading(false);
+        setDisabled(false);
 
-    };
-
-    const getCountries = async () => {
-        const response = await fetch('https://countriesnow.space/api/v0.1/countries/positions', {
-            method: "GET",
-        });
-        const data = await response.json();
-        console.log(data);
     };
 
     return (
@@ -56,53 +49,38 @@ export default function LocationForm() {
                         <LoadingCircle />
                     </div >
                     :
-                    <div className="ml-12">
-                        {/* <div className="ml-3">
-                            <span className="text-lg text-start block">¿Donde te ubicas?</span>
-                            <span className="text-sm text-start block">Dinos donde tus clientes pueden encontrar tu negocio</span>
-                        </div> */}
+                    <div className="ml-6 px-6 pt-6 bg-neutral-500 bg-opacity-15">
+                        <div className="mb-3">
 
-                        {/* <div className="flex gap-1 mb-5"> */}
-                        <div className="flex flex-col">
-                            <span className="text-start font-medium text-lg">Pais:</span>
-                            <div className="w-5/12">
-                                <DropdownList
-                                    label="Selecciona"
-                                    replaceLabel={true}
-                                    options={["1", "2"]}
-                                    onSelect={(value) => console.log("Seleccionado:", value)}
-                                />
-                            </div>
+                            <span className="ml-3 text-lg text-start block font-medium">¿Donde se ubica tu negocio?</span>
+                            <span className="text-sm text-start block max-w-full">Doble click en el mapa para agregar tu ubicacion y</span>
+                            <span className="text-sm text-start block max-w-full -mt-[2px]">generar una direccion</span>
                         </div>
 
-                        <div className="flex gap-1 mb-5">
-                            <div className="flex flex-col">
-                                <span className="text-start font-medium text-lg">Estado:</span>
-                                <DropdownList
-                                    label="Selecciona"
-                                    replaceLabel={true}
-                                    options={["a", "b"]}
-                                    onSelect={(value) => console.log("Seleccionado:", value)}
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-start font-medium text-lg">Ciudad:</span>
-                                <DropdownList
-                                    label="Selecciona"
-                                    replaceLabel={true}
-                                    options={["p", "q"]}
-                                    onSelect={(value) => console.log("Seleccionado:", value)}
-                                />
-                            </div>
+                        <div className="w-[400px] h-[400px] overflow-hidden">
+                            <FormMap useGeoLocation={useGeoLocation} formName={formName || "Nombre de tu negocio"} location={location} />
+                            {disabled &&
+                                <div className="w-[400px] h-[400px] top-1 left-1 absolute z-1 bg-gray-500 cursor-wait">
+                                    <LoadingCircle />
+                                </div>
+                            }
                         </div>
-                        {/* </div> */}
 
-                        <div className=" w-[400px] h-[300px] overflow-hidden">
-                            <RegistrationMap location={location} />
+                        <div className="w-auto flex content-start">
+                            <button
+                                onClick={() => handleGetLocation()}
+                                disabled={disabled}
+                                className="ml-3 my-5 bg-gray-300 text-dark px-4 py-2 rounded disabled:cursor-not-allowed text-gray-900 flex gap-1"
+                            >
+                                <MapPin />
+                                Mi ubicacion
+                            </button>
                         </div>
 
                     </div>
             }
         </>
     );
-}
+};
+
+export default LocationForm;

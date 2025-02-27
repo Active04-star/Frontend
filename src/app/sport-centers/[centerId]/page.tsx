@@ -3,7 +3,7 @@ import { API_URL } from "@/config/config";
 import FieldCard from "@/components/fieldCard/fieldCard";
 import { ISportCenter } from "@/interfaces/sport_center.interface";
 import Navbar from "@/components/navbar/navbar";
-import BotonVolver from "@/components/back-button/back-button";
+import BackButton from "@/components/general/back-button";
 import { IField } from "@/interfaces/field_Interface";
 import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
@@ -53,7 +53,7 @@ const SportCenterPage = async ({
     return (
       <div className="pt-8">
         <Navbar />
-        <BotonVolver />
+        <BackButton />
         {sport_center && (
           <h1 className="text-2xl font-bold mb-6 mt-16 text-center">
             {sport_center.name}

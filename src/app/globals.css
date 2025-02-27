@@ -5,6 +5,7 @@
 html {
   @apply scroll-smooth;
 }
+
 :root {
   /* --background: #ffffff;
   --foreground: #171717; */
@@ -25,3 +26,16 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.mapboxgl-ctrl-geocoder {
+  position: absolute !important;
+  top: 10px;
+  left: 40%;
+  transform: translateX(-50%);
+  max-width: 400px;
+  z-index: 1;
+  overflow: visible;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  height: 0%;
+}

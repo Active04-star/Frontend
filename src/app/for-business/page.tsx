@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "@/components/navbar/navbar";
-import RegisterCenter from "@/views/RegisterCenter/RegisterCenterView";
+import RegisterCenter from "@/views/RegisterCenter/RegisterCenter";
 
 const Business = () => {
     return (

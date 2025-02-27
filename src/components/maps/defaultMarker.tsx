@@ -1,6 +1,6 @@
 import Map, { Marker, MarkerProps } from 'react-map-gl/mapbox';
 
-const DefMarker: React.FC<{ children: React.ReactNode, props: MarkerProps }> = ({ children, props }) => {
+const DefaultMarker: React.FC<{ children: React.ReactNode, props: MarkerProps }> = ({ children, props }) => {
 
     return (
         <Marker
@@ -16,4 +16,4 @@ const DefMarker: React.FC<{ children: React.ReactNode, props: MarkerProps }> = (
     );
 };
 
-export default DefMarker;
+export default DefaultMarker;

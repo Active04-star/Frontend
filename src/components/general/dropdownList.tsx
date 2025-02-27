@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface DropdownProps {
@@ -11,13 +11,34 @@ interface DropdownProps {
 export default function DropdownList({ label, options, onSelect, replaceLabel }: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState<string | null>(null);
-    // const divRef = useRef();
+    const divRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+
+        const clickOut = (event: MouseEvent) => {
+            if (divRef.current && !divRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", clickOut);
+
+        return () => {
+            setSelected(null);
+            document.removeEventListener("mousedown", clickOut);
+        }
+    }, []);
+
+    const handleSelected = (option: string) => {
+        onSelect(option);
+        setSelected(option);
+    };
 
     return (
-        <div className="relative inline-block text-left w-full">
+        <div ref={divRef} className="relative inline-block text-left w-full">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex w-full items-center justify-between px-4 py-2 text-black bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none"
+                className={"flex w-full items-center justify-between px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none " + (selected === null && replaceLabel ? "text-gray-500" : "text-black")}
             >
                 {replaceLabel ? selected || label : label}
                 <ChevronDown className={`w-5 h-5 ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`} />
@@ -30,7 +51,7 @@ export default function DropdownList({ label, options, onSelect, replaceLabel }:
                             <li key={option}>
                                 <button
                                     onClick={() => {
-                                        onSelect(option);
+                                        handleSelected(option);
                                         setIsOpen(false);
                                     }}
                                     className="block w-full px-4 py-2 text-left text-black hover:bg-gray-300"

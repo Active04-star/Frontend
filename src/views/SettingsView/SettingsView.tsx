@@ -4,6 +4,7 @@ import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import {
   IPasswordUpdate,
   IUser,
+  IUserRegister,
   IUserUpdate,
   IuserWithoutToken,
 } from "@/types/zTypes";
@@ -22,14 +23,14 @@ import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
 import Image from "next/image";
 import verifyUser from "@/helpers/auth/illegalUserVerify";
 import LoadingCircle from "@/components/general/loading-circle";
-import { RegisterErrors } from "@/types/Errortypes";
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
+import { useError } from "@/helpers/errors/zod-error-normalizator";
 
 interface IPhotoUpdateResponse {
   message: string;
   url: string;
 }
-
+//TODO CAMBIAR errores por el span de errores automatico
 export default function SettingsView() {
   const [user] = useLocalStorage<IUser | null>("userSession", null);
   const [userData, setUserData] = useState<IuserWithoutToken | null>(null);
@@ -42,8 +43,8 @@ export default function SettingsView() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingConfig, setLoadingConfig] = useState(false);
   const [isSavingPhoto, setIsSavingPhoto] = useState(false);
-  const [errors, setErrors] = useState<Pick<RegisterErrors, "confirm_password" | "password"> | null>(null);
-  const [errorsName, setErrorsName] = useState<Pick<RegisterErrors, "name"> | null>(null);
+  const [errors, setErrors] = useError<Pick<IUserRegister, "confirm_password" | "password"> | null>(null);
+  const [errorsName, setErrorsName] = useError<Pick<IUserRegister, "name"> | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -59,7 +60,7 @@ export default function SettingsView() {
 
 
   useEffect(() => {
-    const data = zodValidate<Pick<RegisterErrors, "confirm_password" | "password">>(password, PasswordUpdateSchema);
+    const data = zodValidate<Pick<IUserRegister, "confirm_password" | "password">>(password, PasswordUpdateSchema);
 
     if (!data.success) {
       setErrors(data.errors);
@@ -72,7 +73,7 @@ export default function SettingsView() {
 
 
   useEffect(() => {
-    const data = zodValidate<Pick<RegisterErrors, "name">>(name, UserUpdateSchema);
+    const data = zodValidate<Pick<IUserRegister, "name">>(name, UserUpdateSchema);
 
     if (!data.success) {
       setErrorsName(data.errors);
@@ -348,13 +349,13 @@ export default function SettingsView() {
               {name.name &&
                 errorsName !== null &&
                 errorsName.name !== undefined &&
-                errorsName.name._errors !== undefined ? (
+                errorsName.name !== undefined ? (
                 <>
                   <span
                     className="text-sm text-red-600"
                     style={{ fontSize: "12px" }}
                   >
-                    {errorsName.name._errors[0]}
+                    {errorsName.name[0]}
                   </span>
 
                   <div>
@@ -362,9 +363,9 @@ export default function SettingsView() {
                       className="text-sm text-red-600"
                       style={{ fontSize: "12px" }}
                     >
-                      {errorsName.name._errors[1] !== undefined &&
-                        errorsName.name._errors[1].length > 0
-                        ? errorsName.name._errors[1]
+                      {errorsName.name[1] !== undefined &&
+                        errorsName.name[1].length > 0
+                        ? errorsName.name[1]
                         : null}
                     </span>
                   </div>
@@ -397,24 +398,24 @@ export default function SettingsView() {
               {/* {password.password &&
                 errors !== null &&
                 errors.password !== undefined &&
-                errors?.password._errors !== undefined ? (
+                errors?.password !== undefined ? (
                 <span
                   className="text-sm text-red-600"
                   style={{ fontSize: "12px" }}
                 >
-                  {errors.password._errors}
+                  {errors.password}
                 </span>
               ) : null} */}
               {password.password &&
                 errors !== null &&
                 errors.password !== undefined &&
-                errors?.password._errors !== undefined ? (
+                errors?.password !== undefined ? (
                 <>
                   <span
                     className="text-sm text-red-600"
                     style={{ fontSize: "12px" }}
                   >
-                    {errors.password._errors[0]}
+                    {errors.password[0]}
                   </span>
 
                   <div>
@@ -422,9 +423,9 @@ export default function SettingsView() {
                       className="text-sm text-red-600"
                       style={{ fontSize: "12px" }}
                     >
-                      {errors.password._errors[1] !== undefined &&
-                        errors.password._errors[1].length > 0
-                        ? errors.password._errors[1]
+                      {errors.password[1] !== undefined &&
+                        errors.password[1].length > 0
+                        ? errors.password[1]
                         : null}
                     </span>
                   </div>
@@ -457,12 +458,12 @@ export default function SettingsView() {
               {password.confirm_password &&
                 errors !== null &&
                 errors.confirm_password !== undefined &&
-                errors?.confirm_password._errors !== undefined ? (
+                errors?.confirm_password !== undefined ? (
                 <span
                   className="text-sm text-red-600"
                   style={{ fontSize: "12px" }}
                 >
-                  {errors.confirm_password._errors}
+                  {errors.confirm_password}
                 </span>
               ) : null}
             </div>

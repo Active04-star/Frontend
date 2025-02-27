@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import BotonVolver from "@/components/back-button/back-button";
+import BackButton from "@/components/general/back-button";
 import ReservationCard from "@/components/userReservations/userReservations";
 import { API_URL } from "@/config/config";
 import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
@@ -121,7 +121,7 @@ const ReservacionesUsersView = () => {
 
   return (
     <div className="mt-16 max-w-7xl mx-auto p-6">
-      <BotonVolver />
+      <BackButton />
       <h1 className="text-3xl font-bold mb-8 text-center">Mis Reservas</h1>
       <div>
         {show &&
