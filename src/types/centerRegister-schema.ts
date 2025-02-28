@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const name_lenght_error = "El nombre debe estar entre 3 y 50 caracteres";
-const address_lenght_error = "La direccion debe estar entre 5 y 120 caracteres";
+const address_lenght_error = "La direccion debe estar entre 5 y 90 caracteres";
 
 /**Centro deportivo de formulario
  */
@@ -15,5 +15,9 @@ export const CenterRegisterSchema = z.object({
 
   address: z.string({ message: "La direccion es obligatoria" })
     .min(5, address_lenght_error)
-    .max(120, address_lenght_error),
+    .max(90, address_lenght_error),
+
+  place: z.string({ message: "La direccion es obligatoria" })
+    .min(5, address_lenght_error)
+    .max(90, address_lenght_error).regex(/^[\p{L}0-9\s.,#\-]+$/u, "La direccion solo puede contener: . , # -"),
 });

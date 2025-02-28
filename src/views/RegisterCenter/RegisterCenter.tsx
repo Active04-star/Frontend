@@ -27,6 +27,7 @@ export default function RegisterCenter() {
     name: "",
     address: "",
     description: "",
+    place: "",
   }
   const [isModalOpen, setIsModalOpen] = useState(true);
   const router = useRouter();
@@ -62,7 +63,8 @@ export default function RegisterCenter() {
 
     setIsLocating(true);
     const direction = await reverseGeocode(_useGeoLocation[1], _useGeoLocation[0]);
-    setSportCenter(prev => ({ ...prev, address: direction }))
+
+    setSportCenter(prev => ({ ...prev, ...direction }));
     setWasLocated(true);
     setIsLocating(false);
   };
@@ -334,6 +336,11 @@ export default function RegisterCenter() {
                                         </div>
                                       }
                                     </div>
+                                    {sportCenter.place &&
+                                      <div className="text-sm text-start block ml-1 mt-1">
+                                        {sportCenter.place}
+                                      </div>
+                                    }
                                   </>
                             }
                           </div>

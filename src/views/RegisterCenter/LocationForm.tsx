@@ -45,36 +45,31 @@ const LocationForm: React.FC<{ formName: string; useGeoLocation: Dispatch<SetSta
         <>
             {
                 loading ?
-                    <div className="w-full h-full">
+                    <div className="w-52 h-52">
                         <LoadingCircle />
                     </div >
                     :
-                    <div className="ml-6 px-6 pt-6 bg-neutral-500 bg-opacity-15">
-                        <div className="mb-3">
-
-                            <span className="ml-3 text-lg text-start block font-medium">¿Donde se ubica tu negocio?</span>
-                            <span className="text-sm text-start block max-w-full">Doble click en el mapa para agregar tu ubicacion y</span>
-                            <span className="text-sm text-start block max-w-full -mt-[2px]">generar una direccion</span>
-                        </div>
-
-                        <div className="w-[400px] h-[400px] overflow-hidden">
-                            <FormMap useGeoLocation={useGeoLocation} formName={formName || "Nombre de tu negocio"} location={location} />
-                            {disabled &&
-                                <div className="w-[400px] h-[400px] top-1 left-1 absolute z-1 bg-gray-500 cursor-wait">
-                                    <LoadingCircle />
-                                </div>
-                            }
-                        </div>
-
-                        <div className="w-auto flex content-start">
+                    <div className="ml-6 px-6 pt-2 bg-neutral-500 bg-opacity-0">
+                        <div className="mb-3 flex justify-between">
+                            <span className="ml-3 text-lg text-start h-fit my-auto">¿Donde te encuentras?</span>
                             <button
                                 onClick={() => handleGetLocation()}
                                 disabled={disabled}
-                                className="ml-3 my-5 bg-gray-300 text-dark px-4 py-2 rounded disabled:cursor-not-allowed text-gray-900 flex gap-1"
+                                className="bg-gray-300 text-dark px-4 py-2 rounded disabled:cursor-not-allowed text-gray-900 flex gap-1"
                             >
                                 <MapPin />
                                 Mi ubicacion
                             </button>
+                            {/* <span className="text-sm text-start block w-[70%]">Doble click en el mapa para agregar tu ubicacion y generar una direccion</span> */}
+                        </div>
+
+                        <div className="w-[400px] h-[400px] overflow-hidden rounded-full">
+                            <FormMap useGeoLocation={useGeoLocation} formName={formName || "Nombre de tu negocio"} location={location} />
+
+                        </div>
+
+                        <div className="w-auto flex content-start">
+
                         </div>
 
                     </div>

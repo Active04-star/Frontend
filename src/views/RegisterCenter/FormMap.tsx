@@ -20,7 +20,7 @@ const FormMap: React.FC<{ location: { latitude: number; longitude: number; zoom:
             setSearching(true);
             setMouse("not-allowed");
 
-            map.current?.setCenter([location.longitude, location.latitude]).zoomTo(15);
+            map.current?.flyTo({ center: [location.longitude, location.latitude], zoom: 15, curve: 1 });
             _setLocation({ latitude: location.latitude, longitude: location.longitude });
 
         }
@@ -46,21 +46,6 @@ const FormMap: React.FC<{ location: { latitude: number; longitude: number; zoom:
 
         setMap(map.current?.getMap() || undefined);
     }, []);
-
-    // useEffect(() => {
-    //     const prevent = (e: MapMouseEvent | MapWheelEvent) => {
-    //         e.preventDefault();
-    //     };
-
-    //     if (searching) {
-    //         map.current?.on("click", prevent);
-    //         map.current?.on("wheel", (e) => prevent);
-    //     } else {
-    //         map.current?.off("click", prevent);
-    //         map.current?.off("wheel", prevent);
-    //     }
-    // }, [searching]);
-
 
     const UsedGeoLocation = (latitude: number, longitude: number) => {
         useGeoLocation([latitude, longitude]);
@@ -94,7 +79,7 @@ const FormMap: React.FC<{ location: { latitude: number; longitude: number; zoom:
             onDragEnd={() => setMouse("pointer")}
             onIdle={(e) => enableInteractivity(e)}
         >
-            <GeocoderControl setLocation={_setLocation} map={_map} mapboxAccessToken={MAPBOX_TOKEN || "null"} position={"top-right"} />
+            <GeocoderControl setLocation={_setLocation} map={_map} mapboxAccessToken={MAPBOX_TOKEN || "null"} position={"top-left"} />
             {_location !== undefined ?
                 <DefaultMarker props={{ ..._location }}>
                     <div className='absolute -bottom-full -m-1 -right-6'>
