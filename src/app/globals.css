@@ -2,18 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-html {
-  @apply scroll-smooth;
-}
 :root {
   color-scheme: light dark;
 }
 
+html {
+  scroll-behavior: scroll-smooth;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground: #ededed;
+    --background: #ededed;
   }
 }
 
