@@ -189,7 +189,7 @@ const LoginView: React.FC = () => {
 
 
   return (
-    <div style={{ paddingTop: `${navbarHeight + 16}px` }} className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
+    <div style={{ paddingTop: `${navbarHeight + 5}px` }} className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
       {isSubmitting ? (
         <>
           <h1 className="text-4xl font-bold mb-8 font-serif text-white">
