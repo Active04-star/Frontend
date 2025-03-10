@@ -49,6 +49,8 @@ export const LoginandRegister = () => {
         <div className={`${styles.formContainer} ${styles.signIn}`}>
           <form>
             <h1>Iniciar Sesión</h1>
+            <hr className="w-full border-t-2 border-blue-700" />
+
             <nav className="flex flex-wrap gap-4 my-3 ">
               <Link
                 type="submit"
@@ -56,14 +58,16 @@ export const LoginandRegister = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 role="link"
-                className="inline-flex items-center justify-center gap-2 px-4 py-1 text-gray-800 transition bg-gray-100 border border-gray-300 rounded-full dark:bg-gray-800 dark:border-gray-600 dark:text-white focus-visible:ring-yellow-500/80 text-md hover:bg-gray-900 hover:border-gray-700 hover:text-white dark:hover:bg-gray-100 dark:hover:border-gray-300 dark:hover:text-black group max-w-fit focus:outline-none focus-visible:outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 active:bg-black"
-                title="Inicia Sesión con Google"
+                className="inline-flex items-center justify-center gap-2 px-4 py-1 text-gray-800 transition bg-gray-100 border border-gray-300 rounded-full dark:bg-gray-800 dark:border-gray-600 dark:text-white focus-visible:ring-yellow-500/80 text-md hover:bg-gray-900 hover:border-gray-700 hover:text-white dark:hover:bg-gray-100 dark:hover:border-gray-300 dark:hover:text-black group max-w-fit focus:outline-none focus-visible:outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 active:bg-black text-sm"
               >
-                <Google /> 
+                <Google/> Inicia Sesión con Google
               </Link>
             </nav>
-            <span>o usa tu email y contraseña</span>
-            <input type="email" placeholder="Email" />
+            <div className="flex items-center  w-[100%]">
+      <div className="flex-grow border-t-2 border-blue-700"></div>
+      <span className="mx-4 text-sm text-gray-500">o usa tu email y contraseña</span>
+      <div className="flex-grow border-t-2 border-blue-700"></div>
+    </div>            <input type="email" placeholder="Email" />
             <input type="password" placeholder="Password" />
             {/* <a href="#">Forget Your Password?</a> */}
             <button type="button">Ingresar</button>
