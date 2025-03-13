@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <UserProvider>
         <body
-          className="antialiased min-h-screen flex flex-col"
+
         >
           {/* Contenido principal */}
           <main className="flex-grow">{children}</main>

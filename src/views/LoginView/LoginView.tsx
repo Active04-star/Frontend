@@ -1,29 +1,23 @@
-/* eslint-disable prefer-const */
 "use client";
-import LoadingCircle from "@/components/general/loading-circle";
-import { UserRole } from "@/enum/userRole";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { zodValidate } from "@/helpers/validate-zod";
+import { login } from "@/helpers/auth/login";
+import { getUserType } from "@/helpers/auth/getUserType";
+import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
 import { AuthErrorHelper } from "@/helpers/errors/auth-error-helper";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
-import { login } from "@/helpers/auth/login";
+import { UserLoginSchema } from "@/types/userLogin-schema";
+import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
+import { UserRole } from "@/enum/userRole";
+import { Page } from "@/enum/Pages";
+import { LoginErrors } from "@/types/Errortypes";
+import { IUser, IUserLogin } from "@/types/zTypes";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { swalNotifySuccess } from "@/helpers/swal/swal-notify-success";
-import { LoginErrors } from "@/types/Errortypes";
-import { UserLoginSchema } from "@/types/userLogin-schema";
-import { IUser, IUserLogin } from "@/types/zTypes";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Link from "next/link";
-import Image from "next/image";
-import { ApiStatusEnum } from "@/enum/HttpStatus.enum";
-import { getCenterIfManager } from "@/helpers/auth/getCenterIfManager";
-import { getUserType } from "@/helpers/auth/getUserType";
-import { swalConfirmation } from "@/helpers/swal/swal-notify-confirm";
 import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error";
-import { Page } from "@/enum/Pages";
 
-const LoginView: React.FC = () => {
+export const useLoginFunctions = () => {
   const router = useRouter();
   const initialState = {
     email: "",
@@ -34,16 +28,17 @@ const LoginView: React.FC = () => {
   const [errors, setErrors] = useState<LoginErrors | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [navbarHeight, setNavbarHeight] = useState<number>(0);
-
+  
+  // Manejar cambios en los inputs
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let { name, value } = event.target;
-    if(name === "email") {
+    const { name } = event.target;
+    let { value } = event.target;    if(name === "email") {
       value = value.toLowerCase();
     }
     setUserData({ ...userData, [name]: value });
   };
-
+  
+  // Validar datos de usuario al cambiar
   useEffect(() => {
     setIsSubmitting(false);
     const data = zodValidate<LoginErrors>(userData, UserLoginSchema);
@@ -54,36 +49,45 @@ const LoginView: React.FC = () => {
       setErrors(null);
     }
   }, [userData]);
-
-
-  useEffect(() => {
-    const navbar = document.querySelector("nav");
-    if (navbar) {
-      setNavbarHeight(navbar.getBoundingClientRect().height);
-    }
-
-    const queryString = new URLSearchParams(window.location.search);
-    const queryParams = Object.fromEntries(queryString.entries()) as { from: string };
-
-    if (queryParams.from === "business") {
-      swalCustomError("Necesitas una cuenta", "Debes estar registrado para poder acceder a esta funcion", [, 6000]);
-
-    } else if (queryParams.from === "out_session") {
-      swalCustomError("La sesion ha expirado!", "Debes iniciar sesion nuevamente", [, 6000]);
-
-    } else if (queryParams.from === "user_blocked") {
-      swalCustomError("No se pudo iniciar sesion", "Este usuario fue baneado!", [, 6000]);
-
-    }
-
-  }, []);
-
-
+  
+  // Redirector a autenticación externa (Google)
   const redirectToAuth = (email: string) => {
-    window.location.href = `api/auth/login?login_hint=${encodeURIComponent(email)}`
+    window.location.href = `api/auth/login?login_hint=${encodeURIComponent(email)}`;
   };
-
-
+  
+  // Verificar tipo de usuario
+  const checkUserType = async (email: string): Promise<boolean> => {
+    try {
+      const response = await getUserType(email);
+      
+      if (response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
+        redirectToAuth(email.toLowerCase());
+        return false;
+      }
+      return true;
+    } catch (error) {
+      if (error instanceof ErrorHelper) {
+        if (error.message === ApiStatusEnum.USER_DELETED) {
+          swalCustomError(ApiStatusEnum.USER_DELETED, "No se pudo logear", ["top-right", ]);
+          setIsSubmitting(false);
+          setUserData(initialState);
+          return false;
+        } else if (error.message === ApiStatusEnum.INVALID_CREDENTIALS || error.message === ApiStatusEnum.USER_NOT_FOUND) {
+          swalCustomError(ApiStatusEnum.INVALID_CREDENTIALS, "No se pudo logear", ["top-right", ]);
+          setIsSubmitting(false);
+          setUserData(initialState);
+          return false;
+        }
+      } else {
+        swalNotifyUnknownError(error);
+        console.error(error);
+        return false;
+      }
+      return false;
+    }
+  };
+  
+  // Manejar el envío del formulario
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -92,59 +96,27 @@ const LoginView: React.FC = () => {
 
     const validation = zodValidate<LoginErrors>(userData, UserLoginSchema);
 
+    // Validar usuario externo
     if (validation.errors === null || validation.errors.email === undefined) {
-
-      try {
-
-        const response = await getUserType(userData.email);
-
-        if (response.message === ApiStatusEnum.USER_IS_THIRD_PARTY) {
-          redirectToAuth(userData.email.toLowerCase());
-          return;
-        }
-
-      } catch (error) {
-
-        if (error instanceof ErrorHelper) {
-
-          if (error.message === ApiStatusEnum.USER_DELETED) {
-            swalCustomError(ApiStatusEnum.USER_DELETED, "No se pudo logear", ["top-right", ]);
-            setIsSubmitting(false);
-            setUserData(initialState);
-
-            return;
-
-          } else if (error.message === ApiStatusEnum.INVALID_CREDENTIALS || error.message === ApiStatusEnum.USER_NOT_FOUND) {
-            swalCustomError(ApiStatusEnum.INVALID_CREDENTIALS, "No se pudo logear", ["top-right", ]);
-            setIsSubmitting(false);
-            setUserData(initialState);
-
-            return;
-          }
-
-        } else {
-          swalNotifyUnknownError(error);
-          console.error(error);
-          // window.location.href = "/";
-        }
-      }
+      const canContinue = await checkUserType(userData.email);
+      if (!canContinue) return;
     }
 
+    // Validar campos vacíos
     if (Object.values(userData).find((data) => data === "") === "") {
       swalCustomError("Error en Logueo", "Los campos están vacios.");
-
       setIsSubmitting(false);
       return;
     }
 
-
+    // Validar esquema de datos
     if (!validation.success) {
       swalCustomError("Error en Logueo", "Por favor corrige los errores antes de continuar.");
-
       setIsSubmitting(false);
       return;
     }
 
+    // Intentar login
     try {
       localStorage.clear();
 
@@ -158,6 +130,7 @@ const LoginView: React.FC = () => {
       setUserData(initialState);
       await getCenterIfManager(response);
 
+      // Redireccionar según rol
       const roleRoutes = {
         [UserRole.USER]: Page.SEARCH,
         [UserRole.MAIN_MANAGER]: "/manager",
@@ -186,151 +159,35 @@ const LoginView: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  
+  // Verificar parámetros de URL para mensajes
+  const checkUrlParams = () => {
+    const queryString = new URLSearchParams(window.location.search);
+    const queryParams = Object.fromEntries(queryString.entries()) as { from: string };
 
-
-  return (
-    <div style={{ paddingTop: `${navbarHeight + 5}px` }} className="bg-custom-dark min-h-screen flex flex-col items-center justify-center text-center">
-      {isSubmitting ? (
-        <>
-          <h1 className="text-4xl font-bold mb-8 font-serif text-white">
-            Cargando...
-          </h1>
-          <div className="w-32 h-32">
-            <LoadingCircle />
-          </div>
-        </>
-      ) : (
-        <>
-          <h1 className="text-5xl font-bold mb-8 font-serif text-white">
-            Active
-          </h1>
-          <form onSubmit={handleSubmit} className="w-full max-w-sm">
-            <div className="mb-6">
-              <label
-                className="block text-white mb-2 text-center font-medium text-lg"
-                htmlFor="username"
-              >
-                Usuario
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="email"
-                value={userData.email}
-                onChange={handleChange}
-                placeholder="Active123@mail.com"
-                className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-              />
-              {userData.email &&
-                errors !== null &&
-                errors.email !== undefined &&
-                errors?.email._errors !== undefined ? (
-                <span
-                  className="text-sm text-red-600"
-                  style={{ fontSize: "12px" }}
-                >
-                  {errors.email._errors}
-                </span>
-              ) : null}
-            </div>
-            <div className="mb-6 relative">
-              <label
-                className="block text-white mb-2 text-center font-medium text-lg"
-                htmlFor="password"
-              >
-                Contraseña
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={userData.password}
-                  onChange={handleChange}
-                  placeholder="******"
-                  className="w-full px-4 py-2 border-gray-300 rounded-lg bg-gray-200 focus:outline-none text-black font-sans"
-                />
-                <div
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <FaEyeSlash style={{ color: "black" }} />
-                  ) : (
-                    <FaEye style={{ color: "black" }} />
-                  )}
-                </div>
-              </div>
-              {userData.password &&
-                errors !== null &&
-                errors.password !== undefined &&
-                errors?.password._errors !== undefined ? (
-                <>
-                  <span
-                    className="text-sm text-red-600"
-                    style={{ fontSize: "12px" }}
-                  >
-                    {errors.password._errors[0]}
-                  </span>
-
-                  <div>
-                    <span
-                      className="text-sm text-red-600"
-                      style={{ fontSize: "12px" }}
-                    >
-                      {errors.password._errors[1] !== undefined &&
-                        errors.password._errors[1].length > 0
-                        ? errors.password._errors[1]
-                        : null}
-                    </span>
-                  </div>
-                </>
-              ) : null}
-            </div>
-
-            <div className="w-auto flex justify-around">
-              <button
-                type="submit"
-                className="mt-5 bg-primary text-dark px-6 py-2 rounded hover:bg-yellow-700 bg-yellow-600"
-              >
-                Ingresar
-              </button>
-            </div>
-
-            <div className="mt-3">
-              <span className="mr-4">¿No tienes cuenta?</span>
-              <Link href={"/register"}>
-                <span className="text-yellow-600">Regístrate</span>
-              </Link>
-            </div>
-
-            <div className="flex justify-around py-5">
-              <div className="w-2/5 border-b border-white mb-3"></div>
-              <div className="mx-2">o</div>
-              <div className="w-2/5 border-b border-white mb-3"></div>
-            </div>
-
-            <div className="w-auto flex justify-around">
-              <Link
-                type="submit"
-                className="mt-5 bg-primary text-dark px-6 py-2 rounded bg-orange-100 text-black flex justify-between"
-                href="api/auth/login/"
-              >
-                <Image
-                  src="https://auth.openai.com/assets/google-logo-NePEveMl.svg"
-                  alt="google icon"
-                  width={25}
-                  height={25}
-                  className="mr-2"
-                />
-                Continuar con Google
-              </Link>
-            </div>
-          </form>
-        </>
-      )}
-    </div>
-  );
+    if (queryParams.from === "business") {
+      swalCustomError("Necesitas una cuenta", "Debes estar registrado para poder acceder a esta funcion", [, 6000]);
+    } else if (queryParams.from === "out_session") {
+      swalCustomError("La sesion ha expirado!", "Debes iniciar sesion nuevamente", [, 6000]);
+    } else if (queryParams.from === "user_blocked") {
+      swalCustomError("No se pudo iniciar sesion", "Este usuario fue baneado!", [, 6000]);
+    }
+  };
+  
+  
+  
+  return {
+    userData,
+    setUserData,
+    errors,
+    isSubmitting,
+    showPassword,
+    setShowPassword,
+    handleChange,
+    handleSubmit,
+    checkUrlParams,
+    redirectToAuth,
+    checkUserType,
+    initialState
+  };
 };
-
-export default LoginView;

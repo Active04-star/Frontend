@@ -1,12 +1,11 @@
 import Navbar from '@/components/navbar/navbar'
-import LoginView from '@/views/LoginView/LoginView'
+import { LoginandRegister } from '@/views/Login&Register/Login&Register.view'
 import React from 'react'
 
 const Login = () => {
   return (
     <>
-      <Navbar />
-      <LoginView />
+      <LoginandRegister />
     </>
   )
 }
