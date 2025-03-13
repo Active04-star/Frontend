@@ -118,7 +118,7 @@ const RegisterView: React.FC = () => {
           isSubmitting ?
             (
               <>
-                <h1 className="text-4xl font-bold text-gray-900 mb-8 font-serif text-white">
+                <h1 className="text-4xl font-bold text-gray-900 mb-8 font-serif">
                   Cargando...
                 </h1>
                 <div className="w-32 h-32">
