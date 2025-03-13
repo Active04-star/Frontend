@@ -36,7 +36,8 @@ const Register: React.FC<RegisterComponentProps> = ({ handleLoginClick }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let { name, value } = event.target;
+    const { name } = event.target;
+    let { value } = event.target;
     if (name === "email") {
       value = value.toLowerCase();
     }
@@ -88,7 +89,8 @@ const Register: React.FC<RegisterComponentProps> = ({ handleLoginClick }) => {
       await register(userData);
 
       swalNotifySuccess(
-        "Registro exitoso","Podras iniciar sesion en un momento"
+        "Registro exitoso",
+        "Podras iniciar sesion en un momento"
       );
 
       handleLoginClick();

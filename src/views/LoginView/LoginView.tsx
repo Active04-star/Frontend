@@ -31,8 +31,8 @@ export const useLoginFunctions = () => {
   
   // Manejar cambios en los inputs
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let { name, value } = event.target;
-    if(name === "email") {
+    const { name } = event.target;
+    let { value } = event.target;    if(name === "email") {
       value = value.toLowerCase();
     }
     setUserData({ ...userData, [name]: value });
