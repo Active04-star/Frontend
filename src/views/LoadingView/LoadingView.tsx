@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { fetchAndCatch } from "@/helpers/errors/fetch-error-interceptor";
 import { IUser } from "@/types/zTypes";
 import { ApiError } from "next/dist/server/api-utils";
+import { Page } from "@/enum/Pages";
 
 const LoadingView: React.FC = () => {
     const { user, isLoading, error: e } = useUser();
@@ -59,13 +60,8 @@ const LoadingView: React.FC = () => {
                                     setSession({ token: (response as IUser).token, user: (response as IUser).user });
                                     await getCenterIfManager(response as IUser);
 
-                                    // if (user.role === UserRole.USER) {
-                                    //     window.location.href = "/user";
-                                    //     return;
-                                    // }
-
                                     const roleRoutes = {
-                                        [UserRole.USER]: "/user",
+                                        [UserRole.USER]: Page.SEARCH,
                                         [UserRole.MAIN_MANAGER]: "/manager",
                                         [UserRole.ADMIN]: "/admin",
                                         [UserRole.SUPER_ADMIN]: "/admin",

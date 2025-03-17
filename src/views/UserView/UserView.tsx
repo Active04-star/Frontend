@@ -17,6 +17,7 @@ import { swalNotifyUnknownError } from "@/helpers/swal/swal-notify-unknown-error
 import verifyUser from "@/helpers/auth/illegalUserVerify";
 import { swalCustomError } from "@/helpers/swal/swal-custom-error";
 import { IQueryErrors } from "@/types/Errortypes";
+import { Page } from "@/enum/Pages";
 
 const UserView: React.FC = () => {
   const default_params: IQueryParams = {
@@ -28,23 +29,17 @@ const UserView: React.FC = () => {
   const [params, setParams] = useState<IQueryParams>(default_params);
   const [error, setError] = useState<string | null>(null);
 
-  // const default_params: IQueryParams = { page: 1, limit: 8 };
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [centerList, setCenterList] = useState<ISportCenterList | null>(null);
-  const [navbarHeight, setNavbarHeight] = useState<number>(0);
+  // const [navbarHeight, setNavbarHeight] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
   const divRef = useRef<HTMLDivElement>(null);
 
-  // const [rating, setRating] = useState<number | undefined>();
   const [rating, setRating] = useState<number>(0);
   const [vrating, setVrating] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
-  // const voidStar = "w-8 h-8 fill-transparent stroke-amber-500 cursor-pointer mx-1 p-1";
-  // const fullStar = "w-8 h-8 fill-amber-500 stroke-amber-500 cursor-pointer mx-1 p-1";
-  const voidStar =
-    "w-8 h-8 fill-transparent stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-black hover:bg-yellow-700";
-  const fullStar =
-    "w-8 h-8 fill-white stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-yellow-600";
+  const voidStar = "w-8 h-8 fill-transparent stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-black hover:bg-yellow-700";
+  const fullStar = "w-8 h-8 fill-white stroke-white rounded-lg cursor-pointer mx-1 p-1 bg-yellow-600";
 
 
   const toggleDropdown = () => {
@@ -53,10 +48,11 @@ const UserView: React.FC = () => {
 
 
   useEffect(() => {
-    const navbar = document.querySelector("nav");
-    if (navbar) {
-      setNavbarHeight(navbar.getBoundingClientRect().height);
-    }
+    // const navbar = document.querySelector("nav");
+    // if (navbar) {
+    //   setNavbarHeight(navbar.getBoundingClientRect().height);
+    // }
+    fetchData();
 
     const handleClickOutside = (event: MouseEvent) => {
       if (divRef.current && !divRef.current.contains(event.target as Node)) {
@@ -149,14 +145,14 @@ const UserView: React.FC = () => {
   );
 
 
-  useEffect(() => {
-    const navbar = document.querySelector("nav");
-    if (navbar) {
-      setNavbarHeight(navbar.getBoundingClientRect().height);
-    }
+  // useEffect(() => {
+  //   // const navbar = document.querySelector("nav");
+  //   // if (navbar) {
+  //   //   setNavbarHeight(navbar.getBoundingClientRect().height);
+  //   // }
 
-    fetchData();
-  }, [fetchData]);
+  //   fetchData();
+  // }, [fetchData]);
 
 
   const changeParams = (params_: Partial<IQueryParams>) => {
@@ -201,7 +197,7 @@ const UserView: React.FC = () => {
       rating: params.rating?.toString() || "0",
     });
 
-    window.location.href = `/user?${searchParams.toString()}`;
+    window.location.href = `${Page.SEARCH}?${searchParams.toString()}`;
   };
 
 
@@ -209,8 +205,8 @@ const UserView: React.FC = () => {
     <>
       <Navbar />
 
-      <div style={{ paddingTop: `${navbarHeight + 16}px` }}>
-        <div className="p-4 mt-8">
+      {/* <div style={{ paddingTop: `${navbarHeight + 16}px` }}> */}
+        <div className="pt-4 p-4 mt-8">
           <div className="flex gap-4 mb-6">
 
             {/* INPUT BUSQUEDA */}
@@ -385,7 +381,7 @@ const UserView: React.FC = () => {
               ))}
           </div>
         )}
-      </div >
+      {/* </div > */}
     </>
   );
 };

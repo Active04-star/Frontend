@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { ErrorHelper } from "@/helpers/errors/error-helper";
@@ -36,8 +37,11 @@ const RegisterView: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-
+    let { name, value } = event.target;
+    if(name === "email") {
+      value = value.toLowerCase();
+    }
+    
     setUserData({
       ...userData,
       [name]: value,
@@ -114,7 +118,7 @@ const RegisterView: React.FC = () => {
           isSubmitting ?
             (
               <>
-                <h1 className="text-4xl font-bold text-gray-900 mb-8 font-serif text-white">
+                <h1 className="text-4xl font-bold text-gray-900 mb-8 font-serif">
                   Cargando...
                 </h1>
                 <div className="w-32 h-32">

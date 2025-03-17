@@ -7,14 +7,11 @@ import { ISportCenter, IUser } from "@/types/zTypes";
 import { fetchWithAuth } from "@/helpers/errors/fetch-with-token-interceptor";
 import { API_URL } from "@/config/config";
 import 'leaflet/dist/leaflet.css';
-const MapContainer = dynamic(() => import('react-leaflet').then((mod) => mod.MapContainer), { ssr: false });
+
+const MapContainer: React.ComponentType<any> = dynamic(() => import('react-leaflet').then((mod) => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then((mod) => mod.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then((mod) => mod.Marker), { ssr: false });
 const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false });
-
-
-
-
 
 const UbicacionView: React.FC = () => {
   const [userLocalStorage] = useLocalStorage<IUser | null>("userSession", null);
@@ -53,7 +50,7 @@ const UbicacionView: React.FC = () => {
     );
   }
 
-  
+
   if (!sportCenter) {
     return <div>No se encontró el centro deportivo</div>;
   }

@@ -1,4 +1,5 @@
 "use client";
+import { Page } from "@/enum/Pages";
 import { UserRole } from "@/enum/userRole";
 import { logout } from "@/helpers/auth/logout";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
@@ -171,9 +172,9 @@ const DropDownButton: React.FC = () => {
                 <>
                   <li>
                     <Link
-                      href="/user"
+                      href={Page.SEARCH}
                       className={
-                        actualPage === "/user" || actualPage === ""
+                        actualPage === Page.SEARCH || actualPage === ""
                           ? offStyle
                           : onStyle
                       }

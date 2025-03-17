@@ -2,24 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  @apply scroll-smooth;
-}
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light dark;
+}
+
+html {
+  font-family: "Onest Variable", sans-serif;
+  scroll-behavior: smooth;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ededed;
   }
 }
 
 body {
-  color: var(--foreground);
+  color: rgba(17, 17, 17, 0.9);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+  overscroll-behavior: none;
 }
 
+h1 {
+  font-size: 2em;
+}
+
+a {
+  background: transparent;
+}

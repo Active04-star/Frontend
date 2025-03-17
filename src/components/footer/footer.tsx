@@ -1,6 +1,8 @@
 "use client";
 import { getSubPath } from "@/utils/getSubPath";
 import React, { useEffect, useState } from "react";
+const currentYear = new Date().getFullYear()
+
 
 const Footer: React.FC = () => {
   const [show, setShow] = useState(true);
@@ -19,7 +21,7 @@ const Footer: React.FC = () => {
       {
         !show ?
           null :
-          <footer className=" bg-transparent border-t border-white">
+          <footer className=" w-full  opacity-80 mt-16 ">
             <div className="mx-auto w-full max-w-screen-xl">
               <div className="grid grid-cols-2 px-4 lg:py-8 md:grid-cols-4">
                 <div>
@@ -128,7 +130,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="px-4 py-6 md:flex md:items-center md:justify-between">
                 <span className="text-sm text-gray-500 dark:text-gray-300 sm:text-center">
-                  © 2024 All Rights Reserved.
+                  © {currentYear} All Rights Reserved.
                 </span>
                 <div className="flex mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse">
                   <a

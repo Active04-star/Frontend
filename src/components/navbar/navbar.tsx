@@ -1,39 +1,45 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import DropDownButton from "./dropdownbutton";
 import { useLocalStorage } from "@/helpers/auth/useLocalStorage";
 import { IUser } from "@/types/zTypes";
 import { UserRole } from "@/enum/userRole";
+import { Page } from "@/enum/Pages";
 
 const Navbar: React.FC = () => {
   const [shouldShow, setShouldShow] = useState(false);
   const [user,] = useLocalStorage<IUser | null>("userSession", null);
-  const [userRole, setUserRole] = useState<UserRole | null>(null);
+  // const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+  const [navbarHeight, setNavbarHeight] = useState(0);
 
   useEffect(() => {
 
     if (typeof window !== "undefined") {
       if (user === null) {
         setShouldShow(true);
-        console.log(null)
 
       } else if (typeof user !== "string" && user?.user !== undefined && user.user.role === UserRole.USER) {
         setShouldShow(true);
-        console.log("User")
 
       } else if (typeof user !== "string" && user?.user !== undefined) {
         setShouldShow(false);
-        setUserRole(user.user.role);
-        console.log("VIP")
+        // setUserRole(user.user.role);
 
+      }
+
+      if (navRef !== null && navRef.current !== null) {
+        setNavbarHeight(navRef.current.clientHeight);
       }
     }
   }, [user]);
 
   return (
-      <nav className=" bg-black fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+    <>
+      <div style={{ height: navbarHeight }}></div>
+      <nav ref={navRef} className=" bg-black fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
 
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -70,7 +76,7 @@ const Navbar: React.FC = () => {
                 </li>
                 <li>
                   <Link
-                    href="user"
+                    href={Page.SEARCH}
                     className="block py-2 px-3 text-gray-900 rounded md:p-0 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     Reservar
@@ -90,6 +96,7 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </nav >
+    </>
   );
 };
 
